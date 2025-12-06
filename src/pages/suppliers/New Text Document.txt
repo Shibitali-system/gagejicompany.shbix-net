@@ -1,0 +1,295 @@
+import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { supabase } from "../../../supabaseClient";
+import {
+  FaSearch,
+  FaFileExcel,
+  FaPlus,
+  FaMoneyBillWave,
+} from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
+import * as XLSX from "xlsx";
+
+const PaymentsIndex = () => {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+  const [user, setUser] = useState(null);
+
+  // 🧩 Load current user
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser?.id) throw new Error("No authenticated user");
+
+        const { data: sysUser } = await supabase
+          .from("systems_users")
+          .select("*")
+          .eq("auth_user_id", authUser.id)
+          .maybeSingle();
+
+        if (sysUser) {
+          setUser({ id: sysUser.id, name: sysUser.customer_name, office_id: sysUser.office_id, role: "admin" });
+          return;
+        }
+
+        const { data: employee } = await supabase
+          .from("employees")
+          .select("*")
+          .eq("auth_user_id", authUser.id)
+          .maybeSingle();
+
+        if (employee) {
+          setUser({ id: employee.id, name: employee.name, office_id: employee.office_id, role: "employee" });
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load user.");
+      }
+    };
+    fetchUser();
+  }, []);
+
+  // 🧾 Fetch payments
+  useEffect(() => {
+    if (!user?.office_id) return;
+    fetchPayments();
+  }, [user, filterType, customFrom, customTo, searchTerm]);
+
+  const fetchPayments = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      let fromDate, toDate;
+      const now = new Date();
+
+      if (filterType !== "all") {
+        switch (filterType) {
+          case "today":
+            fromDate = new Date(now.setHours(0, 0, 0, 0));
+            toDate = new Date(now.setHours(23, 59, 59, 999));
+            break;
+          case "week":
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            fromDate = new Date(now.setDate(diff));
+            fromDate.setHours(0, 0, 0, 0);
+            toDate = new Date();
+            break;
+          case "month":
+            fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
+            toDate = new Date();
+            break;
+          case "year":
+            fromDate = new Date(now.getFullYear(), 0, 1);
+            toDate = new Date();
+            break;
+          case "custom":
+            if (customFrom && customTo) {
+              fromDate = new Date(customFrom); fromDate.setHours(0,0,0,0);
+              toDate = new Date(customTo); toDate.setHours(23,59,59,999);
+            }
+            break;
+        }
+      }
+
+      let query = supabase
+        .from("payment")
+        .select(`*, suppliers(name)`)
+        .eq("office_id", user.office_id)
+        .order("created_at", { ascending: false });
+
+      if (filterType !== "all" && fromDate && toDate) {
+        query = query.gte("created_at", fromDate.toISOString())
+                     .lte("created_at", toDate.toISOString());
+      }
+
+      if (searchTerm.trim()) {
+        query = query.or(
+          `suppliers.name.ilike.%${searchTerm}%,status.ilike.%${searchTerm}%`
+        );
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      setPayments(data || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch payments: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredPayments = useMemo(() => {
+    if (!searchTerm.trim()) return payments;
+    const term = searchTerm.toLowerCase();
+    return payments.filter(
+      p => p.suppliers?.name?.toLowerCase().includes(term) ||
+           p.status?.toLowerCase().includes(term)
+    );
+  }, [payments, searchTerm]);
+
+  const totals = useMemo(() => {
+    return {
+      totalPayments: filteredPayments.length,
+      totalAmount: filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0),
+      pending: filteredPayments.filter(p => p.status === "pending").length,
+      completed: filteredPayments.filter(p => p.status === "completed").length,
+    };
+  }, [filteredPayments]);
+
+  const exportToExcel = () => {
+    if (!filteredPayments.length) return toast.error("No payments to export");
+
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredPayments.map(p => ({
+        Supplier: p.suppliers?.name || "-",
+        Amount: p.amount,
+        Status: p.status,
+        Notes: p.notes || "-",
+        "Created By": p.created_by || "-",
+        "Date Added": new Date(p.created_at).toLocaleString(),
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Payments");
+    XLSX.writeFile(workbook, `payments_${new Date().toISOString()}.xlsx`);
+  };
+
+  if (!user) return <p className="p-6 text-gray-600">Loading user info...</p>;
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+      <Toaster position="top-right" />
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-700 flex items-center gap-2">
+            <FaMoneyBillWave /> Supplier Payments
+          </h1>
+          <Link
+            to="new"
+            className="bg-green-600 text-white px-4 py-2 rounded-xl hover:bg-green-700 flex items-center gap-2 shadow"
+          >
+            <FaPlus /> Add Payment
+          </Link>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 items-start sm:items-center mb-4">
+          {["all","today","week","month","year"].map(type => (
+            <button
+              key={type}
+              className={`px-3 py-1 rounded-xl ${filterType === type ? "bg-green-600 text-white" : "bg-white border"}`}
+              onClick={() => setFilterType(type)}
+            >
+              {type === "all" ? "All" :
+               type === "today" ? "Today" :
+               type === "week" ? "This Week" :
+               type === "month" ? "This Month" :
+               "This Year"}
+            </button>
+          ))}
+          <div className="flex gap-2 flex-wrap items-center">
+            <input type="date" value={customFrom} onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }} className="border px-2 py-1 rounded" />
+            <span>to</span>
+            <input type="date" value={customTo} onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }} className="border px-2 py-1 rounded" />
+          </div>
+
+          <button
+            onClick={exportToExcel}
+            className="bg-blue-600 text-white px-3 py-1 rounded-xl flex items-center gap-1 whitespace-nowrap"
+          >
+            <FaFileExcel /> Export Excel
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+          <div className="flex items-center w-full sm:w-1/3">
+            <FaSearch className="text-gray-400 mr-2" />
+            <input
+              type="text"
+              placeholder="Search by supplier or status..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+            />
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-sm">
+          <div className="bg-white rounded-2xl p-4 shadow text-center">
+            <p className="text-gray-500">Total Payments</p>
+            <p className="text-lg font-bold text-green-700">{totals.totalPayments}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-4 shadow text-center">
+            <p className="text-gray-500">Total Amount</p>
+            <p className="text-lg font-bold text-green-700">{totals.totalAmount.toLocaleString()}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-4 shadow text-center">
+            <p className="text-gray-500">Pending</p>
+            <p className="text-lg font-bold text-green-700">{totals.pending}</p>
+          </div>
+          <div className="bg-white rounded-2xl p-4 shadow text-center">
+            <p className="text-gray-500">Completed</p>
+            <p className="text-lg font-bold text-green-700">{totals.completed}</p>
+          </div>
+        </div>
+
+        {/* Table */}
+        {loading ? (
+          <p className="text-gray-600">Loading payments...</p>
+        ) : error ? (
+          <p className="text-red-600 font-semibold">{error}</p>
+        ) : payments.length === 0 ? (
+          <p className="text-gray-600">No payments found.</p>
+        ) : (
+          <div className="overflow-x-auto bg-white rounded-2xl shadow">
+            <table className="min-w-full border-collapse text-sm">
+              <thead className="bg-green-600 text-white text-xs uppercase tracking-wider">
+                <tr>
+                  <th className="px-3 py-2 text-left">Supplier</th>
+                  <th className="px-3 py-2 text-left">Amount</th>
+                  <th className="px-3 py-2 text-left">Status</th>
+                  <th className="px-3 py-2 text-left">Notes</th>
+                  <th className="px-3 py-2 text-left">Created By</th>
+                  <th className="px-3 py-2 text-left">Date Added</th>
+                  <th className="px-3 py-2 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPayments.map(p => (
+                  <tr key={p.id} className="border-b hover:bg-green-50 transition-colors">
+                    <td className="px-3 py-2 font-medium">{p.suppliers?.name || "-"}</td>
+                    <td className="px-3 py-2">{p.amount?.toLocaleString()}</td>
+                    <td className="px-3 py-2">{p.status}</td>
+                    <td className="px-3 py-2 truncate max-w-xs" title={p.notes}>{p.notes || "-"}</td>
+                    <td className="px-3 py-2">{p.created_by || "-"}</td>
+                    <td className="px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
+                    <td className="px-3 py-2 text-center">
+                      <Link to={`view/${p.id}`} className="bg-blue-100 text-blue-600 px-2 py-1 rounded-xl hover:bg-blue-200">
+                        View
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PaymentsIndex;

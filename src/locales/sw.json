@@ -1,0 +1,60 @@
+{
+  "hero": {
+    "slogan": "Digital Solutions for Health, Education, and Business Growth",
+    "btn_health": "Ajira Afya",
+    "btn_digital": "Ajira Huduma za Kidigitali",
+    "btn_sales": "Wakala wa Mauzo",
+    "btn_staff": "Staff",
+    "btn_contact": "Wasiliana Nasi"
+  },
+  "about": {
+    "title": "Kuhusu Sisi",
+    "text": "SHIBITALI ENTERPRISES LIMITED ni kampuni ya kidigitali na kijamii inayotoa huduma bunifu katika sekta za Afya, Elimu na Biashara. Tunajenga mifumo ya kisasa, tovuti, na suluhisho za kiteknolojia zinazorahisisha uendeshaji wa taasisi na biashara ndogo."
+  },
+  "services": {
+    "title": "Huduma Kuu Tunazotoa",
+    "items": {
+      "digital": {
+        "title": "Digital Solutions",
+        "text": "Web design, hosting, systems, mobile apps & branding."
+      },
+      "health": {
+        "title": "Health Management",
+        "text": "Kufungua, kusajili na kusimamia vituo vya afya."
+      },
+      "education": {
+        "title": "Education Management",
+        "text": "Kuanzisha na kusimamia taasisi za elimu."
+      }
+    }
+  },
+  "why": {
+    "title": "Kwa Nini Utuchague?",
+    "items": {
+      "modern": {
+        "title": "Ubunifu wa Kisasa",
+        "text": "Tunatumia teknolojia za kisasa kutoa huduma bora."
+      },
+      "online": {
+        "title": "Huduma Mtandaoni",
+        "text": "Tunatoa huduma popote ulipo, kwa njia ya mtandao."
+      },
+      "support": {
+        "title": "Msaada wa Haraka",
+        "text": "Timu yetu iko tayari kukusaidia muda wowote."
+      }
+    }
+  },
+  "value": {
+    "title": "Huduma Zetu Zinazotoa Thamani",
+    "read_more": "Soma Zaidi",
+    "read_less": "Funga Maelezo",
+    "slogan": "💡 Kauli Mbiu: “Digital Solutions for Health, Education, and Business Growth.”"
+  },
+  "cta": {
+    "title": "Tayari kwa kuanza safari ya kidigitali?",
+    "text": "Wasiliana nasi leo na tujenge suluhisho la pamoja kwa biashara yako. Tukuwezeshe kukua kidigitali kwa urahisi na haraka.",
+    "btn": "Wasiliana Nasi",
+    "copyright": "© {{year}} SHIBITALI ENTERPRISES LIMITED. Haki zote zimehifadhiwa."
+  }
+}
