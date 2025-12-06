@@ -9,8 +9,8 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "Pharmacy System",
-        short_name: "Pharmacy System",
+        name: "Business App",
+        short_name: "Business App",
         theme_color: "#10B981",
         background_color: "#ffffff",
         display: "standalone",
