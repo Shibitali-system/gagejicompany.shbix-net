@@ -179,17 +179,17 @@ return (
 
   {/* Card 1: Supplier Title + Tips + Button */}
   <InteractiveCard>
-    <h1 className="text-3xl md:text-4xl font-extrabold text-[#ef4444] tracking-tight text-center md:text-left">
+    <h1 className="text-3xl md:text-4xl font-extrabold text-[#2563EB] tracking-tight text-center md:text-left">
       {supplier.name}
     </h1>
     <p className="text-gray-600 text-sm sm:text-base mt-2 text-center md:text-left">
-      Manage supplier: view contact info, status, purchases, payments, and monthly analytics.
+      Simamia muuzaji: angalia maelezo ya mawasiliano, hali, ununuzi, malipo, na uchambuzi wa kila mwezi.
     </p>
     <Link
       to="../suppliers"
-      className="mt-3 bg-[#ef4444] hover:bg-[#d63a3a] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow"
+      className="mt-3 bg-[#2563EB] hover:bg-[#d63a3a] text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow"
     >
-      ← Back
+      ← Rudi
     </Link>
   </InteractiveCard>
 
@@ -197,8 +197,8 @@ return (
   <InteractiveCard>
     <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center w-full justify-center">
       <div className="flex items-center gap-2 whitespace-nowrap">
-        <Calendar className="text-[#ef4444]" />
-        <label>From:</label>
+        <Calendar className="text-[#2563EB]" />
+        <label>Kutoka:</label>
         <input
           type="date"
           className="border border-gray-300 rounded px-2 py-1"
@@ -207,8 +207,8 @@ return (
         />
       </div>
       <div className="flex items-center gap-2 whitespace-nowrap">
-        <Calendar className="text-[#ef4444]" />
-        <label>To:</label>
+        <Calendar className="text-[#2563EB]" />
+        <label>Hadi:</label>
         <input
           type="date"
           className="border border-gray-300 rounded px-2 py-1"
@@ -221,9 +221,9 @@ return (
           setPaymentsPage(1);
           fetchData();
         }}
-        className="bg-[#ef4444] hover:bg-[#d63a3a] text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
+        className="bg-[#2563EB] hover:bg-[#d63a3a] text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
       >
-        Apply
+        Tumia
       </button>
     </div>
   </InteractiveCard>
@@ -231,30 +231,30 @@ return (
   {/* Analytics Cards */}
   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <InteractiveCard>
-      <h3 className="font-semibold text-gray-700">Total Purchases</h3>
-      <p className="text-[#ef4444] font-bold">{totalPurchaseAmount.toLocaleString()} TZS</p>
+      <h3 className="font-semibold text-gray-700">Jumla ya Ununuzi</h3>
+      <p className="text-[#2563EB] font-bold">{totalPurchaseAmount.toLocaleString()} TZS</p>
     </InteractiveCard>
     <InteractiveCard>
-      <h3 className="font-semibold text-gray-700">Total Payments</h3>
-      <p className="text-[#ef4444] font-bold">{totalPaid.toLocaleString()} TZS</p>
+      <h3 className="font-semibold text-gray-700">Jumla ya Malipo</h3>
+      <p className="text-[#2563EB] font-bold">{totalPaid.toLocaleString()} TZS</p>
     </InteractiveCard>
     <InteractiveCard>
-      <h3 className="font-semibold text-gray-700">Balance</h3>
-      <p className="text-[#ef4444] font-bold">{balance.toLocaleString()} TZS</p>
+      <h3 className="font-semibold text-gray-700">Salio</h3>
+      <p className="text-[#2563EB] font-bold">{balance.toLocaleString()} TZS</p>
     </InteractiveCard>
   </div>
 
   {/* Purchases Table */}
   <InteractiveCard>
-    <h2 className="text-xl font-semibold text-gray-700 mb-3">Purchase History</h2>
+    <h2 className="text-xl font-semibold text-gray-700 mb-3">Historia ya Ununuzi</h2>
     <div className="overflow-x-auto w-full">
       <table className="min-w-full border border-gray-200 text-sm text-left">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-3 py-2 border">Date</th>
-            <th className="px-3 py-2 border">Invoice</th>
-            <th className="px-3 py-2 border">Total Amount</th>
-            <th className="px-3 py-2 border">Total Price</th>
+            <th className="px-3 py-2 border">Tarehe</th>
+            <th className="px-3 py-2 border">Ankara</th>
+            <th className="px-3 py-2 border">Jumla ya Kiasi</th>
+            <th className="px-3 py-2 border">Jumla ya Bei</th>
           </tr>
         </thead>
         <tbody>
@@ -269,7 +269,7 @@ return (
             ))
           ) : (
             <tr>
-              <td colSpan={4} className="text-center px-3 py-2 text-gray-500">No purchases found.</td>
+              <td colSpan={4} className="text-center px-3 py-2 text-gray-500">Hakuna ununuzi uliopatikana.</td>
             </tr>
           )}
         </tbody>
@@ -279,14 +279,14 @@ return (
 
   {/* Payments Table */}
   <InteractiveCard>
-    <h2 className="text-xl font-semibold text-gray-700 mb-3">Payments</h2>
+    <h2 className="text-xl font-semibold text-gray-700 mb-3">Malipo</h2>
     <div className="overflow-x-auto w-full">
       <table className="min-w-full border border-gray-200 text-sm text-left">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-3 py-2 border">Date</th>
-            <th className="px-3 py-2 border">Amount</th>
-            <th className="px-3 py-2 border">Status</th>
+            <th className="px-3 py-2 border">Tarehe</th>
+            <th className="px-3 py-2 border">Kiasi</th>
+            <th className="px-3 py-2 border">Hali</th>
           </tr>
         </thead>
         <tbody>
@@ -300,7 +300,7 @@ return (
             ))
           ) : (
             <tr>
-              <td colSpan={3} className="text-center px-3 py-2 text-gray-500">No payments found.</td>
+              <td colSpan={3} className="text-center px-3 py-2 text-gray-500">Hakuna malipo yaliyopatikana.</td>
             </tr>
           )}
         </tbody>
@@ -310,13 +310,13 @@ return (
 
   {/* Chart */}
   <InteractiveCard>
-    <h2 className="text-xl font-semibold text-gray-700 mb-3">Monthly Purchases Overview</h2>
+    <h2 className="text-xl font-semibold text-gray-700 mb-3">Muhtasari wa Ununuzi wa Kila Mwezi</h2>
     <ResponsiveContainer width="100%" height={250}>
       <BarChart data={monthlyPurchases}>
         <XAxis dataKey="month" />
         <YAxis />
         <Tooltip formatter={(v) => v.toLocaleString()} />
-        <Bar dataKey="total" fill="#ef4444" radius={[8, 8, 0, 0]} />
+        <Bar dataKey="total" fill="#2563EB" radius={[8, 8, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   </InteractiveCard>

@@ -30,7 +30,7 @@ const InputField = React.memo(({ label, value, onChange, type="text", placeholde
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+      className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
     />
   </div>
 ));
@@ -44,7 +44,7 @@ const NewCustomer = () => {
     email: "",
     phone: "",
     address: "",
-    type: "Pharmacy",
+    type: "Biashara",
   };
 
   const [newCustomerData, setNewCustomerData] = useState(initialCustomerData);
@@ -137,117 +137,156 @@ const NewCustomer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <Toaster position="top-right" />
+  <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <Toaster position="top-right" />
 
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
 
-        {/* CARD 1: Back + Title + Tips */}
-        <CustomCard>
-          <div className="flex items-center mb-3">
-            <Link
-              to="../customers"
-              className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline"
-            >
-              <FaArrowLeft /> Back to Customers
-            </Link>
+      {/* CARD 1: Back + Title + Tips */}
+      <CustomCard>
+        <div className="flex items-center mb-3">
+          <Link
+            to="../customers"
+            className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline"
+          >
+            <FaArrowLeft /> Rudi kwa Wateja
+          </Link>
+        </div>
+
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-[#2563EB]">
+          Ongeza Mteja Mpya
+        </h1>
+
+        <p className="text-gray-500 text-sm text-center mt-1">
+          Jaza taarifa zilizo hapa chini ili kuunda mteja mpya.
+        </p>
+      </CustomCard>
+
+      {/* FORM */}
+      <form
+        className="space-y-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleCreateCustomer();
+        }}
+      >
+        {/* CARD 2: CUSTOMER INFO */}
+        <CustomCard title="Taarifa za Mteja">
+          <div className="space-y-5 w-full">
+            <InputField
+              label="Jina *"
+              value={newCustomerData.name}
+              onChange={e =>
+                setNewCustomerData(prev => ({
+                  ...prev,
+                  name: e.target.value
+                }))
+              }
+              placeholder="Weka jina la mteja"
+            />
+            <InputField
+              label="Barua Pepe (hiari)"
+              type="email"
+              value={newCustomerData.email}
+              onChange={e =>
+                setNewCustomerData(prev => ({
+                  ...prev,
+                  email: e.target.value
+                }))
+              }
+              placeholder="Weka barua pepe"
+            />
+            <InputField
+              label="Namba ya Simu (hiari)"
+              value={newCustomerData.phone}
+              onChange={e =>
+                setNewCustomerData(prev => ({
+                  ...prev,
+                  phone: e.target.value
+                }))
+              }
+              placeholder="Weka namba ya simu"
+            />
+            <div className="w-full">
+              <label className="block font-semibold mb-1">
+                Anuani (hiari)
+              </label>
+              <textarea
+                placeholder="Weka anuani"
+                value={newCustomerData.address}
+                onChange={e =>
+                  setNewCustomerData(prev => ({
+                    ...prev,
+                    address: e.target.value
+                  }))
+                }
+                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              />
+            </div>
+            <div className="w-full">
+              <label className="block font-semibold mb-1">
+                Aina ya Mteja
+              </label>
+              <select
+                value={newCustomerData.type}
+                onChange={e =>
+                  setNewCustomerData(prev => ({
+                    ...prev,
+                    type: e.target.value
+                  }))
+                }
+                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              >
+                <option value="Biashara">Biashara</option>
+              </select>
+            </div>
           </div>
-
-          <h1 className="text-2xl sm:text-3xl font-bold text-center text-[#ef4444]">
-            Add New Customer
-          </h1>
-
-          <p className="text-gray-500 text-sm text-center mt-1">
-            Fill in the information below to create a new customer.
-          </p>
         </CustomCard>
 
-        {/* FORM */}
-        <form
-          className="space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleCreateCustomer();
-          }}
-        >
-          {/* CARD 2: CUSTOMER INFO */}
-          <CustomCard title="Customer Information">
-            <div className="space-y-5 w-full">
-              <InputField
-                label="Name *"
-                value={newCustomerData.name}
-                onChange={e => setNewCustomerData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="Enter customer name"
-              />
-              <InputField
-                label="Email (optional)"
-                type="email"
-                value={newCustomerData.email}
-                onChange={e => setNewCustomerData(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="Enter email"
-              />
-              <InputField
-                label="Phone (optional)"
-                value={newCustomerData.phone}
-                onChange={e => setNewCustomerData(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="Enter phone number"
-              />
-              <div className="w-full">
-                <label className="block font-semibold mb-1">Address (optional)</label>
-                <textarea
-                  placeholder="Enter address"
-                  value={newCustomerData.address}
-                  onChange={e => setNewCustomerData(prev => ({ ...prev, address: e.target.value }))}
-                  className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-                />
-              </div>
-              <div className="w-full">
-                <label className="block font-semibold mb-1">Customer Type</label>
-                <select
-                  value={newCustomerData.type}
-                  onChange={e => setNewCustomerData(prev => ({ ...prev, type: e.target.value }))}
-                  className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-                >
-                  
-                  <option value="Pharmacy">Pharmacy</option>
-                </select>
-              </div>
+        {/* CARD 3: OFFICE INFO */}
+        {sellerInfo && (
+          <CustomCard title="Taarifa za Ofisi">
+            <div className="space-y-1 text-sm text-gray-700">
+              <p>
+                <strong>Ofisi:</strong> {sellerInfo.office_name}
+              </p>
+              <p>
+                <strong>Aliyeingiza:</strong> {sellerInfo.name}
+              </p>
             </div>
           </CustomCard>
+        )}
 
-          {/* CARD 3: OFFICE INFO */}
-          {sellerInfo && (
-            <CustomCard title="Office Details">
-              <div className="space-y-1 text-sm text-gray-700">
-                <p><strong>Office:</strong> {sellerInfo.office_name}</p>
-                <p><strong>Entered By:</strong> {sellerInfo.name}</p>
-              </div>
-            </CustomCard>
-          )}
+        {/* CARD 4: ACTION BUTTONS */}
+        <CustomCard>
+          <div className="flex flex-col sm:flex-row gap-3 justify-between w-full">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#2563EB] text-white px-6 py-2 rounded-[4px] hover:bg-[#d63a3a] flex items-center justify-center gap-2 font-semibold"
+            >
+              {loading ? (
+                "Inahifadhi..."
+              ) : (
+                <>
+                  <FaUserPlus /> Hifadhi Mteja
+                </>
+              )}
+            </button>
+            <Link
+              to="../customers"
+              className="bg-gray-300 px-6 py-2 rounded-[4px] hover:bg-gray-400 flex items-center justify-center gap-2 font-semibold"
+            >
+              <FaTimes /> Ghairi
+            </Link>
+          </div>
+        </CustomCard>
 
-          {/* CARD 4: ACTION BUTTONS */}
-          <CustomCard>
-            <div className="flex flex-col sm:flex-row gap-3 justify-between w-full">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-[#ef4444] text-white px-6 py-2 rounded-[4px] hover:bg-[#d63a3a] flex items-center justify-center gap-2 font-semibold"
-              >
-                {loading ? "Creating..." : <><FaUserPlus /> Create Customer</>}
-              </button>
-              <Link
-                to="../customers"
-                className="bg-gray-300 px-6 py-2 rounded-[4px] hover:bg-gray-400 flex items-center justify-center gap-2 font-semibold"
-              >
-                <FaTimes /> Cancel
-              </Link>
-            </div>
-          </CustomCard>
-
-        </form>
-      </div>
+      </form>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default NewCustomer;

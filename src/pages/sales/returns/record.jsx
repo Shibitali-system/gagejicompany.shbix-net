@@ -258,7 +258,7 @@ const InfoCard = ({ title, value, valueColor }) => (
     style={{ willChange: "transform" }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -270,13 +270,13 @@ return (
       {/* Header Card with Tips */}
       <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-2">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
             <FaBoxOpen /> Record Returned Products
           </h1>
           <div className="flex items-center gap-2">
             <Link
               to="../sales/returns"
-              className="text-[#ef4444] hover:underline flex items-center gap-1 font-bold"
+              className="text-[#2563EB] hover:underline flex items-center gap-1 font-bold"
             >
               <FaArrowLeft /> Back to Returns List
             </Link>
@@ -323,7 +323,7 @@ return (
             placeholder="Search sale by ID or customer..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
 
@@ -341,7 +341,7 @@ return (
                   onClick={() => setSelectedSale(s.id)}
                 >
                   <p className="text-sm">
-                    <span className="font-bold text-[#ef4444]">#{s.id}</span> — {s.customer?.name || "No Customer"}
+                    <span className="font-bold text-[#2563EB]">#{s.id}</span> — {s.customer?.name || "No Customer"}
                   </p>
                 </div>
               ))
@@ -358,7 +358,7 @@ return (
           {products.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full border-collapse text-sm">
-                <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+                <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                   <tr>
                     <th className="px-3 py-2 text-left">Product</th>
                     <th className="px-3 py-2 text-left">Sold Qty</th>
@@ -381,7 +381,7 @@ return (
                           onChange={(e) =>
                             handleChange(p.product_id, "quantity", e.target.value)
                           }
-                          className="w-20 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                          className="w-20 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                         />
                       </td>
                       <td className="px-3 py-2">
@@ -392,7 +392,7 @@ return (
                             handleChange(p.product_id, "reason", e.target.value)
                           }
                           placeholder="Reason"
-                          className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                          className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                         />
                       </td>
                       <td className="px-3 py-2">
@@ -403,7 +403,7 @@ return (
                             handleChange(p.product_id, "comment", e.target.value)
                           }
                           placeholder="Comment"
-                          className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                          className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                         />
                       </td>
                     </tr>
@@ -420,7 +420,7 @@ return (
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className={`bg-[#ef4444] text-white px-6 py-2 rounded-xl shadow flex items-center gap-2 justify-center ml-auto transition ${
+              className={`bg-[#2563EB] text-white px-6 py-2 rounded-xl shadow flex items-center gap-2 justify-center ml-auto transition ${
                 submitting ? "opacity-70 cursor-not-allowed" : "hover:bg-[#e3342f]"
               }`}
             >

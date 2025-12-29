@@ -78,7 +78,7 @@ const InfoCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -90,54 +90,54 @@ return (
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-          <FaShoppingCart /> Sale Details
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaShoppingCart /> Maelezo ya Uzoaji
         </h1>
         <Link
           to="../sales"
-          className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline"
+          className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline"
         >
-          <FaArrowLeft /> Back to Sales List
+          <FaArrowLeft /> Rudi kwenye Orodha ya Mauzo
         </Link>
       </div>
 
       {/* Customer Info & Status */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div className="flex items-center gap-2">
-          <FaUser className="text-[#ef4444]" />
+          <FaUser className="text-[#2563EB]" />
           <div>
             <p className="font-semibold">{sale.customers?.name || "N/A"}</p>
-            <p className="text-sm text-gray-500">Email: {sale.customers?.email || "-"}</p>
-            <p className="text-sm text-gray-500">Phone: {sale.customers?.phone || "-"}</p>
+            <p className="text-sm text-gray-500">Barua Pepe: {sale.customers?.email || "-"}</p>
+            <p className="text-sm text-gray-500">Simu: {sale.customers?.phone || "-"}</p>
           </div>
         </div>
         <div className="flex flex-col sm:text-right text-sm text-gray-500 gap-1">
-          <span className={`px-2 py-1 rounded-full font-semibold text-sm inline-block ${statusColor || 'bg-[#fdeaea] text-[#ef4444]'}`}>
-            {sale.status || "Pending"}
+          <span className={`px-2 py-1 rounded-full font-semibold text-sm inline-block ${statusColor || 'bg-[#fdeaea] text-[#2563EB]'}`}>
+            {sale.status || "Inasubiri"}
           </span>
-          <p>Sale ID: <span className="font-semibold">{sale.id}</span></p>
-          <p>Date: <span className="font-semibold">{new Date(sale.created_at).toLocaleString()}</span></p>
+          <p>ID ya Uzoaji: <span className="font-semibold">{sale.id}</span></p>
+          <p>Tarehe: <span className="font-semibold">{new Date(sale.created_at).toLocaleString()}</span></p>
         </div>
       </div>
 
       {/* Analytics / Info Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6 text-sm">
-        <InfoCard title="Total Products" value={totalProducts} />
-        <InfoCard title="Unique Products" value={uniqueProducts} />
-        <InfoCard title="Subtotal" value={`${productSubtotal.toLocaleString()} TZS`} />
-        <InfoCard title="Total Discount" value={`${discountTotal.toLocaleString()} TZS`} />
+        <InfoCard title="Jumla ya Bidhaa" value={totalProducts} />
+        <InfoCard title="Bidhaa Zinazotofautiana" value={uniqueProducts} />
+        <InfoCard title="Jumla Ndogo" value={`${productSubtotal.toLocaleString()} TZS`} />
+        <InfoCard title="Jumla ya Punguzo" value={`${discountTotal.toLocaleString()} TZS`} />
       </div>
 
       {/* Products Table */}
       <div className="overflow-x-auto mb-6">
         <table className="min-w-full border-collapse text-sm">
-          <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+          <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
             <tr>
-              <th className="px-2 sm:px-3 py-2 text-left">Product</th>
-              <th className="px-2 sm:px-3 py-2 text-left">Price</th>
-              <th className="px-2 sm:px-3 py-2 text-left">Quantity</th>
-              <th className="px-2 sm:px-3 py-2 text-left">Discount %</th>
-              <th className="px-2 sm:px-3 py-2 text-right">Subtotal</th>
+              <th className="px-2 sm:px-3 py-2 text-left">Bidhaa</th>
+              <th className="px-2 sm:px-3 py-2 text-left">Bei</th>
+              <th className="px-2 sm:px-3 py-2 text-left">Kiasi</th>
+              <th className="px-2 sm:px-3 py-2 text-left">Punguzo %</th>
+              <th className="px-2 sm:px-3 py-2 text-right">Jumla Ndogo</th>
             </tr>
           </thead>
           <tbody>
@@ -158,19 +158,20 @@ return (
 
       {/* Actions */}
       <div className="flex justify-end gap-3 mb-4">
-        <Link to={`../sales/receipt/${sale.id}`} className="flex items-center gap-1 px-4 py-2 bg-[#ef4444] text-white rounded-xl hover:bg-[#e03636] shadow">
-          <FaReceipt /> Receipt
+        <Link to={`../sales/receipt/${sale.id}`} className="flex items-center gap-1 px-4 py-2 bg-[#2563EB] text-white rounded-xl hover:bg-[#e03636] shadow">
+          <FaReceipt /> Risiti
         </Link>
       </div>
 
       {/* Grand Total */}
-      <div className="text-right text-xl sm:text-2xl font-bold text-[#ef4444]">
-        Grand Total: {sale.total_amount.toLocaleString()} TZS
+      <div className="text-right text-xl sm:text-2xl font-bold text-[#2563EB]">
+        Jumla Kuu: {sale.total_amount.toLocaleString()} TZS
       </div>
 
     </div>
   </div>
 );
+
 
 };
 

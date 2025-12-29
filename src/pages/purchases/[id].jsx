@@ -191,7 +191,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -243,78 +243,78 @@ const CustomCard = ({ title, children }) => (
 
     <div className="max-w-4xl mx-auto flex flex-col gap-4">
 
-      {/* HEADER CARD */}
+      {/* KADI YA KICHWA */}
       <CustomCard>
         <div className="flex items-center justify-between w-full">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-            <FaList /> Purchase Details
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+            <FaList /> Maelezo ya Manunuzi
           </h1>
 
           <Link
             to="../purchases"
-            className="text-[#ef4444] font-semibold hover:underline flex items-center gap-2"
+            className="text-[#2563EB] font-semibold hover:underline flex items-center gap-2"
           >
-            <FaArrowLeft /> Back
+            <FaArrowLeft /> Rudi
           </Link>
         </div>
       </CustomCard>
 
-      {/* DOWNLOAD PDF */}
+      {/* KADIRI YA PDF */}
       <CustomCard>
         <div className="flex justify-end w-full">
           <button
             onClick={handleDownloadPDF}
             disabled={downloading}
             className="
-              bg-[#ef4444] text-white px-5 py-2 rounded-[4px]
+              bg-[#2563EB] text-white px-5 py-2 rounded-[4px]
               shadow hover:bg-red-600 flex items-center gap-2
               transition-all hover:-translate-y-[2px]
             "
           >
             <FaDownload />
-            {downloading ? "Generating..." : "Download PDF"}
+            {downloading ? "Inatengenezwa..." : "Pakua PDF"}
           </button>
         </div>
       </CustomCard>
 
-      {/* SUPPLIER INFO */}
-      <CustomCard title="Supplier Information">
+      {/* INFO YA SUPPLIER */}
+      <CustomCard title="Taarifa za Supplier">
         <p className="text-gray-700 text-sm">{purchase.suppliers?.name || "-"}</p>
 
         {purchase.suppliers && (
           <div className="text-sm text-gray-600 space-y-1 mt-2">
-            <p>Contact: {purchase.suppliers.contact_person || "-"}</p>
-            <p>Phone: {purchase.suppliers.phone || "-"}</p>
+            <p>Mawasiliano: {purchase.suppliers.contact_person || "-"}</p>
+            <p>Simu: {purchase.suppliers.phone || "-"}</p>
             <p>Email: {purchase.suppliers.email || "-"}</p>
           </div>
         )}
       </CustomCard>
 
-      {/* PURCHASE INFO */}
-      <CustomCard title="Purchase Details">
+      {/* INFO YA MANUNUZI */}
+      <CustomCard title="Maelezo ya Manunuzi">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <div>
-            <h2 className="text-gray-600 text-sm font-medium">Invoice Number</h2>
+            <h2 className="text-gray-600 text-sm font-medium">Namba ya Vocha</h2>
             <p>{purchase.invoice_number}</p>
           </div>
 
           <div>
-            <h2 className="text-gray-600 text-sm font-medium">Purchase Date</h2>
+            <h2 className="text-gray-600 text-sm font-medium">Tarehe ya Manunuzi</h2>
             <p>{new Date(purchase.created_at).toLocaleString()}</p>
           </div>
         </div>
       </CustomCard>
 
-      {/* ITEMS TABLE */}
-      <CustomCard title="Purchased Items">
+      {/* JEDWALI LA BIDHAA */}
+      <CustomCard title="Bidhaa Zilizonunuliwa">
         <div className="overflow-x-auto w-full">
           <table className="min-w-full border border-gray-200 rounded-lg text-sm">
-            <thead className="bg-[#ef4444] text-white">
+            <thead className="bg-[#2563EB] text-white">
               <tr>
-                <th className="px-4 py-2 text-left">Product</th>
-                <th className="px-4 py-2 text-left">Qty</th>
-                <th className="px-4 py-2 text-left">Unit Price</th>
-                <th className="px-4 py-2 text-left">Total</th>
+                <th className="px-4 py-2 text-left">Bidhaa</th>
+                <th className="px-4 py-2 text-left">Idadi</th>
+                <th className="px-4 py-2 text-left">Bei ya Kila Moja</th>
+                <th className="px-4 py-2 text-left">Jumla</th>
               </tr>
             </thead>
 
@@ -332,8 +332,8 @@ const CustomCard = ({ title, children }) => (
             </tbody>
 
             <tfoot>
-              <tr className="bg-gray-100 font-bold text-[#ef4444]">
-                <td className="px-4 py-2 text-right" colSpan={3}>TOTAL</td>
+              <tr className="bg-gray-100 font-bold text-[#2563EB]">
+                <td className="px-4 py-2 text-right" colSpan={3}>JUMLA YA KIWANGO</td>
                 <td className="px-4 py-2 text-lg">
                   {totalAmount.toLocaleString()}
                 </td>
@@ -343,38 +343,38 @@ const CustomCard = ({ title, children }) => (
         </div>
       </CustomCard>
 
-      {/* ACTION BUTTONS */}
+      {/* VITENDO */}
       <CustomCard>
         <div className="flex flex-wrap gap-2">
 
-          {/* Edit */}
+          {/* Hariri */}
           <Link
             to={`../purchases/edit/${id}`}
             className="
-              bg-[#ef4444] text-white px-6 py-2 rounded-[4px]
+              bg-[#2563EB] text-white px-6 py-2 rounded-[4px]
               flex items-center gap-2 shadow hover:bg-red-600
               transition-all hover:-translate-y-[2px]
             "
           >
             <FaEdit />
-            Edit Purchase
+            Hariri Manunuzi
           </Link>
 
-          {/* History */}
+          {/* Historia */}
           <Link
             to={`../purchases/history/${id}`}
             className="
-              bg-white border border-[#ef4444] text-[#ef4444]
+              bg-white border border-[[#2563EB] text-[#2563EB]
               px-6 py-2 rounded-[4px] flex items-center gap-2
               hover:bg-red-50
               transition-all hover:-translate-y-[2px]
             "
           >
             <FaHistory />
-            View History
+            Angalia Historia
           </Link>
 
-          {/* Close */}
+          {/* Funga */}
           <Link
             to="../purchases"
             className="
@@ -384,7 +384,7 @@ const CustomCard = ({ title, children }) => (
             "
           >
             <FaTimes />
-            Close
+            Funga
           </Link>
 
         </div>
@@ -393,6 +393,7 @@ const CustomCard = ({ title, children }) => (
     </div>
   </div>
 );
+
 
 };
 

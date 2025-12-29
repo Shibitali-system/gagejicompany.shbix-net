@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { FaUser } from "react-icons/fa";
+import { 
+  FaMoneyBillWave, FaWallet, FaChartLine, FaBoxes, FaShoppingCart, 
+  FaExclamationTriangle, FaUser 
+} from "react-icons/fa";
 import { supabase } from "../../supabaseClient";
+import { useNavigate } from "react-router-dom";
+
 
 const Dashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showExpiredModal, setShowExpiredModal] = useState(false);
+  const navigate = useNavigate();
   const [totals, setTotals] = useState({
     totalSales: 0,
     totalPurchaseForSales: 0,
@@ -34,10 +40,12 @@ const Dashboard = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        // ====== Auth ======
         const { data: authData } = await supabase.auth.getUser();
         const userId = authData?.user?.id;
         if (!userId) return;
 
+        // ====== Fetch system user or employee ======
         let systemUser =
           (await safeFetch("systems_users", q => q.eq("auth_user_id", userId)).then(d => d[0])) || null;
 
@@ -63,6 +71,7 @@ const Dashboard = () => {
           office_name: systemUser.office_name,
         });
 
+        // ====== Subscription ======
         const { data: subs } = await supabase
           .from("subscriptions")
           .select("*")
@@ -73,13 +82,23 @@ const Dashboard = () => {
 
         if (subs) {
           setSubscription(subs);
-          if (subs.usagedays <= 0) setShowExpiredModal(true);
+
+          // Show modal if expired or payment pending
+          const isExpired = subs.usagedays <= 0;
+          const isPending = subs.status === "pending";
+          if (isExpired || isPending) {
+            setShowExpiredModal(true);
+          }
         }
 
+        // ====== Date Range ======
         const today = new Date();
-        const fromDate = new Date(today); fromDate.setHours(0,0,0,0);
-        const toDate = new Date(today); toDate.setHours(23,59,59,999);
+        const fromDate = new Date(today);
+        fromDate.setHours(0, 0, 0, 0);
+        const toDate = new Date(today);
+        toDate.setHours(23, 59, 59, 999);
 
+        // ====== Total Sales ======
         const salesData = await safeFetch("sales", q =>
           q.eq("office_id", systemUser.office_id)
             .gte("created_at", fromDate.toISOString())
@@ -87,6 +106,7 @@ const Dashboard = () => {
         );
         const totalSales = salesData.reduce((sum, s) => sum + Number(s.total_amount || 0), 0);
 
+        // ====== Total Purchase for Sold Products ======
         let totalPurchaseForSales = 0;
         const saleIds = salesData.map(s => s.id);
         if (saleIds.length > 0) {
@@ -101,6 +121,7 @@ const Dashboard = () => {
           }
         }
 
+        // ====== Total Expenses ======
         const expensesData = await safeFetch("systems_expenses", q =>
           q.eq("office_id", systemUser.office_id)
             .gte("created_at", fromDate.toISOString())
@@ -108,6 +129,7 @@ const Dashboard = () => {
         );
         const totalExpenses = expensesData.reduce((sum, e) => sum + Number(e.amount || 0), 0);
 
+        // ====== Total Purchases ======
         const purchasesAll = await safeFetch("purchases", q => q.eq("office_id", systemUser.office_id));
         const purchasesData = purchasesAll.filter(p => {
           const purchaseDate = new Date(p.date);
@@ -115,8 +137,10 @@ const Dashboard = () => {
         });
         const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amount || 0), 0);
 
+        // ====== Low Stock ======
         const lowStock = await safeFetch("products", q => q.eq("office_id", systemUser.office_id).lte("stock", 5));
 
+        // ====== Overdue Billing ======
         const now = new Date().toISOString();
         const billingData = await safeFetch("billing", q =>
           q.eq("office_id", systemUser.office_id)
@@ -149,64 +173,147 @@ const Dashboard = () => {
   if (loading) return <div className="p-6 text-center text-gray-600">Loading dashboard...</div>;
 
   const handleMakePayment = () => {
-    window.location.href = "/subscriptions";
+    window.location.href = "/dashboard/subscription";
   };
 
-  const SummaryCard = ({ title, value }) => (
-    <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 flex flex-col items-center justify-center transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] font-sans w-full">
+  // ====== Summary Card ======
+  const SummaryCard = ({ title, value, valueColor, icon: Icon }) => (
+    <div
+      className={`
+        bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4
+        flex flex-col items-center justify-center
+        transition-all duration-200
+        hover:bg-[#fdfdfd]
+        transform hover:-translate-y-[2px] active:translate-y-[1px]
+        shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+        font-sans
+        w-full
+      `}
+      style={{ willChange: "transform" }}
+    >
       <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-      <p className="text-xl font-semibold mt-1" style={{ color: "#2563EB" }}>{value}</p>
+      <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
     </div>
   );
 
-  return (
-    <div className="min-h-full p-6 space-y-6 relative">
+  
+return (
+  <div className="min-h-full p-4 sm:p-6 space-y-6 relative">
 
-      {showExpiredModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
-            <h2 className="text-2xl font-bold mb-4" style={{ color: "#2563EB" }}>Your subscription has expired!</h2>
-            <p className="mb-6 text-gray-700">Please contact the admin or make a payment to continue using the system.</p>
-            <div className="flex flex-col gap-4">
-              <a href="https://wa.me/255774737736" target="_blank" rel="noopener noreferrer" className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-[#1e40af] transition">
-                Contact Admin
-              </a>
-              <button onClick={handleMakePayment} className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-[#1e40af] transition">
-                Make Payment
-              </button>
-            </div>
+    {/* Inline animation style (page hii tu) */}
+    <style>{`
+      @keyframes gradient-x {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .animate-gradient-x {
+        background-size: 300% 300%;
+        animation: gradient-x 3s ease infinite;
+      }
+    `}</style>
+
+    {/* Expired / Pending Modal */}
+    {showExpiredModal && subscription && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+        <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-[#2563EB]">
+            {subscription.usagedays <= 0
+              ? "Your subscription has expired!"
+              : "Payment Pending!"}
+          </h2>
+          <p className="mb-6 text-gray-700 text-sm sm:text-base">
+            {subscription.usagedays <= 0
+              ? "Please renew your subscription to continue using the system."
+              : "Please complete your payment to activate your subscription."}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://wa.me/255774737736"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition"
+            >
+              Contact Admin
+            </a>
+            <button
+              onClick={handleMakePayment}
+              className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition"
+            >
+              Make Payment
+            </button>
           </div>
+        </div>
+      </div>
+    )}
+
+    {/* Dashboard Header */}
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 relative">
+
+      <div className="flex-1">
+        <h2 className="text-xl sm:text-2xl text-[#2563EB] flex items-center gap-2 flex-wrap">
+          <FaUser className="text-[#2563EB]" />
+          Welcome, <span className="font-semibold">{userInfo?.customer_name || "User"}</span>
+        </h2>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mt-1">
+          Dashboard Overview - {userInfo?.office_name || "Office"}
+        </h1>
+      </div>
+
+      {/* Subscription Card */}
+      {subscription && (
+        <div className="relative w-full sm:w-auto max-w-xs rounded-xl p-4 sm:p-6 flex flex-col items-center bg-gray-100 text-[#2563EB] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">
+
+         {/* Floating Install App Button */}
+<button
+  onClick={() => navigate("/dashboard/install/installinstructions")}
+  className="
+    fixed bottom-6 right-6 z-50
+    px-6 py-4
+    text-sm sm:text-base font-extrabold
+    rounded-full
+    text-black
+    bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500
+    shadow-[0_0_25px_rgba(250,204,21,0.9)]
+    animate-pulse
+    hover:scale-110
+    transition-all duration-300
+    focus:outline-none
+  "
+>
+  ✨ Install App
+</button>
+
+
+
+
+          <p className="text-sm font-bold">Subscription Days Remaining</p>
+          <p className="text-2xl sm:text-3xl font-bold">{subscription.usagedays}</p>
+          <p className={`mt-1 text-sm font-semibold ${
+            subscription.status === "completed" ? "text-green-600" : "text-red-600"
+          }`}>
+            Status: {subscription.status}
+          </p>
         </div>
       )}
-
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 relative">
-        <div>
-          <h2 className="text-xl flex items-center gap-2" style={{ color: "#2563EB" }}><FaUser style={{ color: "#2563EB" }} /> Welcome, <span className="font-semibold">{userInfo?.customer_name || "User"}</span></h2>
-          <h1 className="text-3xl font-bold relative z-10" style={{ color: "#2563EB" }}>Dashboard Overview - {userInfo?.office_name || "Office"}</h1>
-        </div>
-
-        {subscription && (
-          <div className="absolute -top-10 right-0 md:right-4 w-full max-w-xs mx-auto md:mx-0 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] rounded-[12px] p-6 flex items-center justify-between bg-gray-100" style={{ color: "#2563EB" }}>
-            <div className="flex flex-col">
-              <p className="text-sm font-bold">Subscription Days Remaining</p>
-              <p className="text-2xl font-bold">{subscription.usagedays}</p>
-            </div>
-            <FaUser className="text-4xl opacity-80" />
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 text-sm">
-        <SummaryCard title="Total Sales" value={totals.totalSales.toLocaleString()} />
-        <SummaryCard title="Purchase Cost (Sold)" value={totals.totalPurchaseForSales.toLocaleString()} />
-        <SummaryCard title="Total Expenses" value={totals.totalExpenses.toLocaleString()} />
-        <SummaryCard title="Profit" value={totals.profit.toLocaleString()} />
-        <SummaryCard title="Total Purchases" value={totals.totalPurchases.toLocaleString()} />
-        <SummaryCard title="Low Stock Items" value={totals.lowStockCount} />
-        <SummaryCard title="Overdue Billing" value={totals.overdueCount} />
-      </div>
     </div>
-  );
+
+    {/* Summary Cards Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 text-sm">
+      <SummaryCard title="Total Sales" value={totals.totalSales.toLocaleString()} />
+      <SummaryCard title="Purchase Cost (Sold)" value={totals.totalPurchaseForSales.toLocaleString()} />
+      <SummaryCard title="Total Expenses" value={totals.totalExpenses.toLocaleString()} />
+      <SummaryCard title="Profit" value={totals.profit.toLocaleString()} />
+      <SummaryCard title="Total Purchases" value={totals.totalPurchases.toLocaleString()} />
+      <SummaryCard title="Low Stock Items" value={totals.lowStockCount} />
+      <SummaryCard title="Overdue Billing" value={totals.overdueCount} />
+    </div>
+
+  </div>
+);
+
+
 };
 
 export default Dashboard;

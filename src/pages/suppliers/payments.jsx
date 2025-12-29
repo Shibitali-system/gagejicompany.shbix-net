@@ -201,7 +201,7 @@ useEffect(() => {
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -209,38 +209,40 @@ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
     <div className="max-w-4xl mx-auto">
+
       {/* Card Container */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[8px] shadow-lg p-6 sm:p-8 space-y-6">
-        
+      <div className="bg-white border border-[#e5e7eb] rounded-lg shadow-lg p-4 sm:p-6 md:p-8 space-y-6">
+
         {/* Back */}
         <Link
           to="../suppliers/paymentindex"
-          className="flex items-center gap-2 text-[#ef4444] font-semibold hover:underline text-sm"
+          className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline text-sm sm:text-base"
         >
-          <FaArrowLeft /> Back to Supplier
+          <FaArrowLeft /> Rudi kwa Muuzaji
         </Link>
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Supplier Payments</h1>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#2563EB]">Malipo ya Muuzaji</h1>
             <p className="text-gray-600 text-sm sm:text-base">
-              Record payments for suppliers and track invoices easily.
+              Rekodi malipo kwa muuzaji na fuatilia ankara kwa urahisi.
             </p>
           </div>
         </div>
 
         {/* Payment Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
           {/* Select Supplier */}
-          <div>
-            <label className="block font-semibold mb-1">Select Supplier *</label>
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-sm sm:text-base">Chagua Muuzaji *</label>
             <select
               value={selectedSupplier}
               onChange={e => setSelectedSupplier(e.target.value)}
-              className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
             >
-              <option value="">-- Select Supplier --</option>
+              <option value="">-- Chagua Muuzaji --</option>
               {suppliers.map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
@@ -248,77 +250,77 @@ return (
           </div>
 
           {/* Select Invoice */}
-          <div>
-            <label className="block font-semibold mb-1">Invoice (optional)</label>
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-sm sm:text-base">Ankara (hiari)</label>
             <select
               value={selectedInvoice}
               onChange={e => setSelectedInvoice(e.target.value)}
-              className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
               disabled={!invoices.length}
             >
-              <option value="">-- Select Invoice --</option>
+              <option value="">-- Chagua Ankara --</option>
               {invoices.map(inv => (
                 <option key={inv.id} value={inv.id}>
-                  {inv.invoice_number} | {inv.total_amount} TZS
+                  {inv.invoice_number} | {inv.total_amount.toLocaleString()} TZS
                 </option>
               ))}
             </select>
             {selectedInvoice && (
-              <p className="text-sm mt-1 text-gray-600">
-                Total Paid: {totalInvoicePaid.toLocaleString()} TZS | Balance: {invoiceBalance.toLocaleString()} TZS
+              <p className="text-xs sm:text-sm mt-1 text-gray-600">
+                Jumla Iliyolipwa: {totalInvoicePaid.toLocaleString()} TZS | Salio: {invoiceBalance.toLocaleString()} TZS
               </p>
             )}
           </div>
 
           {/* Amount */}
-          <div>
-            <label className="block font-semibold mb-1">Amount (TZS) *</label>
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-sm sm:text-base">Kiasi (TZS) *</label>
             <input
               type="number"
               name="amount"
               value={paymentData.amount}
               onChange={handleChange}
-              placeholder="Enter amount"
-              className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+              placeholder="Ingiza kiasi"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
 
           {/* Status */}
-          <div>
-            <label className="block font-semibold mb-1">Status</label>
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-sm sm:text-base">Hali</label>
             <select
               name="status"
               value={paymentData.status}
               onChange={handleChange}
-              className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
             >
-              <option value="pending">Pending</option>
-              <option value="completed">Completed</option>
+              <option value="pending">Inasubiri</option>
+              <option value="completed">Imekamilika</option>
             </select>
           </div>
 
           {/* Notes */}
-          <div className="col-span-2">
-            <label className="block font-semibold mb-1">Notes</label>
+          <div className="col-span-1 md:col-span-2">
+            <label className="block font-semibold mb-1 text-sm sm:text-base">Maelezo</label>
             <textarea
               name="notes"
               value={paymentData.notes}
               onChange={handleChange}
-              placeholder="Additional notes"
-              className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+              placeholder="Maelezo ya ziada"
+              className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
               rows={2}
             />
           </div>
 
           {/* Submit Button */}
-          <div className="col-span-2 flex justify-center mt-4">
+          <div className="col-span-1 md:col-span-2 flex justify-center mt-2">
             <button
               type="submit"
               disabled={loading}
-              className="flex items-center gap-2 bg-[#ef4444] hover:bg-[#d63a3a] text-white font-semibold px-6 py-3 rounded-[4px] shadow-md transition-transform hover:scale-105"
+              className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#d63a3a] text-white font-semibold px-6 py-3 rounded-md shadow-md transition-transform hover:scale-105 w-full md:w-auto justify-center"
             >
-              <FaSave /> {loading ? "Saving..." : "Save Payment"}
+              <FaSave /> {loading ? "Inaendelea kuhifadhi..." : "Hifadhi Malipo"}
             </button>
           </div>
         </form>
@@ -326,6 +328,8 @@ return (
     </div>
   </div>
 );
+
+
 
 };
 

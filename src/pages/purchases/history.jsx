@@ -94,7 +94,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -133,12 +133,12 @@ const CustomCard = ({ title, children }) => (
         <div className="flex items-center justify-between w-full">
           <Link
             to={`../purchases/${id}`}
-            className="flex items-center gap-2 text-[#ef4444] font-semibold hover:underline"
+            className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline"
           >
             <IoArrowBack size={18} />
             Back
           </Link>
-          <h1 className="text-2xl font-bold text-[#ef4444]">Purchase Edit History</h1>
+          <h1 className="text-2xl font-bold text-[#2563EB]">Purchase Edit History</h1>
         </div>
       </CustomCard>
 

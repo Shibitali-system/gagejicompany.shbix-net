@@ -166,7 +166,7 @@ const EmployeeProfile = () => {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">{employee.name}</h1>
       <Link to="../employees">
-        <button className="bg-white border border-[#e5e7eb] text-[#ef4444] px-5 py-2 rounded-xl hover:bg-[#fdfdfd] transition-all shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">← Back</button>
+        <button className="bg-white border border-[#e5e7eb] text-[#2563EB] px-5 py-2 rounded-xl hover:bg-[#fdfdfd] transition-all shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">← Back</button>
       </Link>
     </div>
 
@@ -174,45 +174,45 @@ const EmployeeProfile = () => {
     <CustomCard>
       <div className="flex flex-col md:flex-row gap-4 items-center overflow-x-auto">
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
+          <Calendar className="text-[#2563EB]" />
           <label>From:</label>
           <input type="date" className="border border-[#e5e7eb] rounded px-2 py-1" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         </div>
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
+          <Calendar className="text-[#2563EB]" />
           <label>To:</label>
           <input type="date" className="border border-[#e5e7eb] rounded px-2 py-1" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
-        <button onClick={fetchEmployeeData} className="bg-[#ef4444] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap">Apply</button>
+        <button onClick={fetchEmployeeData} className="bg-[#2563EB] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap">Apply</button>
       </div>
     </CustomCard>
 
     {/* Analytics Summary */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <FormCard title="Today">
-        <p className="text-[#ef4444] font-bold">Sales: {todaySales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {todayCustomers}</p>
+        <p className="text-[#2563EB] font-bold">Sales: {todaySales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Customers: {todayCustomers}</p>
       </FormCard>
       <FormCard title="This Week">
-        <p className="text-[#ef4444] font-bold">Sales: {weekSales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {weekCustomers}</p>
+        <p className="text-[#2563EB] font-bold">Sales: {weekSales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Customers: {weekCustomers}</p>
       </FormCard>
       <FormCard title="This Month">
-        <p className="text-[#ef4444] font-bold">Sales: {monthSales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {monthCustomers}</p>
+        <p className="text-[#2563EB] font-bold">Sales: {monthSales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Customers: {monthCustomers}</p>
       </FormCard>
     </div>
 
     {/* Profile Summary */}
     <CustomCard>
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-        <div className="flex-shrink-0 bg-[#ef4444]/20 rounded-full p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center text-[#ef4444] text-3xl font-bold uppercase shadow-inner">
+        <div className="flex-shrink-0 bg-[#2563EB]/20 rounded-full p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center text-[#2563EB] text-3xl font-bold uppercase shadow-inner">
           {employee.name?.charAt(0)}
         </div>
         <div>
           <h2 className="text-xl md:text-2xl font-semibold text-gray-800">{employee.name}</h2>
           <p className="text-gray-500">{employee.email}</p>
-          <p className="text-sm text-[#ef4444] font-medium mt-1">{employee.active ? "🟢 Active" : "🔴 Inactive"}</p>
+          <p className="text-sm text-[#2563EB] font-medium mt-1">{employee.active ? "🟢 Active" : "🔴 Inactive"}</p>
         </div>
       </div>
     </CustomCard>
@@ -220,11 +220,11 @@ const EmployeeProfile = () => {
     {/* Basic Info */}
     <FormCard title="Basic Information">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex items-center gap-3"><Mail className="text-[#ef4444]" /> <span>{employee.email}</span></div>
-        <div className="flex items-center gap-3"><Phone className="text-[#ef4444]" /> <span>{employee.phone || "-"}</span></div>
-        <div className="flex items-center gap-3"><User className="text-[#ef4444]" /> <span>{employee.role}</span></div>
-        <div className="flex items-center gap-3"><Briefcase className="text-[#ef4444]" /> <span>{employee.position || "Not set"}</span></div>
-        <div className="flex items-center gap-3"><Lock className="text-[#ef4444]" /> <span>{employee.active ? "Active" : "Inactive"}</span></div>
+        <div className="flex items-center gap-3"><Mail className="text-[#2563EB]" /> <span>{employee.email}</span></div>
+        <div className="flex items-center gap-3"><Phone className="text-[#2563EB]" /> <span>{employee.phone || "-"}</span></div>
+        <div className="flex items-center gap-3"><User className="text-[#2563EB]" /> <span>{employee.role}</span></div>
+        <div className="flex items-center gap-3"><Briefcase className="text-[#2563EB]" /> <span>{employee.position || "Not set"}</span></div>
+        <div className="flex items-center gap-3"><Lock className="text-[#2563EB]" /> <span>{employee.active ? "Active" : "Inactive"}</span></div>
       </div>
     </FormCard>
 
@@ -273,7 +273,7 @@ const EmployeeProfile = () => {
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip formatter={(v) => v.toLocaleString()} />
-          <Bar dataKey="total" fill="#ef4444" radius={[4,4,0,0]} />
+          <Bar dataKey="total" fill="#2563EB" radius={[4,4,0,0]} />
         </BarChart>
       </ResponsiveContainer>
     </FormCard>

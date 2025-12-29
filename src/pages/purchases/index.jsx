@@ -307,7 +307,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -333,94 +333,92 @@ const SummaryCard = ({ title, value, valueColor }) => (
 
   if (loadingUser) return <p className="p-6 text-gray-600">Loading user data...</p>;
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
     <div className="max-w-7xl mx-auto space-y-6">
 
       <div className="w-full">
-  {/* Card containing Title, Tips, and Header Actions */}
-  <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-6 flex flex-col gap-4 items-start">
-    
-    {/* Title and Instructions */}
-    <div className="flex flex-col gap-2 w-full">
-      <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Purchases Records</h1>
+        {/* Kadi yenye Kichwa, Maelezo, na Vitendo vya Kichwa */}
+        <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-6 flex flex-col gap-4 items-start">
+          
+          {/* Kichwa na Maelekezo */}
+          <div className="flex flex-col gap-2 w-full">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Rekodi za Manunuzi</h1>
 
-      <p className="text-gray-700 text-sm">
-        View all purchase invoices, search by invoice, filter by date, and manage records.
-        Admins can delete selected purchases or add new ones. Use actions to view or return purchases.
-      </p>
-    </div>
+            <p className="text-gray-700 text-sm">
+              Angalia vocha zote za manunuzi, tafuta kwa namba ya vocha, changanya kwa tarehe, na simamia rekodi. 
+              Watumiaji wa admin wanaweza kufuta manunuzi yaliyochaguliwa au kuongeza mapya. 
+              Tumia vitendo ili kuangalia au kurudisha manunuzi.
+            </p>
+          </div>
 
-    {/* Header Actions – left aligned */}
-    <div className="flex flex-wrap gap-2 w-full">
-      {/* Delete Selected – ADMIN ONLY */}
-      {user?.role === "admin" && (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button
-              disabled={selectedPurchases.length === 0}
-              className={`px-4 py-2 rounded-xl flex items-center gap-2
-              ${selectedPurchases.length === 0
-                ? "bg-red-300 cursor-not-allowed"
-                : "bg-[#ef4444] hover:bg-red-700 text-white"
-              }`}
+          {/* Vitendo vya Kichwa – upande wa kushoto */}
+          <div className="flex flex-wrap gap-2 w-full">
+            {/* Futa Yaliyote Yaliyochaguliwa – ADMIN PEKEE */}
+            {user?.role === "admin" && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button
+                    disabled={selectedPurchases.length === 0}
+                    className={`px-4 py-2 rounded-xl flex items-center gap-2
+                    ${selectedPurchases.length === 0
+                      ? "bg-red-300 cursor-not-allowed"
+                      : "bg-[#2563EB] hover:bg-red-700 text-white"
+                    }`}
+                  >
+                    <FaTrash /> Futa Yaliyote Yaliyochaguliwa
+                    {selectedPurchases.length > 0 && (
+                      <span className="bg-white text-[#2563EB] px-2 py-0.5 rounded-lg text-xs font-semibold">
+                        {selectedPurchases.length}
+                      </span>
+                    )}
+                  </button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent className="rounded-2xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-[#2563EB] flex items-center gap-2">
+                      <FaTrash /> Thibitisha Kufutwa
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Futa kabisa manunuzi {selectedPurchases.length}? Hatua hii haiwezi kubadilishwa.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-xl">
+                      Ghairi
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteSelected}
+                      className="bg-[#2563EB] text-white rounded-xl hover:bg-red-700"
+                    >
+                      Ndio, Futa
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
+            <Link
+              to="new"
+              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
             >
-              <FaTrash /> Delete Selected
-              {selectedPurchases.length > 0 && (
-                <span className="bg-white text-[#ef4444] px-2 py-0.5 rounded-lg text-xs font-semibold">
-                  {selectedPurchases.length}
-                </span>
-              )}
+              <FaPlus /> Manunuzi Mpya
+            </Link>
+
+            <button
+              onClick={exportToExcel}
+              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
+            >
+              <FaFileExcel /> Hamisha Excel
             </button>
-          </AlertDialogTrigger>
+          </div>
+        </div>
+      </div>
 
-          <AlertDialogContent className="rounded-2xl">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-[#ef4444] flex items-center gap-2">
-                <FaTrash /> Confirm Deletion
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Permanently delete {selectedPurchases.length} purchase(s)? This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel className="rounded-xl">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDeleteSelected}
-                className="bg-[#ef4444] text-white rounded-xl hover:bg-red-700"
-              >
-                Yes, Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      <Link
-        to="new"
-        className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
-      >
-        <FaPlus /> New Purchase
-      </Link>
-
-      <button
-        onClick={exportToExcel}
-        className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
-      >
-        <FaFileExcel /> Export Excel
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
-
-      {/* Filters */}
+      {/* Vichujio */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
         <div className="flex flex-wrap gap-2 mb-2 sm:mb-0">
           {["today", "week", "month", "year"].map((f) => (
@@ -428,10 +426,10 @@ const SummaryCard = ({ title, value, valueColor }) => (
               key={f}
               onClick={() => setFilterType(f)}
               className={`px-3 py-1 rounded-xl ${
-                filterType === f ? "bg-[#ef4444] text-white" : "bg-white border"
+                filterType === f ? "bg-[#2563EB] text-white" : "bg-white border"
               }`}
             >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {f === "today" ? "Leo" : f === "week" ? "Wiki Hii" : f === "month" ? "Mwezi Huu" : "Mwaka Huu"}
             </button>
           ))}
         </div>
@@ -446,7 +444,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
             }}
             className="border px-2 py-1 rounded"
           />
-          <span>to</span>
+          <span>hadi</span>
           <input
             type="date"
             value={customTo}
@@ -462,23 +460,23 @@ const SummaryCard = ({ title, value, valueColor }) => (
           <FaSearch className="text-gray-400 mr-2" />
           <input
             type="text"
-            placeholder="Search by invoice..."
+            placeholder="Tafuta kwa namba ya vocha..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
       </div>
 
-      {/* Table */}
+      {/* Jedwali la Manunuzi */}
       {loading ? (
-        <p className="text-gray-600">Loading purchases...</p>
+        <p className="text-gray-600">Inapakia manunuzi...</p>
       ) : purchases.length === 0 ? (
-        <p className="text-gray-600">No purchases found.</p>
+        <p className="text-gray-600">Hakuna manunuzi yaliyopatikana.</p>
       ) : (
         <div className="overflow-x-auto bg-white rounded-[12px] shadow">
           <table className="min-w-full text-sm">
-            <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
               <tr>
                 {user?.role === "admin" && (
                   <th className="px-2 py-2 text-center">
@@ -489,12 +487,12 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     />
                   </th>
                 )}
-                <th className="px-2 py-2">Invoice #</th>
-                <th className="px-2 py-2">Supplier</th>
-                <th className="px-2 py-2">Created By</th>
-                <th className="px-2 py-2">Total Amount</th>
-                <th className="px-2 py-2">Date</th>
-                <th className="px-2 py-2 text-center">Actions</th>
+                <th className="px-2 py-2">Vocha #</th>
+                <th className="px-2 py-2">Msuppliers</th>
+                <th className="px-2 py-2">Aliyeingiza</th>
+                <th className="px-2 py-2">Jumla ya Kiasi</th>
+                <th className="px-2 py-2">Tarehe</th>
+                <th className="px-2 py-2 text-center">Vitendo</th>
               </tr>
             </thead>
 
@@ -526,14 +524,14 @@ const SummaryCard = ({ title, value, valueColor }) => (
                       to={`${p.id}`}
                       className="text-blue-600 hover:underline flex items-center gap-1"
                     >
-                      <FaEye /> View
+                      <FaEye /> Angalia
                     </Link>
 
                     <Link
                       to={`returns?id=${p.id}`}
                       className="text-red-600 hover:underline flex items-center gap-1"
                     >
-                      <FaUndo /> Return
+                      <FaUndo /> Rudisha
                     </Link>
                   </td>
                 </tr>

@@ -206,7 +206,7 @@ const filteredSales = sales.filter((s) =>
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -237,8 +237,8 @@ return (
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-4">
           
           {/* TITLE */}
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-            <FaList /> Returned Products
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+            <FaList /> Bidhaa Zilirudishwa
           </h1>
 
           {/* ACTION BUTTONS */}
@@ -247,16 +247,16 @@ return (
             {/* BACK BUTTON */}
             <Link
               to="../sales"
-              className="px-4 py-2 rounded-xl shadow bg-[#ef4444] text-white hover:bg-[#dc2626] flex items-center gap-2 transition"
+              className="px-4 py-2 rounded-xl shadow bg-[#2563EB] text-white hover:bg-[#dc2626] flex items-center gap-2 transition"
             >
-              <FaArrowLeft /> Back to Sales
+              <FaArrowLeft /> Rudi kwenye Mauzo
             </Link>
 
-            {/* EXPORT CSV (white button red text) */}
+            {/* EXPORT CSV */}
             <button
               onClick={() => {
-                if (!returns.length) return toast.error("No data to export");
-                const header = ["Supplier", "Product", "Quantity", "Price", "Amount", "Reason", "Comment", "Status", "Seller", "Date"];
+                if (!returns.length) return toast.error("Hakuna data ya kusafirisha");
+                const header = ["Supplier", "Bidhaa", "Kiasi", "Bei", "Jumla", "Sababu", "Maoni", "Hali", "Muuzaji", "Tarehe"];
                 const rows = returns.map(r => {
                   const p = productsMap[r.product_id] || {};
                   return [
@@ -277,20 +277,20 @@ return (
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = `sale_returns_${Date.now()}.csv`;
+                a.download = `bidhaa_rudishwa_${Date.now()}.csv`;
                 a.click();
               }}
-              className="px-4 py-2 rounded-xl shadow bg-white border border-[#ef4444] text-[#ef4444] hover:bg-[#fff1f1] flex items-center gap-2 transition"
+              className="px-4 py-2 rounded-xl shadow bg-white border border-[#2563EB] text-[#2563EB] hover:bg-[#fff1f1] flex items-center gap-2 transition"
             >
-              <FaDownload /> Export CSV
+              <FaDownload /> Hamisha CSV
             </button>
 
             {/* RECORD RETURN BUTTON */}
             <Link
               to={`../sales/returns/record${saleId ? `?saleId=${saleId}` : ""}`}
-              className="px-4 py-2 rounded-xl shadow bg-[#ef4444] text-white hover:bg-[#dc2626] flex items-center gap-2 transition"
+              className="px-4 py-2 rounded-xl shadow bg-[#2563EB] text-white hover:bg-[#dc2626] flex items-center gap-2 transition"
             >
-              <FaPlus /> Record Return
+              <FaPlus /> Rekodi Kurudishwa
             </Link>
 
           </div>
@@ -299,21 +299,21 @@ return (
 
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
-        <SummaryCard title="Total Returns" value={returns.length} valueColor="text-[#ef4444]" />
-        <SummaryCard title="Total Quantity" value={totalQty} valueColor="text-[#ef4444]" />
-        <SummaryCard title="Total Amount" value={`TZS ${totalAmt.toLocaleString()}`} valueColor="text-[#ef4444]" />
+        <SummaryCard title="Jumla ya Kurudishwa" value={returns.length} valueColor="text-[#2563EB]" />
+        <SummaryCard title="Jumla ya Kiasi" value={totalQty} valueColor="text-[#2563EB]" />
+        <SummaryCard title="Jumla ya Pesa" value={`TZS ${totalAmt.toLocaleString()}`} valueColor="text-[#2563EB]" />
       </div>
 
       {/* FILTERS CARD */}
-      <CustomCard title="Filters">
+      <CustomCard title="Vichujio">
         <div className="w-full flex flex-wrap items-center gap-3">
 
           {/* SEARCH INPUT */}
-          <div className="flex items-center gap-2 border border-[#ef4444] rounded-xl px-3 py-2 w-full md:w-auto">
-            <FaSearch className="text-[#ef4444]" />
+          <div className="flex items-center gap-2 border border-[#2563EB] rounded-xl px-3 py-2 w-full md:w-auto">
+            <FaSearch className="text-[#2563EB]" />
             <input
               type="text"
-              placeholder="Search reason or comment..."
+              placeholder="Tafuta sababu au maoni..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               className="w-full outline-none"
@@ -324,13 +324,13 @@ return (
           <select
             value={filterType}
             onChange={e => setFilterType(e.target.value)}
-            className="border border-[#ef4444] rounded-xl px-3 py-2 text-[#ef4444] focus:ring-2 focus:ring-[#ef4444]"
+            className="border border-[#2563EB] rounded-xl px-3 py-2 text-[#2563EB] focus:ring-2 focus:ring-[#2563EB]"
           >
-            <option value="today">Today</option>
-            <option value="this_week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
-            <option value="custom">Custom</option>
+            <option value="today">Leo</option>
+            <option value="this_week">Wiki Hii</option>
+            <option value="month">Mwezi Huu</option>
+            <option value="year">Mwaka Huu</option>
+            <option value="custom">Maalum</option>
           </select>
 
           {filterType === "custom" && (
@@ -339,14 +339,14 @@ return (
                 type="date"
                 value={customFrom}
                 onChange={e => setCustomFrom(e.target.value)}
-                className="border border-[#ef4444] px-3 py-2 rounded-xl text-[#ef4444]"
+                className="border border-[#2563EB] px-3 py-2 rounded-xl text-[#2563EB]"
               />
-              <span>to</span>
+              <span>hadi</span>
               <input
                 type="date"
                 value={customTo}
                 onChange={e => setCustomTo(e.target.value)}
-                className="border border-[#ef4444] px-3 py-2 rounded-xl text-[#ef4444]"
+                className="border border-[#2563EB] px-3 py-2 rounded-xl text-[#2563EB]"
               />
             </>
           )}
@@ -354,11 +354,11 @@ return (
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="border border-[#ef4444] rounded-xl px-3 py-2 text-[#ef4444] focus:ring-2 focus:ring-[#ef4444]"
+            className="border border-[#2563EB] rounded-xl px-3 py-2 text-[#2563EB] focus:ring-2 focus:ring-[#2563EB]"
           >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
+            <option value="all">Hali Zote</option>
+            <option value="pending">Inasubiri</option>
+            <option value="approved">Imeidhinishwa</option>
           </select>
 
         </div>
@@ -367,11 +367,11 @@ return (
       {/* TABLE AREA */}
       <div className="mt-6">
         {loading ? (
-          <p className="text-gray-600">Loading returns...</p>
+          <p className="text-gray-600">Inapakia kurudishwa...</p>
         ) : error ? (
-          <p className="text-[#ef4444]">{error}</p>
+          <p className="text-[#2563EB]">{error}</p>
         ) : groupedReturns.length === 0 ? (
-          <p className="text-gray-600">No returns found.</p>
+          <p className="text-gray-600">Hakuna bidhaa zilizorudishwa.</p>
         ) : (
           <div className="space-y-6">
             {groupedReturns.map(g => (
@@ -379,24 +379,24 @@ return (
                 <div className="w-full">
 
                   <div className="p-3 bg-[#ffe1e1] rounded-t-lg flex justify-between">
-                    <p className="font-semibold text-[#ef4444]">
-                      Sale #{g.sale_id} — {g.supplier_name}
+                    <p className="font-semibold text-[#2563EB]">
+                      Mauzo #{g.sale_id} — {g.supplier_name}
                     </p>
                     <span className="text-gray-600 text-sm">
-                      {new Date(g.date).toLocaleDateString()} • {g.status || "Pending"}
+                      {new Date(g.date).toLocaleDateString()} • {g.status || "Inasubiri"}
                     </span>
                   </div>
 
                   <table className="min-w-full border-collapse text-sm">
-                    <thead className="bg-[#ef4444] text-white text-xs uppercase">
+                    <thead className="bg-[#2563EB] text-white text-xs uppercase">
                       <tr>
-                        <th className="px-3 py-2 text-left">Product</th>
-                        <th className="px-3 py-2 text-left">Qty</th>
-                        <th className="px-3 py-2 text-left">Price</th>
-                        <th className="px-3 py-2 text-left">Amount</th>
-                        <th className="px-3 py-2 text-left">Reason</th>
-                        <th className="px-3 py-2 text-left">Comment</th>
-                        <th className="px-3 py-2 text-left">Seller</th>
+                        <th className="px-3 py-2 text-left">Bidhaa</th>
+                        <th className="px-3 py-2 text-left">Kiasi</th>
+                        <th className="px-3 py-2 text-left">Bei</th>
+                        <th className="px-3 py-2 text-left">Jumla</th>
+                        <th className="px-3 py-2 text-left">Sababu</th>
+                        <th className="px-3 py-2 text-left">Maoni</th>
+                        <th className="px-3 py-2 text-left">Muuzaji</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -427,9 +427,6 @@ return (
     </div>
   </div>
 );
-
-
-
 
 
 

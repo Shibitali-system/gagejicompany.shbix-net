@@ -280,44 +280,44 @@ export default function NotificationsPage() {
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-10">
     <div className="max-w-4xl mx-auto space-y-6">
 
-      {/* Page Header */}
+      {/* Kichwa cha Ukurasa */}
       <CustomCard>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#ef4444] mb-2">
-          Notifications
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#2563EB] mb-2">
+          Arifa
         </h1>
         <p className="text-gray-500 text-sm">
-          View your notifications, check unread items, and manage notification settings below.
+          Angalia arifa zako, hakiki zile ambazo bado hazijasomwa, na simamia mipangilio ya arifa hapo chini.
         </p>
       </CustomCard>
 
-      {/* Analytics Cards */}
+      {/* Kadi za Takwimu */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <FormCard title="Total Notifications">
+        <FormCard title="Jumla ya Arifa">
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-            <p className="text-gray-500 text-sm mb-1">Total notifications received</p>
-            <p className="text-[#ef4444] font-bold text-3xl">{analytics.total}</p>
+            <p className="text-gray-500 text-sm mb-1">Jumla ya arifa ulizopokea</p>
+            <p className="text-[#2563EB] font-bold text-3xl">{analytics.total}</p>
           </div>
         </FormCard>
 
-        <FormCard title="Unread Notifications">
+        <FormCard title="Arifa Zisizosomwa">
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-            <p className="text-gray-500 text-sm mb-1">Notifications not yet read</p>
-            <p className="text-[#ef4444] font-bold text-3xl">{analytics.unread}</p>
+            <p className="text-gray-500 text-sm mb-1">Arifa ambazo bado hazijasomwa</p>
+            <p className="text-[#2563EB] font-bold text-3xl">{analytics.unread}</p>
           </div>
         </FormCard>
 
-        <FormCard title="Notification Titles">
+        <FormCard title="Majina ya Arifa">
           <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-            <p className="text-gray-500 text-sm mb-1">Different notification categories</p>
-            <p className="text-[#ef4444] font-bold text-3xl">{Object.keys(analytics.byTitle).length}</p>
+            <p className="text-gray-500 text-sm mb-1">Aina tofauti za arifa</p>
+            <p className="text-[#2563EB] font-bold text-3xl">{Object.keys(analytics.byTitle).length}</p>
           </div>
         </FormCard>
       </div>
 
-      {/* Notifications Breakdown */}
-      <CustomCard title="Notifications Breakdown">
+      {/* Muhtasari wa Arifa */}
+      <CustomCard title="Muhtasari wa Arifa">
         <p className="text-gray-500 text-sm mb-2">
-          Number of notifications grouped by title/category.
+          Idadi ya arifa zilizopangwa kwa jina/aina.
         </p>
         <div className="space-y-2">
           {Object.entries(analytics.byTitle).map(([title, count]) => (
@@ -329,24 +329,24 @@ export default function NotificationsPage() {
         </div>
       </CustomCard>
 
-      {/* Notification Settings */}
-      <CustomCard title="Notification Settings">
+      {/* Mipangilio ya Arifa */}
+      <CustomCard title="Mipangilio ya Arifa">
         <p className="text-gray-500 text-sm mb-2">
-          Toggle your preferences for receiving notifications.
+          Badilisha mapendeleo yako ya kupokea arifa.
         </p>
         <div className="flex justify-between mb-3">
           <div className="space-x-2">
             <button
               onClick={() => toggleAllSettings(true)}
-              className="px-3 py-1 bg-[#ef4444] text-white rounded"
+              className="px-3 py-1 bg-[#2563EB] text-white rounded"
             >
-              Select All
+              Chagua Zote
             </button>
             <button
               onClick={() => toggleAllSettings(false)}
               className="px-3 py-1 bg-gray-200 text-gray-700 rounded"
             >
-              Deselect All
+              Futa Zote
             </button>
           </div>
         </div>
@@ -367,15 +367,15 @@ export default function NotificationsPage() {
         </div>
       </CustomCard>
 
-      {/* Notifications List */}
-      <CustomCard title="Notifications">
-        <p className="text-gray-500 text-sm mb-2">All your notifications are listed below.</p>
+      {/* Orodha ya Arifa */}
+      <CustomCard title="Arifa Zote">
+        <p className="text-gray-500 text-sm mb-2">Arifa zako zote zipo hapa chini.</p>
         <div className="space-y-4">
           {notifications.map((n) => (
             <div
               key={n.id}
               className={`bg-white rounded-xl shadow border ${
-                n.read ? "border-gray-200" : "border-[#ef4444]"
+                n.read ? "border-gray-200" : "border-[#2563EB]"
               }`}
             >
               <div className="p-5 flex justify-between">
@@ -383,8 +383,8 @@ export default function NotificationsPage() {
                   <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
                     {n.title}
                     {!n.read && (
-                      <span className="text-xs bg-[#ef4444] text-white px-2 py-1 rounded">
-                        New
+                      <span className="text-xs bg-[#2563EB] text-white px-2 py-1 rounded">
+                        Mpya
                       </span>
                     )}
                   </h3>
@@ -393,10 +393,10 @@ export default function NotificationsPage() {
                     <a
                       href={n.link}
                       target="_blank"
-                      className="text-[#ef4444] hover:underline"
+                      className="text-[#2563EB] hover:underline"
                       rel="noreferrer"
                     >
-                      View more
+                      Angalia zaidi
                     </a>
                   )}
                   <p className="text-xs text-gray-400 mt-2">
@@ -406,22 +406,23 @@ export default function NotificationsPage() {
                 {!n.read && (
                   <button
                     onClick={() => markAsRead(n.id)}
-                    className="px-3 py-1 bg-[#ef4444] text-white rounded shadow"
+                    className="px-3 py-1 bg-[#2563EB] text-white rounded shadow"
                   >
-                    Mark as read
+                    Sawa, soma
                   </button>
                 )}
               </div>
             </div>
           ))}
-          {loading && <p className="text-center text-gray-500">Loading...</p>}
+          {loading && <p className="text-center text-gray-500">Inapakia...</p>}
           <div ref={loaderRef} className="h-10"></div>
-          {!hasMore && <p className="text-center text-gray-400">No more notifications</p>}
+          {!hasMore && <p className="text-center text-gray-400">Hakuna arifa zaidi</p>}
         </div>
       </CustomCard>
 
     </div>
   </div>
 );
+
 
 }

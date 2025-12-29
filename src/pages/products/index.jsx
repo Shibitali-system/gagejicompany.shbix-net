@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../../supabaseClient";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { toast, Toaster } from "react-hot-toast";
 import { FaSearch, FaPlus, FaEdit, FaEye, FaFileExport, FaTrash } from "react-icons/fa";
 import * as XLSX from "xlsx";
@@ -226,6 +228,143 @@ const ProductsList = () => {
     XLSX.writeFile(wb, "Products_List.xlsx");
   };
 
+const handleExportPDF = () => {
+  if (filteredProducts.length === 0) {
+    toast.error("No products to export!");
+    return;
+  }
+
+  const doc = new jsPDF();
+
+  // Add Office Name as header
+  doc.setFontSize(14);
+  doc.text(`Office: ${sellerInfo?.office_name || "-"}`, 14, 20);
+  doc.setFontSize(12);
+  doc.text(`Products List Report`, 14, 28);
+
+  // Prepare table columns
+  const columns = [
+    { header: "Name", dataKey: "name" },
+    { header: "Category", dataKey: "category" },
+    { header: "Package", dataKey: "package_type" },
+    { header: "Purchase Price", dataKey: "purchase_price" },
+    { header: "Selling Price", dataKey: "price" },
+    { header: "Stock", dataKey: "stock" },
+    { header: "Expiry Date", dataKey: "expiry_date" },
+    { header: "Entered By", dataKey: "entered_by" },
+    { header: "Expected Profit", dataKey: "profit" },
+  ];
+
+  // Prepare table rows
+  const rows = filteredProducts.map(p => {
+    const expired = p.expiry_date && new Date(p.expiry_date) < new Date();
+    const profit = (p.price - p.purchase_price) * (p.stock || 0);
+    return {
+      name: p.name,
+      category: p.category || "-",
+      package_type: p.package_type || "-",
+      purchase_price: formatTZS(p.purchase_price),
+      price: formatTZS(p.price),
+      stock: p.stock,
+      expiry_date: p.expiry_date ? new Date(p.expiry_date).toLocaleDateString() : "-",
+      entered_by: p.entered_by || "-",
+      profit: formatTZS(profit),
+    };
+  });
+
+  // Generate PDF Table
+  doc.autoTable({
+    startY: 35,
+    head: [columns.map(col => col.header)],
+    body: rows.map(r => columns.map(c => r[c.dataKey])),
+    theme: 'grid',
+    headStyles: { fillColor: [37, 99, 235], textColor: 255, fontSize: 10 },
+    bodyStyles: { fontSize: 9 },
+    styles: { cellPadding: 2 },
+    margin: { left: 14, right: 14 },
+  });
+
+  // Save PDF
+  doc.save(`Products_List_${sellerInfo?.office_name || "Office"}.pdf`);
+};
+
+const handleExportProductStatement = async (productId) => {
+  if (!productId) return toast.error("Product not selected!");
+
+  const product = products.find(p => p.id === productId);
+  if (!product) return toast.error("Product not found!");
+
+  // fetch movements
+  const { data: movements, error } = await supabase
+    .from("product_movements")
+    .select("*")
+    .eq("product_id", productId)
+    .order("date", { ascending: true });
+
+  if (error) return toast.error("Failed to fetch movements: " + error.message);
+
+  let balance = 0;
+  const rows = [];
+
+  // ✅ Add initial stock as first row
+  if (product.stock !== null) {
+    const totalIn = movements.filter(m => m.type === "in").reduce((sum, m) => sum + m.quantity, 0);
+    const totalOut = movements.filter(m => m.type === "out").reduce((sum, m) => sum + m.quantity, 0);
+    const initialStock = product.stock - totalIn + totalOut; // backward calculation
+
+    rows.push({
+      date: new Date(product.created_at).toLocaleDateString(),
+      in: "-",
+      out: "-",
+      balance: initialStock,
+      note: "Initial Stock",
+    });
+
+    balance = initialStock;
+  }
+
+  // Map movements
+  movements.forEach(m => {
+    if (m.type === "in") balance += m.quantity;
+    if (m.type === "out") balance -= m.quantity;
+    rows.push({
+      date: new Date(m.date).toLocaleDateString(),
+      in: m.type === "in" ? m.quantity : "-",
+      out: m.type === "out" ? m.quantity : "-",
+      balance: balance,
+      note: m.note || "",
+    });
+  });
+
+  // Generate PDF (iyo part inakaa ile ile)
+  const doc = new jsPDF();
+  doc.setFontSize(14);
+  doc.text(`Office: ${sellerInfo?.office_name || "-"}`, 14, 20);
+  doc.setFontSize(12);
+  doc.text(`Product Statement: ${product.name}`, 14, 28);
+
+  const columns = [
+    { header: "Date", dataKey: "date" },
+    { header: "Stock In", dataKey: "in" },
+    { header: "Stock Out", dataKey: "out" },
+    { header: "Balance", dataKey: "balance" },
+    { header: "Note", dataKey: "note" },
+  ];
+
+  doc.autoTable({
+    startY: 35,
+    head: [columns.map(c => c.header)],
+    body: rows.map(r => columns.map(c => r[c.dataKey])),
+    theme: 'grid',
+    headStyles: { fillColor: [37, 99, 235], textColor: 255, fontSize: 10 },
+    bodyStyles: { fontSize: 9 },
+    styles: { cellPadding: 2 },
+    margin: { left: 14, right: 14 },
+  });
+
+  doc.save(`Product_Statement_${product.name}.pdf`);
+};
+
 
 // ---------------------- Summary Card Component ----------------------
 const SummaryCard = ({ title, value, valueColor }) => (
@@ -243,108 +382,144 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
   const isAdmin = sellerInfo?.type === "system" && sellerInfo?.role === "admin";
 
-  // ---------------------- Render ----------------------
-  return (
+ // ---------------------- Render ----------------------
+return (
   <div className="min-h-screen bg-gray-50 p-4 md:p-6 font-sans">
     <Toaster position="top-right" />
 
     <div className="max-w-7xl mx-auto space-y-6">
 
       {/* Header Card */}
-<div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-                flex flex-col md:flex-row justify-between items-start md:items-center gap-4
-                transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
-  
-  <div className="flex-1">
-    <h1 className="text-2xl md:text-3xl font-bold text-[#ef4444]">Products List</h1>
-    <p className="text-sm text-gray-500 mt-1">
-      Overview of all products, stock levels, purchase & sale prices. Use the filters and search below to find specific items quickly.
-    </p>
-  </div>
+      <div
+        className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+                   flex flex-col md:flex-row justify-between items-start md:items-center gap-4
+                   transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]"
+      >
+        <div className="flex-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#2563EB]">
+            Orodha ya Bidhaa
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Muhtasari wa bidhaa zote, kiwango cha stoo, bei ya manunuzi na mauzo.
+            Tumia vichujio na utafutaji hapa chini kupata bidhaa kwa haraka.
+          </p>
+        </div>
 
-  <div className="flex gap-3 flex-wrap items-center">
-    <button
-      onClick={handleExport}
-      className="bg-[#ef4444] text-white px-4 py-2 rounded-[12px] shadow-md hover:bg-red-600 transition-transform transform hover:-translate-y-[1px] active:translate-y-[1px] flex items-center gap-2 text-sm"
-    >
-      <FaFileExport /> Export to Excel
-    </button>
-    <Link to="new">
-      <button className="bg-[#ef4444] text-white px-5 py-2 rounded-[12px] shadow-md hover:bg-red-600 transition-transform transform hover:-translate-y-[1px] active:translate-y-[1px] flex items-center gap-2 text-sm">
-        <FaPlus /> Add Product
-      </button>
-    </Link>
-  </div>
-</div>
+        <div className="flex gap-3 flex-wrap items-center">
+          <button
+            onClick={handleExport}
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-[12px] shadow-md hover:bg-red-600 transition-transform transform hover:-translate-y-[1px] active:translate-y-[1px] flex items-center gap-2 text-sm"
+          >
+            <FaFileExport /> Hamisha kwenda Excel
+          </button>
 
+          <button
+            onClick={handleExportPDF}
+            className="bg-green-600 text-white px-4 py-2 rounded-[12px] shadow-md hover:bg-green-700 transition-transform transform hover:-translate-y-[1px] active:translate-y-[1px] flex items-center gap-2 text-sm"
+          >
+            <FaFileExport /> Hamisha kwenda PDF
+          </button>
 
-      {/* Summary Cards (2 columns) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <SummaryCard title="Unique Products" value={totals.uniqueProducts.toLocaleString()} />
-        <SummaryCard title="Total Quantity" value={totals.totalQuantity.toLocaleString()} />
-        <SummaryCard title="Total Purchase" value={formatTZS(totals.totalPurchase)} />
-        <SummaryCard title="Total Sales" value={formatTZS(totals.totalSales)} />
-        <SummaryCard title="Expected Profit" value={formatTZS(totals.totalProfit)} />
-        <SummaryCard title="Expired" value={totals.expiredCount} valueColor="text-red-500" />
+          <Link to="new">
+            <button className="bg-[#2563EB] text-white px-5 py-2 rounded-[12px] shadow-md hover:bg-red-600 transition-transform transform hover:-translate-y-[1px] active:translate-y-[1px] flex items-center gap-2 text-sm">
+              <FaPlus /> Ongeza Bidhaa
+            </button>
+          </Link>
+        </div>
       </div>
 
-      {/* Filters + Search Card */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-                      transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]
-                      flex flex-col md:flex-row gap-3 items-center">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <SummaryCard
+          title="Idadi ya Bidhaa za Kipekee"
+          value={totals.uniqueProducts.toLocaleString()}
+        />
+        <SummaryCard
+          title="Jumla ya Kiasi (Stoo)"
+          value={totals.totalQuantity.toLocaleString()}
+        />
+        <SummaryCard
+          title="Jumla ya Manunuzi"
+          value={formatTZS(totals.totalPurchase)}
+        />
+        <SummaryCard
+          title="Jumla ya Mauzo"
+          value={formatTZS(totals.totalSales)}
+        />
+        <SummaryCard
+          title="Faida Inayotarajiwa"
+          value={formatTZS(totals.totalProfit)}
+        />
+        <SummaryCard
+          title="Bidhaa Zilizoharibika"
+          value={totals.expiredCount}
+          valueColor="text-red-500"
+        />
+      </div>
+
+      {/* Filters + Search */}
+      <div
+        className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+                   transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]
+                   flex flex-col md:flex-row gap-3 items-center"
+      >
         <div className="relative flex-1 w-full md:w-auto bg-white rounded-[12px] shadow-md px-3 py-2">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Tafuta bidhaa..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full md:w-[250px] pl-10 pr-4 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#ef4444] outline-none"
+            className="w-full md:w-[250px] pl-10 pr-4 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#2563EB] outline-none"
           />
         </div>
 
         <select
           value={categoryFilter}
           onChange={e => setCategoryFilter(e.target.value)}
-          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#ef4444] w-full md:w-auto shadow-md"
+          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#2563EB] w-full md:w-auto shadow-md"
         >
-          <option value="">All Categories</option>
-          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+          <option value="">Makundi Yote</option>
+          {categories.map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
         </select>
 
         <select
           value={stockFilter}
           onChange={e => setStockFilter(e.target.value)}
-          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#ef4444] w-full md:w-auto shadow-md"
+          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#2563EB] w-full md:w-auto shadow-md"
         >
-          <option value="">All Stock</option>
-          <option value="low">Low Stock (≤15)</option>
+          <option value="">Stoo Zote</option>
+          <option value="low">Stock Ndogo (≤15)</option>
         </select>
 
         <select
           value={expiryFilter}
           onChange={e => setExpiryFilter(e.target.value)}
-          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#ef4444] w-full md:w-auto shadow-md"
+          className="px-3 py-2 rounded-[12px] border border-gray-300 focus:ring-2 focus:ring-[#2563EB] w-full md:w-auto shadow-md"
         >
-          <option value="">All Status</option>
-          <option value="expired">Expired</option>
+          <option value="">Hali Zote</option>
+          <option value="expired">Zilizoharibika</option>
         </select>
       </div>
 
-      {/* Bulk Delete Card */}
+      {/* Bulk Delete */}
       {isAdmin && selectedProducts.length > 0 && (
-        <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-                        transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
+        <div
+          className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+                     transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]"
+        >
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button className="px-4 py-2 rounded-xl flex items-center gap-2 shadow-md bg-red-600 hover:bg-red-700 text-white">
-                <FaTrash /> Delete Selected
+                <FaTrash /> Futa Zilizochaguliwa
                 <span className="bg-white text-red-600 px-2 py-0.5 rounded-lg text-xs font-semibold">
                   {selectedProducts.length}
                 </span>
@@ -354,19 +529,23 @@ const SummaryCard = ({ title, value, valueColor }) => (
             <AlertDialogContent className="rounded-[12px]">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-red-600 flex items-center gap-2">
-                  <FaTrash /> Confirm Deletion
+                  <FaTrash /> Thibitisha Kufuta
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete <strong>{selectedProducts.length}</strong> selected product(s)?
+                  Una uhakika unataka kufuta bidhaa
+                  <strong> {selectedProducts.length} </strong>
+                  ulizochagua?
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                <AlertDialogCancel className="rounded-xl">
+                  Ghairi
+                </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDeleteSelected}
                   className="bg-red-600 text-white rounded-xl hover:bg-red-700"
                 >
-                  Yes, Delete
+                  Ndiyo, Futa
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -374,70 +553,221 @@ const SummaryCard = ({ title, value, valueColor }) => (
         </div>
       )}
 
-      {/* Products Table Card */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-                      transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px] overflow-x-auto">
-        <table className="min-w-full border-collapse text-sm">
-          <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider rounded-t-[12px]">
-            <tr>
-              {sellerInfo?.type === "system" && <th className="px-3 py-2 text-center"><input type="checkbox" checked={checkAll} onChange={handleCheckAll} /></th>}
-              <th className="px-3 py-2 text-left">Name</th>
-              <th className="px-3 py-2 text-left">Category</th>
-              <th className="px-3 py-2 text-left">Package</th>
-              <th className="px-3 py-2 text-right">Purchase</th>
-              <th className="px-3 py-2 text-right">Price</th>
-              <th className="px-3 py-2 text-right">Stock</th>
-              <th className="px-3 py-2 text-left">Expiry</th>
-              <th className="px-3 py-2 text-left">Entered By</th>
-              <th className="px-3 py-2 text-left">Office</th>
-              <th className="px-3 py-2 text-right">Expected Profit</th>
-              <th className="px-3 py-2 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td colSpan="12" className="text-center py-6 text-gray-500">Loading products...</td></tr>
-            ) : filteredProducts.length === 0 ? (
-              <tr><td colSpan="12" className="text-center py-6 text-gray-500">No products found.</td></tr>
-            ) : filteredProducts.map(p => {
-              const expired = p.expiry_date && new Date(p.expiry_date) < new Date();
-              const profit = (p.price - p.purchase_price) * (p.stock || 0);
-              return (
-                <tr key={p.id} className={`border-b hover:bg-gray-50 ${expired ? "bg-red-50" : p.stock <= 15 ? "bg-yellow-50" : ""}`}>
-                  {sellerInfo?.type === "system" && <td className="px-3 py-1 text-center">
-                    <input type="checkbox" checked={selectedProducts.includes(p.id)} onChange={() => handleSelectProduct(p.id)} />
-                  </td>}
-                  <td className="px-3 py-1 font-medium">{p.name}</td>
-                  <td className="px-3 py-1">{p.category || "-"}</td>
-                  <td className="px-3 py-1">{p.package_type || "-"}</td>
-                  <td className="px-3 py-1 text-right">{formatTZS(p.purchase_price)}</td>
-                  <td className="px-3 py-1 text-right">{formatTZS(p.price)}</td>
-                  <td className={`px-3 py-1 text-right font-semibold ${p.stock <= 15 ? "text-red-600" : "text-[#ef4444]"}`}>{p.stock}</td>
-                  <td className={`px-3 py-1 ${expired ? "text-red-600 font-semibold" : ""}`}>{p.expiry_date ? new Date(p.expiry_date).toLocaleDateString() : "-"}</td>
-                  <td className="px-3 py-1">{p.entered_by || "-"}</td>
-                  <td className="px-3 py-1">{p.office_name || "-"}</td>
-                  <td className="px-3 py-1 text-right">{formatTZS(profit)}</td>
-                  <td className="px-3 py-1 text-center flex justify-center gap-2 flex-wrap">
-                    <Link to={`${p.id}`}>
-                      <button className="bg-blue-500 text-white px-2 py-1 rounded-[12px] hover:bg-blue-600 flex items-center gap-1 text-xs shadow-md"><FaEye /> View</button>
-                    </Link>
-                    <Link to={`edit/${p.id}`}>
-                      <button className="bg-yellow-500 text-white px-2 py-1 rounded-[12px] hover:bg-yellow-600 flex items-center gap-1 text-xs shadow-md"><FaEdit /> Edit</button>
-                    </Link>
-                    <Link to={`add-stock/${p.id}`}>
-                      <button className="bg-[#ef4444] text-white px-2 py-1 rounded-[12px] hover:bg-red-600 flex items-center gap-1 text-xs shadow-md"><FaPlus /> Add Stock</button>
-                    </Link>
+      {/* Products Table */}
+      <div
+        className="bg-white border border-[#e5e7eb] rounded-[12px] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+                   transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px] overflow-x-auto"
+      >
+
+        {/* Desktop Table */}
+        <div className="hidden md:block bg-white border border-[#e5e7eb] rounded-[12px] shadow overflow-x-auto">
+          <table className="min-w-full border-collapse text-sm">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
+              <tr>
+                {sellerInfo?.type === "system" && (
+                  <th className="px-3 py-2 text-center">
+                    <input type="checkbox" checked={checkAll} onChange={handleCheckAll} />
+                  </th>
+                )}
+                <th className="px-3 py-2 text-left">Jina</th>
+                <th className="px-3 py-2 text-left">Kundi</th>
+                <th className="px-3 py-2 text-left">Aina ya Kifungashio</th>
+                <th className="px-3 py-2 text-right">Bei ya Manunuzi</th>
+                <th className="px-3 py-2 text-right">Bei ya Mauzo</th>
+                <th className="px-3 py-2 text-right">Stoo</th>
+                <th className="px-3 py-2 text-left">Tarehe ya Kuisha</th>
+                <th className="px-3 py-2 text-left">Aliyeingiza</th>
+                <th className="px-3 py-2 text-left">Ofisi</th>
+                <th className="px-3 py-2 text-right">Faida Inayotarajiwa</th>
+                <th className="px-3 py-2 text-center">Vitendo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="12" className="text-center py-6 text-gray-500">
+                    Inapakia bidhaa...
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              ) : filteredProducts.length === 0 ? (
+                <tr>
+                  <td colSpan="12" className="text-center py-6 text-gray-500">
+                    Hakuna bidhaa zilizopatikana.
+                  </td>
+                </tr>
+              ) : (
+                filteredProducts.map(p => {
+                  const expired =
+                    p.expiry_date && new Date(p.expiry_date) < new Date();
+                  const profit =
+                    (p.price - p.purchase_price) * (p.stock || 0);
 
+                  return (
+                    <tr
+                      key={p.id}
+                      className={`border-b hover:bg-gray-50 ${
+                        expired
+                          ? "bg-red-50"
+                          : p.stock <= 15
+                          ? "bg-yellow-50"
+                          : ""
+                      }`}
+                    >
+                      {sellerInfo?.type === "system" && (
+                        <td className="px-3 py-1 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedProducts.includes(p.id)}
+                            onChange={() => handleSelectProduct(p.id)}
+                          />
+                        </td>
+                      )}
+                      <td className="px-3 py-1 font-medium">{p.name}</td>
+                      <td className="px-3 py-1">{p.category || "-"}</td>
+                      <td className="px-3 py-1">{p.package_type || "-"}</td>
+                      <td className="px-3 py-1 text-right">
+                        {formatTZS(p.purchase_price)}
+                      </td>
+                      <td className="px-3 py-1 text-right">
+                        {formatTZS(p.price)}
+                      </td>
+                      <td
+                        className={`px-3 py-1 text-right font-semibold ${
+                          p.stock <= 15
+                            ? "text-red-600"
+                            : "text-[#2563EB]"
+                        }`}
+                      >
+                        {p.stock}
+                      </td>
+                      <td
+                        className={`px-3 py-1 ${
+                          expired ? "text-red-600 font-semibold" : ""
+                        }`}
+                      >
+                        {p.expiry_date
+                          ? new Date(p.expiry_date).toLocaleDateString()
+                          : "-"}
+                      </td>
+                      <td className="px-3 py-1">{p.entered_by || "-"}</td>
+                      <td className="px-3 py-1">{p.office_name || "-"}</td>
+                      <td className="px-3 py-1 text-right">
+                        {formatTZS(profit)}
+                      </td>
+                      <td className="px-3 py-1 text-center flex justify-center gap-2 flex-wrap">
+                        <Link to={`${p.id}`}>
+                          <button className="bg-blue-500 text-white px-2 py-1 rounded-[12px] hover:bg-blue-600 flex items-center gap-1 text-xs shadow-md">
+                            <FaEye /> Tazama
+                          </button>
+                        </Link>
+                        <Link to={`edit/${p.id}`}>
+                          <button className="bg-yellow-500 text-white px-2 py-1 rounded-[12px] hover:bg-yellow-600 flex items-center gap-1 text-xs shadow-md">
+                            <FaEdit /> Hariri
+                          </button>
+                        </Link>
+                        <Link to={`add-stock/${p.id}`}>
+                          <button className="bg-[#2563EB] text-white px-2 py-1 rounded-[12px] hover:bg-red-600 flex items-center gap-1 text-xs shadow-md">
+                            <FaPlus /> Ongeza Stock
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => handleExportProductStatement(p.id)}
+                          className="bg-green-500 text-white px-2 py-1 rounded-[12px] hover:bg-green-600 flex items-center gap-1 text-xs shadow-md"
+                        >
+                          <FaFileExport /> Statement
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-4">
+          {filteredProducts.map(p => {
+            const expired =
+              p.expiry_date && new Date(p.expiry_date) < new Date();
+            const profit =
+              (p.price - p.purchase_price) * (p.stock || 0);
+
+            return (
+              <div
+                key={p.id}
+                className="bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden transition-transform transform hover:scale-[1.02] hover:shadow-xl"
+              >
+                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-3 flex justify-between items-center">
+                  <span className="font-bold text-lg">{p.name}</span>
+                  {sellerInfo?.type === "system" && (
+                    <input
+                      type="checkbox"
+                      checked={selectedProducts.includes(p.id)}
+                      onChange={() => handleSelectProduct(p.id)}
+                      className="accent-white w-5 h-5"
+                    />
+                  )}
+                </div>
+
+                <div className="p-4 space-y-1 text-sm text-gray-700">
+                  <p><span className="font-semibold">Kundi:</span> {p.category || "-"}</p>
+                  <p><span className="font-semibold">Kifungashio:</span> {p.package_type || "-"}</p>
+                  <p><span className="font-semibold">Manunuzi:</span> {formatTZS(p.purchase_price)}</p>
+                  <p><span className="font-semibold">Mauzo:</span> {formatTZS(p.price)}</p>
+                  <p>
+                    <span className="font-semibold">Stoo:</span>{" "}
+                    <span className={`${p.stock <= 15 ? "text-red-600 font-semibold" : "text-[#2563EB]"}`}>
+                      {p.stock}
+                    </span>
+                  </p>
+                  <p>
+                    <span className="font-semibold">Kuisha:</span>{" "}
+                    <span className={`${expired ? "text-red-600 font-semibold" : ""}`}>
+                      {p.expiry_date
+                        ? new Date(p.expiry_date).toLocaleDateString()
+                        : "-"}
+                    </span>
+                  </p>
+                  <p><span className="font-semibold">Aliyeingiza:</span> {p.entered_by || "-"}</p>
+                  <p><span className="font-semibold">Ofisi:</span> {p.office_name || "-"}</p>
+                  <p><span className="font-semibold">Faida:</span> {formatTZS(profit)}</p>
+
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Link to={`${p.id}`}>
+                      <button className="bg-blue-500 text-white px-3 py-1 rounded-xl hover:bg-blue-600 flex items-center gap-1 text-xs shadow-md">
+                        <FaEye /> Tazama
+                      </button>
+                    </Link>
+                    <Link to={`edit/${p.id}`}>
+                      <button className="bg-yellow-500 text-white px-3 py-1 rounded-xl hover:bg-yellow-600 flex items-center gap-1 text-xs shadow-md">
+                        <FaEdit /> Hariri
+                      </button>
+                    </Link>
+                    <Link to={`add-stock/${p.id}`}>
+                      <button className="bg-[#2563EB] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-1 text-xs shadow-md">
+                        <FaPlus /> Ongeza Stock
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => handleExportProductStatement(p.id)}
+                      className="bg-green-500 text-white px-3 py-1 rounded-xl hover:bg-green-600 flex items-center gap-1 text-xs shadow-md"
+                    >
+                      <FaFileExport /> Statement
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
     </div>
   </div>
 );
+
+
 
 };
 

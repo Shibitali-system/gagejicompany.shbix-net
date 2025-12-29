@@ -299,7 +299,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -312,11 +312,11 @@ return (
       <div className="bg-white border border-[#e5e7eb] rounded-[8px] shadow p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         {/* Title + Description */}
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-            <FaUserTie /> Suppliers Management
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+            <FaUserTie /> Usimamizi wa Wauzaji
           </h1>
           <p className="text-gray-600 text-sm sm:text-base">
-            Manage your suppliers: add new suppliers, track payments, and view supplier details.
+            Simamia wauzaji wako: ongeza wauzaji wapya, fuatilia malipo, na angalia maelezo ya wauzaji.
           </p>
         </div>
 
@@ -324,42 +324,40 @@ return (
         <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
           <Link
             to="new"
-            className="bg-[#ef4444] text-white border border-[#e5e7eb] rounded-[4px] px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] hover:bg-[#d63a3a] transition-all duration-200 font-sans text-sm"
+            className="bg-[#2563EB] text-white border border-[#e5e7eb] rounded-[4px] px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] hover:bg-[#d63a3a] transition-all duration-200 font-sans text-sm"
           >
-            <FaPlus /> Add New Supplier
+            <FaPlus /> Ongeza Muuza Mpya
           </Link>
-          <p className="text-gray-500 text-xs mt-1"></p>
 
           <Link
-  to="payments"
-  className="
-    bg-white text-[#ef4444] border border-[#e5e7eb] rounded-[4px]
-    px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    hover:bg-[#fdfdfd] transition-all duration-200 font-sans text-sm
-  "
->
-  <FaMoneyBillWave /> Make Payment
-</Link>
-          <p className="text-gray-500 text-xs mt-1"></p>
+            to="payments"
+            className="
+              bg-white text-[#2563EB] border border-[#e5e7eb] rounded-[4px]
+              px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+              hover:bg-[#fdfdfd] transition-all duration-200 font-sans text-sm
+            "
+          >
+            <FaMoneyBillWave /> Lipa Malipo
+          </Link>
         </div>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 items-center bg-white rounded-[4px] p-3 shadow text-sm">
         <button
-          className={`px-3 py-1 rounded-[4px] font-medium ${filterType === "all" ? "bg-[#ef4444] text-white" : "bg-white border"}`}
+          className={`px-3 py-1 rounded-[4px] font-medium ${filterType === "all" ? "bg-[#2563EB] text-white" : "bg-white border"}`}
           onClick={() => setFilterType("all")}
         >
-          All
+          Zote
         </button>
 
         {["today", "week", "month", "year"].map((type) => (
           <button
             key={type}
-            className={`px-3 py-1 rounded-[4px] font-medium ${filterType === type ? "bg-[#ef4444] text-white" : "bg-white border"}`}
+            className={`px-3 py-1 rounded-[4px] font-medium ${filterType === type ? "bg-[#2563EB] text-white" : "bg-white border"}`}
             onClick={() => setFilterType(type)}
           >
-            {type === "today" ? "Today" : type === "week" ? "This Week" : type === "month" ? "This Month" : "This Year"}
+            {type === "today" ? "Leo" : type === "week" ? "Wiki Hii" : type === "month" ? "Mwezi Huu" : "Mwaka Huu"}
           </button>
         ))}
 
@@ -373,7 +371,7 @@ return (
             }}
             className="border px-2 py-1 rounded-[4px] text-sm"
           />
-          <span className="text-sm">to</span>
+          <span className="text-sm">hadi</span>
           <input
             type="date"
             value={customTo}
@@ -387,11 +385,11 @@ return (
 
         <button
           onClick={exportToExcel}
-          className="bg-[#ef4444] text-white border border-[#e5e7eb] rounded-[4px] px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] hover:bg-[#d63a3a] transition-all duration-200 font-sans text-sm"
+          className="bg-[#2563EB] text-white border border-[#e5e7eb] rounded-[4px] px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] hover:bg-[#d63a3a] transition-all duration-200 font-sans text-sm"
         >
-          <FaFileExcel /> Export Excel
+          <FaFileExcel /> Hamisha Excel
         </button>
-        <p className="text-gray-500 text-xs mt-1">Tip: Export the supplier list to Excel for offline use.</p>
+        <p className="text-gray-500 text-xs mt-1">Vidokezo: Hamisha orodha ya wauzaji kwa Excel kwa matumizi nje ya mtandao.</p>
       </div>
 
       {/* Search */}
@@ -399,84 +397,83 @@ return (
         <FaSearch className="text-gray-400" />
         <input
           type="text"
-          placeholder="Search by name, contact or phone..."
+          placeholder="Tafuta kwa jina, mtu wa mawasiliano au simu..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full border border-gray-300 rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full border border-gray-300 rounded-[4px] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-        <SummaryCard title="Total Suppliers" value={totals.totalSuppliers} valueColor="text-[#ef4444]" />
+        <SummaryCard title="Jumla ya Wauzaji" value={totals.totalSuppliers} valueColor="text-[#2563EB]" />
       </div>
 
       {/* DELETE SELECTED BUTTON */}
-{user?.role === "admin" && (
-  <AlertDialog>
-    <AlertDialogTrigger
-      disabled={selectedSuppliers.length === 0}
-      className={`px-3 py-2 rounded-[4px] flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] text-sm font-medium transition-all duration-200 font-sans ${
-        selectedSuppliers.length === 0
-          ? "bg-white text-[#ef4444] border border-[#e5e7eb] cursor-not-allowed"
-          : "bg-[#ef4444] text-white hover:bg-[#d63a3a]"
-      }`}
-    >
-      <FaTrash /> Delete Selected
-      {selectedSuppliers.length > 0 && (
-        <span className="bg-white text-[#ef4444] px-2 py-0.5 rounded-md text-xs font-semibold">
-          {selectedSuppliers.length}
-        </span>
+      {user?.role === "admin" && (
+        <AlertDialog>
+          <AlertDialogTrigger
+            disabled={selectedSuppliers.length === 0}
+            className={`px-3 py-2 rounded-[4px] flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] text-sm font-medium transition-all duration-200 font-sans ${
+              selectedSuppliers.length === 0
+                ? "bg-white text-[#2563EB] border border-[#e5e7eb] cursor-not-allowed"
+                : "bg-[#2563EB] text-white hover:bg-[#d63a3a]"
+            }`}
+          >
+            <FaTrash /> Futa Waliochaguliwa
+            {selectedSuppliers.length > 0 && (
+              <span className="bg-white text-[#2563EB] px-2 py-0.5 rounded-md text-xs font-semibold">
+                {selectedSuppliers.length}
+              </span>
+            )}
+          </AlertDialogTrigger>
+
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-[#2563EB]">Thibitisha Kufuta</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm">
+                Una uhakika unataka kufuta <b>{selectedSuppliers.length} muuza(s)</b> kwa kudumu? <br />
+                Hatua hii haiwezi kurudishwa.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex gap-2">
+              <AlertDialogCancel className="px-3 py-1 rounded-[4px] border text-sm">Ghairi</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteSelected}
+                className="px-3 py-1 rounded-[4px] bg-[#2563EB] text-white hover:bg-[#d63a3a] text-sm flex items-center gap-1 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] transition-all duration-200 font-sans"
+              >
+                <FaTrash /> Futa
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
-    </AlertDialogTrigger>
-
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle className="text-[#ef4444]">Confirm Delete</AlertDialogTitle>
-        <AlertDialogDescription className="text-sm">
-          Are you sure you want to permanently delete <b>{selectedSuppliers.length} supplier(s)</b>? <br />
-          This action cannot be undone.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter className="flex gap-2">
-        <AlertDialogCancel className="px-3 py-1 rounded-[4px] border text-sm">Cancel</AlertDialogCancel>
-        <AlertDialogAction
-          onClick={handleDeleteSelected}
-          className="px-3 py-1 rounded-[4px] bg-[#ef4444] text-white hover:bg-[#d63a3a] text-sm flex items-center gap-1 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] transition-all duration-200 font-sans"
-        >
-          <FaTrash /> Delete
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-)}
-
 
       {/* Table */}
       {loading ? (
-        <p className="text-gray-600 text-sm">Loading suppliers...</p>
+        <p className="text-gray-600 text-sm">Inapakia wauzaji...</p>
       ) : error ? (
         <p className="text-red-600 font-semibold text-sm">{error}</p>
       ) : suppliers.length === 0 ? (
-        <p className="text-gray-600 text-sm">No suppliers found.</p>
+        <p className="text-gray-600 text-sm">Hakuna wauzaji waliopatikana.</p>
       ) : (
         <div className="overflow-x-auto bg-white rounded-[4px] shadow">
           <table className="min-w-full border-collapse text-sm">
-            <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
               <tr>
                 {user?.role === "admin" && (
                   <th className="px-3 py-2 text-center">
                     <input type="checkbox" checked={checkAll} onChange={handleCheckAll} />
                   </th>
                 )}
-                <th className="px-3 py-2 text-left">Name</th>
-                <th className="px-3 py-2 text-left">Contact Person</th>
-                <th className="px-3 py-2 text-left">Phone</th>
-                <th className="px-3 py-2 text-left">Email</th>
-                <th className="px-3 py-2 text-left">Notes</th>
-                <th className="px-3 py-2 text-left">Created By</th>
-                <th className="px-3 py-2 text-left">Date Added</th>
-                <th className="px-3 py-2 text-center">Actions</th>
+                <th className="px-3 py-2 text-left">Jina</th>
+                <th className="px-3 py-2 text-left">Mtu wa Mawasiliano</th>
+                <th className="px-3 py-2 text-left">Simu</th>
+                <th className="px-3 py-2 text-left">Barua Pepe</th>
+                <th className="px-3 py-2 text-left">Maelezo</th>
+                <th className="px-3 py-2 text-left">Iliundwa Na</th>
+                <th className="px-3 py-2 text-left">Tarehe ya Kuongezwa</th>
+                <th className="px-3 py-2 text-center">Vitendo</th>
               </tr>
             </thead>
             <tbody>
@@ -503,13 +500,13 @@ return (
                       to={`${s.id}`}
                       className="bg-blue-100 text-blue-600 px-2 py-1 rounded-[4px] hover:bg-blue-200 flex items-center gap-1 text-sm"
                     >
-                      <FaSearch /> View
+                      <FaSearch /> Angalia
                     </Link>
                     <Link
                       to={`edit/${s.id}`}
-                      className="bg-[#efefef] text-[#ef4444] px-2 py-1 rounded-[4px] hover:bg-[#ffecec] flex items-center gap-1 text-sm"
+                      className="bg-[#efefef] text-[#2563EB] px-2 py-1 rounded-[4px] hover:bg-[#ffecec] flex items-center gap-1 text-sm"
                     >
-                      <FaUserTie /> Edit
+                      <FaUserTie /> Hariri
                     </Link>
                   </td>
                 </tr>
@@ -521,7 +518,6 @@ return (
     </div>
   </div>
 );
-
 
 
 };

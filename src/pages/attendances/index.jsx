@@ -236,45 +236,50 @@ const StaffAttendanceIndex = () => {
     <Toaster position="top-right" />
     <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Header + Tips + Action Buttons */}
+      {/* KICHWA + MWONGOZO + VITENDO */}
       <CustomCard>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Staff Attendance</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Mahudhurio ya Wafanyakazi</h1>
           <div className="flex flex-wrap gap-2 mt-3 md:mt-0">
             <Link
               to="new"
-              className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
+              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
             >
-              <FaPlus /> Add Attendance
+              <FaPlus /> Ongeza Mahudhurio
             </Link>
           </div>
         </div>
 
-        {/* Tips / Instructions */}
+        {/* Mwongozo */}
         <p className="text-gray-600 text-sm">
-          Use the button above to record new attendance. You can filter, search, approve, or reject records below.
+          Tumia kitufe hapo juu kurekodi mahudhurio mapya. Unaweza kuchuja, kutafuta, kuidhinisha, au kukataa rekodi hapa chini.
         </p>
       </CustomCard>
 
-      {/* Filters */}
-      <CustomCard title="Filters">
+      {/* CHUZO */}
+      <CustomCard title="Chuzo">
         <div className="flex flex-wrap gap-2 mb-2 items-center">
           {["all","today","week","month","year","custom"].map(ft => (
             <button
               key={ft}
-              className={`px-3 py-1 rounded-xl ${filterType===ft?"bg-[#ef4444] text-white":"bg-white border border-[#e5e7eb]"}`}
+              className={`px-3 py-1 rounded-xl ${filterType===ft?"bg-[#2563EB] text-white":"bg-white border border-[#e5e7eb]"}`}
               onClick={()=>setFilterType(ft)}
             >
-              {ft.charAt(0).toUpperCase() + ft.slice(1)}
+              {ft === "all" ? "Zote" :
+               ft === "today" ? "Leo" :
+               ft === "week" ? "Wiki" :
+               ft === "month" ? "Mwezi" :
+               ft === "year" ? "Mwaka" :
+               "Binafsi"}
             </button>
           ))}
 
           {filterType==="custom" && (
             <div className="flex gap-2 items-center ml-2">
               <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded" />
-              <span>to</span>
+              <span>hadi</span>
               <input type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded" />
-              <button onClick={fetchAttendances} className="px-3 py-1 bg-[#ef4444] text-white rounded hover:bg-red-600">Apply</button>
+              <button onClick={fetchAttendances} className="px-3 py-1 bg-[#2563EB] text-white rounded hover:bg-red-600">Tumia</button>
             </div>
           )}
         </div>
@@ -283,76 +288,77 @@ const StaffAttendanceIndex = () => {
           <FaSearch className="text-gray-400" />
           <input
             type="text"
-            placeholder="Search by staff name..."
+            placeholder="Tafuta kwa jina la mfanyakazi..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full sm:w-1/3 border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full sm:w-1/3 border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
       </CustomCard>
 
-      {/* Summary Cards */}
+      {/* KADI ZA MUHTASARI */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <FormCard title="Total Records">
-          <p className="text-[#ef4444] font-bold">{totals.totalRecords}</p>
+        <FormCard title="Jumla ya Rekodi">
+          <p className="text-[#2563EB] font-bold">{totals.totalRecords}</p>
         </FormCard>
-        <FormCard title="Approved Today">
-          <p className="text-[#ef4444] font-bold">{totals.totalApprovedToday}</p>
+        <FormCard title="Imeidhinishwa Leo">
+          <p className="text-[#2563EB] font-bold">{totals.totalApprovedToday}</p>
         </FormCard>
       </div>
 
-{modalOpen && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-      <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-        {actionType === "Approve" ? <FaCheckCircle className="text-green-600" /> : <FaTimesCircle className="text-red-600" />}
-        {actionType} Attendance
-      </h2>
+      {/* MODAL */}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              {actionType === "Approve" ? <FaCheckCircle className="text-green-600" /> : <FaTimesCircle className="text-red-600" />}
+              {actionType === "Approve" ? "Idhinisha Mahesabu" : "Kataa Mahesabu"}
+            </h2>
 
-      <p className="mb-2">Comment (optional):</p>
-      <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        className="border rounded w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-        rows={4}
-        placeholder="Enter comment"
-      />
+            <p className="mb-2">Maoni (hiari):</p>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="border rounded w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              rows={4}
+              placeholder="Weka maoni"
+            />
 
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={() => setModalOpen(false)}
-          className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleModalSubmit}
-          className={`px-4 py-2 rounded text-white ${actionType === "Approve" ? "bg-green-600 hover:bg-green-700" : "bg-[#ef4444] hover:bg-red-600"}`}
-        >
-          {actionType}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setModalOpen(false)}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Ghairi
+              </button>
+              <button
+                onClick={handleModalSubmit}
+                className={`px-4 py-2 rounded text-white ${actionType === "Approve" ? "bg-green-600 hover:bg-green-700" : "bg-[#2563EB] hover:bg-red-600"}`}
+              >
+                {actionType === "Approve" ? "Idhinisha" : "Kataa"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Attendance Table */}
-      <CustomCard title="Attendance Records">
-        {loading ? <p className="text-gray-600">Loading attendance records...</p> :
-         attendances.length === 0 ? <p className="text-gray-600">No records found.</p> :
+      {/* JEDWALI LA MAHESABU */}
+      <CustomCard title="Rekodi za Mahesabu">
+        {loading ? <p className="text-gray-600">Inapakia rekodi za mahesabu...</p> :
+         attendances.length === 0 ? <p className="text-gray-600">Hakuna rekodi zilizopatikana.</p> :
          <div className="overflow-x-auto">
            <table className="min-w-full border-collapse text-sm">
-             <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+             <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                <tr>
-                 <th className="px-2 py-2">Staff Name</th>
-                 <th className="px-2 py-2">Date</th>
-                 <th className="px-2 py-2">Check In</th>
-                 <th className="px-2 py-2">Check Out</th>
-                 <th className="px-2 py-2">Status</th>
-                 <th className="px-2 py-2">Approved By</th>
-                 <th className="px-2 py-2">Approved At</th>
-                 <th className="px-2 py-2">Comment</th>
-                 <th className="px-2 py-2 text-center">Actions</th>
+                 <th className="px-2 py-2">Jina la Mfanyakazi</th>
+                 <th className="px-2 py-2">Tarehe</th>
+                 <th className="px-2 py-2">Kuingia</th>
+                 <th className="px-2 py-2">Kutoka</th>
+                 <th className="px-2 py-2">Hali</th>
+                 <th className="px-2 py-2">Imeidhinishwa Na</th>
+                 <th className="px-2 py-2">Imeidhinishwa Saa</th>
+                 <th className="px-2 py-2">Maoni</th>
+                 <th className="px-2 py-2 text-center">Vitendo</th>
                </tr>
              </thead>
              <tbody>
@@ -364,9 +370,9 @@ const StaffAttendanceIndex = () => {
                    <td className="px-2 py-2">{r.check_out || "-"}</td>
                    <td className={`px-2 py-2 font-semibold text-center rounded-full ${
                      r.status === "Pending" ? "bg-yellow-100 text-yellow-800" :
-                     r.status === "Approved" ? "bg-[#ef4444]/20 text-[#ef4444]" :
+                     r.status === "Approved" ? "bg-[#2563EB]/20 text-[#2563EB]" :
                      r.status === "Rejected" ? "bg-red-100 text-red-800" : ""
-                   }`}>{r.status}</td>
+                   }`}>{r.status === "Pending" ? "Inasubiri" : r.status === "Approved" ? "Imeidhinishwa" : "Imekataliwa"}</td>
                    <td className="px-2 py-2">{r.approver_display_name}</td>
                    <td className="px-2 py-2">{r.approved_at ? dayjs(r.approved_at).format("YYYY-MM-DD HH:mm") : "-"}</td>
                    <td className="px-2 py-2">{r.comment || "-"}</td>
@@ -375,15 +381,15 @@ const StaffAttendanceIndex = () => {
                        <>
                          <button
                            onClick={() => openModal(r, "Approve")}
-                           className="bg-[#ef4444] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-2"
+                           className="bg-[#2563EB] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-2"
                          >
-                           <FaCheckCircle /> Approve
+                           <FaCheckCircle /> Idhinisha
                          </button>
                          <button
                            onClick={() => openModal(r, "Reject")}
                            className="bg-red-600 text-white px-3 py-1 rounded-xl hover:bg-red-700 flex items-center gap-2"
                          >
-                           <FaTimesCircle /> Reject
+                           <FaTimesCircle /> Kataa
                          </button>
                        </>
                      )}
@@ -391,7 +397,7 @@ const StaffAttendanceIndex = () => {
                        to={`../attendances/${r.staff_id}`}
                        className="bg-blue-600 text-white px-3 py-1 rounded-xl hover:bg-blue-700 flex items-center gap-2"
                      >
-                       <FaEye /> View
+                       <FaEye /> Angalia
                      </Link>
                    </td>
                  </tr>
@@ -405,7 +411,6 @@ const StaffAttendanceIndex = () => {
     </div>
   </div>
 );
-
 
 };
 

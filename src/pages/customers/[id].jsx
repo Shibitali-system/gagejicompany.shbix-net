@@ -181,7 +181,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -191,21 +191,23 @@ return (
     {/* Header */}
     <CustomCard>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">{customer.name}</h1>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">
+          {customer.name}
+        </h1>
         <Link to="../customers">
           <button className="bg-gray-100 border border-gray-300 text-gray-700 px-5 py-2 rounded-xl hover:bg-gray-200 transition-all">
-            ← Back
+            ← Rudi
           </button>
         </Link>
       </div>
     </CustomCard>
 
     {/* Filters */}
-    <CustomCard title="Filter Purchases">
+    <CustomCard title="Chuja Manunuzi">
       <div className="flex flex-col md:flex-row gap-4 items-center overflow-x-auto">
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>From:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Kuanzia:</label>
           <input
             type="date"
             className="border border-gray-300 rounded px-2 py-1"
@@ -214,8 +216,8 @@ return (
           />
         </div>
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>To:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Hadi:</label>
           <input
             type="date"
             className="border border-gray-300 rounded px-2 py-1"
@@ -225,28 +227,49 @@ return (
         </div>
         <button
           onClick={fetchCustomerData}
-          className="bg-[#ef4444] hover:bg-[#d63a3a] text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
+          className="bg-[#2563EB] hover:bg-[#d63a3a] text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
         >
-          Apply
+          Tekeleza
         </button>
       </div>
     </CustomCard>
 
     {/* Analytics Summary */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <SummaryCard title="Today" value={`Sales: ${todaySales.toLocaleString()} TZS | Orders: ${todayOrders}`} />
-      <SummaryCard title="This Week" value={`Sales: ${weekSales.toLocaleString()} TZS | Orders: ${weekOrders}`} />
-      <SummaryCard title="This Month" value={`Sales: ${monthSales.toLocaleString()} TZS | Orders: ${monthOrders}`} />
+      <SummaryCard
+        title="Leo"
+        value={`Mauzo: ${todaySales.toLocaleString()} TZS | Oda: ${todayOrders}`}
+      />
+      <SummaryCard
+        title="Wiki Hii"
+        value={`Mauzo: ${weekSales.toLocaleString()} TZS | Oda: ${weekOrders}`}
+      />
+      <SummaryCard
+        title="Mwezi Huu"
+        value={`Mauzo: ${monthSales.toLocaleString()} TZS | Oda: ${monthOrders}`}
+      />
     </div>
 
     {/* Purchase History */}
-    <CustomCard title="Purchase History">
+    <CustomCard title="Historia ya Manunuzi">
       <div className="overflow-x-auto w-full">
         <table className="min-w-full border border-gray-200 text-sm text-left">
           <thead className="bg-gray-50">
             <tr>
-              {["Date","Total","Paid","Loan","Payment Status","Discount","Payment Method","Comment","Products"].map(th => (
-                <th key={th} className="px-3 py-2 border">{th}</th>
+              {[
+                "Tarehe",
+                "Jumla",
+                "Iliyolipwa",
+                "Mkopo",
+                "Hali ya Malipo",
+                "Punguzo",
+                "Njia ya Malipo",
+                "Maoni",
+                "Bidhaa"
+              ].map(th => (
+                <th key={th} className="px-3 py-2 border">
+                  {th}
+                </th>
               ))}
             </tr>
           </thead>
@@ -254,24 +277,39 @@ return (
             {sales.length === 0 && (
               <tr>
                 <td colSpan={9} className="text-center px-3 py-2 text-gray-500">
-                  No purchases found.
+                  Hakuna manunuzi yaliyopatikana.
                 </td>
               </tr>
             )}
             {sales.map((s) => (
-              <tr key={s.id} className="border-b hover:bg-gray-50 transition-colors">
-                <td className="px-3 py-2">{new Date(s.created_at).toLocaleDateString()}</td>
-                <td className="px-3 py-2">{parseFloat(s.total_amount).toLocaleString()} TZS</td>
-                <td className="px-3 py-2">{parseFloat(s.paid_amount || 0).toLocaleString()} TZS</td>
-                <td className="px-3 py-2">{parseFloat(s.loan_amount || 0).toLocaleString()} TZS</td>
+              <tr
+                key={s.id}
+                className="border-b hover:bg-gray-50 transition-colors"
+              >
+                <td className="px-3 py-2">
+                  {new Date(s.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-3 py-2">
+                  {parseFloat(s.total_amount).toLocaleString()} TZS
+                </td>
+                <td className="px-3 py-2">
+                  {parseFloat(s.paid_amount || 0).toLocaleString()} TZS
+                </td>
+                <td className="px-3 py-2">
+                  {parseFloat(s.loan_amount || 0).toLocaleString()} TZS
+                </td>
                 <td className="px-3 py-2">{s.payment_status}</td>
-                <td className="px-3 py-2">{parseFloat(s.discount_value || 0).toLocaleString()} ({s.discount_type})</td>
+                <td className="px-3 py-2">
+                  {parseFloat(s.discount_value || 0).toLocaleString()} ({s.discount_type})
+                </td>
                 <td className="px-3 py-2">{s.payment_method}</td>
                 <td className="px-3 py-2">{s.comment || "-"}</td>
                 <td className="px-3 py-2">
                   {s.sale_items?.map((item) => (
                     <div key={item.id} className="mb-1">
-                      {item.products?.name || `Product ${item.product_id}`} x {item.quantity} @ {parseFloat(item.price).toLocaleString()} TZS (Disc: {parseFloat(item.discount || 0)})
+                      {item.products?.name || `Bidhaa ${item.product_id}`} x {item.quantity} @{" "}
+                      {parseFloat(item.price).toLocaleString()} TZS (Punguzo:{" "}
+                      {parseFloat(item.discount || 0)})
                     </div>
                   ))}
                 </td>
@@ -283,13 +321,13 @@ return (
     </CustomCard>
 
     {/* Monthly Sales Chart */}
-    <CustomCard title="Monthly Sales Overview">
+    <CustomCard title="Muhtasari wa Mauzo ya Kila Mwezi">
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={monthlySales}>
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip formatter={(v) => v.toLocaleString()} />
-          <Bar dataKey="total" fill="#ef4444" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="total" fill="#2563EB" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </CustomCard>

@@ -187,199 +187,205 @@ const SupplierEdit = ({ user }) => {
       style={{ willChange: "transform" }}
     >
       {title && <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>}
-      {value && <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>}
+      {value && <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>}
       {children}
     </div>
   );
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6 font-sans">
-      <Toaster position="top-right" />
+  <div className="max-w-5xl mx-auto p-6 space-y-6 font-sans">
+    <Toaster position="top-right" />
 
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+    {/* Header */}
+    <div className="flex justify-between items-center mb-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 text-[#2563EB] hover:underline"
+      >
+        <ArrowLeft /> Rudi
+      </button>
+      <h1 className="text-3xl font-bold text-[#2563EB]">Hariri Muuzaji</h1>
+    </div>
+
+    {/* Analytics Cards */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <SummaryCard
+        title="Jumla ya Ununuzi"
+        value={`${totalPurchases.toLocaleString()} TZS`}
+        valueColor="#10B981"
+      />
+      <SummaryCard
+        title="Jumla ya Malipo"
+        value={`${totalPayments.toLocaleString()} TZS`}
+        valueColor="#3B82F6"
+      />
+      <SummaryCard
+        title="Salio"
+        value={`${balance.toLocaleString()} TZS`}
+        valueColor="#2563EB"
+      />
+    </div>
+
+    {/* Date Filters */}
+    <SummaryCard>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full overflow-x-auto">
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <Calendar className="text-[#2563EB]" /> <span>Kutoka:</span>
+          <input
+            type="date"
+            className="border px-2 py-1 rounded"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </div>
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <Calendar className="text-[#2563EB]" /> <span>Hadi:</span>
+          <input
+            type="date"
+            className="border px-2 py-1 rounded"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </div>
         <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-[#ef4444] hover:underline"
+          onClick={fetchPurchasesPayments}
+          className="px-4 py-1 bg-[#2563EB] text-white rounded hover:bg-[#d63a3a] shadow transition-all"
         >
-          <ArrowLeft /> Back
+          Tumia
         </button>
-        <h1 className="text-3xl font-bold text-[#ef4444]">Edit Supplier</h1>
       </div>
+    </SummaryCard>
 
-      {/* Analytics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <SummaryCard
-          title="Total Purchases"
-          value={`${totalPurchases.toLocaleString()} TZS`}
-          valueColor="#10B981"
-        />
-        <SummaryCard
-          title="Total Payments"
-          value={`${totalPayments.toLocaleString()} TZS`}
-          valueColor="#3B82F6"
-        />
-        <SummaryCard
-          title="Balance"
-          value={`${balance.toLocaleString()} TZS`}
-          valueColor="#EF4444"
-        />
-      </div>
-
-      {/* Date Filters */}
-      <SummaryCard>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full overflow-x-auto">
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <Calendar className="text-[#ef4444]" /> <span>From:</span>
+    {/* Edit Supplier Form */}
+    <SummaryCard>
+      <form onSubmit={handleSubmit} className="space-y-4 w-full">
+        {["name", "contact_person", "phone", "email"].map((field) => (
+          <div key={field}>
+            <label className="block font-semibold mb-1">
+              {field === "name" ? "Jina la Muuzaji" :
+               field === "contact_person" ? "Mtu wa Kuwasiliana" :
+               field === "phone" ? "Namba ya Simu" :
+               "Barua Pepe"}
+            </label>
             <input
-              type="date"
-              className="border px-2 py-1 rounded"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
+              type={field === "email" ? "email" : "text"}
+              name={field}
+              value={supplier[field]}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+              required={field === "name"}
             />
           </div>
-          <div className="flex items-center gap-2 whitespace-nowrap">
-            <Calendar className="text-[#ef4444]" /> <span>To:</span>
-            <input
-              type="date"
-              className="border px-2 py-1 rounded"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-            />
-          </div>
+        ))}
+        <div>
+          <label className="block font-semibold mb-1">Maelezo / Masharti</label>
+          <textarea
+            name="notes"
+            value={supplier.notes}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            rows={3}
+          />
+        </div>
+        <div className="flex justify-end gap-2">
           <button
-            onClick={fetchPurchasesPayments}
-            className="px-4 py-1 bg-[#ef4444] text-white rounded hover:bg-[#d63a3a] shadow transition-all"
+            type="submit"
+            disabled={saving}
+            className={`px-4 py-2 rounded bg-[#2563EB] text-white hover:bg-[#d63a3a] ${
+              saving ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Apply
+            {saving ? "Inaendelea kuhifadhi..." : "Hifadhi Muuzaji"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 rounded border hover:bg-gray-100"
+          >
+            Ghairi
           </button>
         </div>
-      </SummaryCard>
+      </form>
+    </SummaryCard>
 
-      {/* Edit Supplier Form */}
-      <SummaryCard>
-        <form onSubmit={handleSubmit} className="space-y-4 w-full">
-          {["name", "contact_person", "phone", "email"].map((field) => (
-            <div key={field}>
-              <label className="block font-semibold mb-1">{field.replace("_", " ").toUpperCase()}</label>
-              <input
-                type={field === "email" ? "email" : "text"}
-                name={field}
-                value={supplier[field]}
-                onChange={handleChange}
-                className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                required={field === "name"}
-              />
-            </div>
-          ))}
-          <div>
-            <label className="block font-semibold mb-1">Notes / Terms</label>
-            <textarea
-              name="notes"
-              value={supplier.notes}
-              onChange={handleChange}
-              className="w-full border rounded px-3 py-2"
-              rows={3}
-            />
-          </div>
-          <div className="flex justify-end gap-2">
-            <button
-              type="submit"
-              disabled={saving}
-              className={`px-4 py-2 rounded bg-[#ef4444] text-white hover:bg-[#d63a3a] ${
-                saving ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {saving ? "Saving..." : "Save Supplier"}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="px-4 py-2 rounded border hover:bg-gray-100"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </SummaryCard>
-
-      {/* Purchases Table */}
-      <SummaryCard>
-        <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Purchase History</h2>
-        <div className="overflow-x-auto w-full">
-          <table className="min-w-[600px] border border-gray-200 text-sm text-left">
-            <thead className="bg-gray-50">
-              <tr>
-                {["Date", "Product", "Quantity", "Total"].map((th) => (
-                  <th key={th} className="border px-3 py-2">{th}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {purchases.length > 0 ? (
-                purchases.map((p) => (
-                  <tr key={p.id} className="hover:bg-[#fdfdfd] transition-colors">
-                    <td className="border px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
-                    <td className="border px-3 py-2">{p.product?.name || "-"}</td>
-                    <td className="border px-3 py-2">{p.quantity || "-"}</td>
-                    <td className="border px-3 py-2">{parseFloat(p.total_price || 0).toLocaleString()} TZS</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="text-center p-2 text-gray-500">No purchases found.</td>
+    {/* Purchases Table */}
+    <SummaryCard>
+      <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Historia ya Ununuzi</h2>
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-[600px] border border-gray-200 text-sm text-left">
+          <thead className="bg-gray-50">
+            <tr>
+              {["Tarehe", "Bidhaa", "Kiasi", "Jumla"].map((th) => (
+                <th key={th} className="border px-3 py-2">{th}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {purchases.length > 0 ? (
+              purchases.map((p) => (
+                <tr key={p.id} className="hover:bg-[#fdfdfd] transition-colors">
+                  <td className="border px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td className="border px-3 py-2">{p.product?.name || "-"}</td>
+                  <td className="border px-3 py-2">{p.quantity || "-"}</td>
+                  <td className="border px-3 py-2">{parseFloat(p.total_price || 0).toLocaleString()} TZS</td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </SummaryCard>
-
-      {/* Payments Table */}
-      <SummaryCard>
-        <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Payments</h2>
-        <div className="overflow-x-auto w-full">
-          <table className="min-w-[400px] border border-gray-200 text-sm text-left">
-            <thead className="bg-gray-50">
+              ))
+            ) : (
               <tr>
-                {["Date", "Amount", "Status"].map((th) => (
-                  <th key={th} className="border px-3 py-2">{th}</th>
-                ))}
+                <td colSpan={4} className="text-center p-2 text-gray-500">Hakuna ununuzi uliopatikana.</td>
               </tr>
-            </thead>
-            <tbody>
-              {payments.length > 0 ? (
-                payments.map((p) => (
-                  <tr key={p.id} className="hover:bg-[#fdfdfd] transition-colors">
-                    <td className="border px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
-                    <td className="border px-3 py-2">{parseFloat(p.amount || 0).toLocaleString()} TZS</td>
-                    <td className="border px-3 py-2 capitalize">{p.status || "-"}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3} className="text-center p-2 text-gray-500">No payments found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </SummaryCard>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </SummaryCard>
 
-      {/* Monthly Purchases Chart */}
-      <SummaryCard>
-        <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Monthly Purchases Overview</h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={monthlyPurchases}>
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip formatter={(v) => v.toLocaleString()} />
-            <Bar dataKey="total" fill="#ef4444" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </SummaryCard>
-    </div>
-  );
+    {/* Payments Table */}
+    <SummaryCard>
+      <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Malipo</h2>
+      <div className="overflow-x-auto w-full">
+        <table className="min-w-[400px] border border-gray-200 text-sm text-left">
+          <thead className="bg-gray-50">
+            <tr>
+              {["Tarehe", "Kiasi", "Hali"].map((th) => (
+                <th key={th} className="border px-3 py-2">{th}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {payments.length > 0 ? (
+              payments.map((p) => (
+                <tr key={p.id} className="hover:bg-[#fdfdfd] transition-colors">
+                  <td className="border px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
+                  <td className="border px-3 py-2">{parseFloat(p.amount || 0).toLocaleString()} TZS</td>
+                  <td className="border px-3 py-2 capitalize">{p.status || "-"}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="text-center p-2 text-gray-500">Hakuna malipo yaliyopatikana.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </SummaryCard>
+
+    {/* Monthly Purchases Chart */}
+    <SummaryCard>
+      <h2 className="font-semibold text-gray-700 mb-3 w-full text-left">Muhtasari wa Ununuzi wa Kila Mwezi</h2>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={monthlyPurchases}>
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip formatter={(v) => v.toLocaleString()} />
+          <Bar dataKey="total" fill="#2563EB" radius={[8, 8, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </SummaryCard>
+  </div>
+);
+
 };
 
 export default SupplierEdit;

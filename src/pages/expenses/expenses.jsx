@@ -163,109 +163,109 @@ const handleCreateRequest = async () => {
 };
 
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
 
     <div className="max-w-3xl mx-auto space-y-6">
 
-      {/* Header */}
+      {/* Kichwa */}
       <div className="flex items-center justify-between mb-4">
-        <Link to="../expenses/expensesindex" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-          <FaArrowLeft /> Back to Expense Requests
+        <Link to="../expenses/expensesindex" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+          <FaArrowLeft /> Rudi kwenye Maombi ya Matumizi
         </Link>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Request New Expense</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Omba Matumizi Mpya</h1>
       </div>
 
-      {/* Form Card */}
-      <FormCard title="Expense Request Details">
+      {/* Kadi ya Fomu */}
+      <FormCard title="Maelezo ya Ombi la Matumizi">
         <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleCreateRequest(); }}>
 
-          {/* Name */}
+          {/* Jina */}
           <div>
-            <label className="block font-semibold mb-1">Expense Name *</label>
+            <label className="block font-semibold mb-1">Jina la Matumizi *</label>
             <input
               type="text"
-              placeholder="Enter expense name"
+              placeholder="Weka jina la matumizi"
               value={newRequestData.name}
               onChange={e => setNewRequestData({ ...newRequestData, name: e.target.value })}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
 
-          {/* Amount */}
+          {/* Kiasi */}
           <div>
-            <label className="block font-semibold mb-1">Amount *</label>
+            <label className="block font-semibold mb-1">Kiasi *</label>
             <input
               type="number"
-              placeholder="Enter amount"
+              placeholder="Weka kiasi"
               value={newRequestData.amount}
               onChange={e => setNewRequestData({ ...newRequestData, amount: e.target.value })}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
 
-          {/* Category */}
+          {/* Kategoria */}
           <div>
-            <label className="block font-semibold mb-1">Category</label>
+            <label className="block font-semibold mb-1">Kategoria</label>
             <select
               value={newRequestData.category}
               onChange={e => setNewRequestData({ ...newRequestData, category: e.target.value })}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             >
-              <option value="">Select category</option>
+              <option value="">Chagua kategoria</option>
               {[
-                "Office Supplies",
-                "Travel",
-                "Meals & Entertainment",
-                "Maintenance & Repairs",
-                "Utilities",
-                "Marketing & Advertising",
-                "Transportation",
-                "Software & Subscriptions",
-                "Professional Services",
-                "Other"
+                "Vifaa vya Ofisi",
+                "Safari",
+                "Chakula & Burudani",
+                "Matengenezo & Ukarabati",
+                "Huduma za Umeme & Maji",
+                "Uuzaji & Matangazo",
+                "Usafirishaji",
+                "Programu & Usajili",
+                "Huduma za Kitaaluma",
+                "Nyingine"
               ].map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
 
-          {/* Description */}
+          {/* Maelezo */}
           <div>
-            <label className="block font-semibold mb-1">Description (optional)</label>
+            <label className="block font-semibold mb-1">Maelezo (hiari)</label>
             <textarea
-              placeholder="Enter description"
+              placeholder="Weka maelezo"
               value={newRequestData.description}
               onChange={e => setNewRequestData({ ...newRequestData, description: e.target.value })}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
-          {/* Office & Requested By */}
+          {/* Ofisi & Aliyeomba */}
           {userInfo && (
             <div className="space-y-1 text-sm text-gray-700">
-              <p><strong>Office:</strong> {userInfo.office_name}</p>
-              <p><strong>Requested By:</strong> {userInfo.name}</p>
+              <p><strong>Ofisi:</strong> {userInfo.office_name}</p>
+              <p><strong>Ombi limefanywa na:</strong> {userInfo.name}</p>
             </div>
           )}
 
-          {/* Actions */}
+          {/* Vitendo */}
           <div className="flex gap-2 mt-4">
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition"
+              className="bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition"
             >
-              {loading ? "Submitting..." : <><FaPlus /> Submit Request</>}
+              {loading ? "Inatuma..." : <><FaPlus /> Tuma Ombi</>}
             </button>
             <Link
-              to="/expenses"
+              to="../expenses/expensesindex"
               className="bg-gray-300 px-6 py-2 rounded-xl hover:bg-gray-400 flex items-center gap-2 transition"
             >
-              <FaTimes /> Cancel
+              <FaTimes /> Ghairi
             </Link>
           </div>
         </form>

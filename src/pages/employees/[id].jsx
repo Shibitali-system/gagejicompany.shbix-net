@@ -162,79 +162,79 @@ const EmployeeProfile = () => {
 
   return (
   <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-    {/* Header */}
+    {/* Kichwa */}
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">{employee.name}</h1>
       <Link to="../employees">
-        <button className="bg-white border border-[#e5e7eb] text-[#ef4444] px-5 py-2 rounded-xl hover:bg-[#fdfdfd] transition-all shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">← Back</button>
+        <button className="bg-white border border-[#e5e7eb] text-[#2563EB] px-5 py-2 rounded-xl hover:bg-[#fdfdfd] transition-all shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">← Rudi</button>
       </Link>
     </div>
 
-    {/* Filters */}
+    {/* Vichujio */}
     <CustomCard>
       <div className="flex flex-col md:flex-row gap-4 items-center overflow-x-auto">
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>From:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Kuanzia:</label>
           <input type="date" className="border border-[#e5e7eb] rounded px-2 py-1" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         </div>
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>To:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Hadi:</label>
           <input type="date" className="border border-[#e5e7eb] rounded px-2 py-1" value={toDate} onChange={(e) => setToDate(e.target.value)} />
         </div>
-        <button onClick={fetchEmployeeData} className="bg-[#ef4444] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap">Apply</button>
+        <button onClick={fetchEmployeeData} className="bg-[#2563EB] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap">Tumia</button>
       </div>
     </CustomCard>
 
-    {/* Analytics Summary */}
+    {/* Muhtasari wa Uchanganuzi */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <FormCard title="Today">
-        <p className="text-[#ef4444] font-bold">Sales: {todaySales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {todayCustomers}</p>
+      <FormCard title="Leo">
+        <p className="text-[#2563EB] font-bold">Uuzaji: {todaySales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Wateja: {todayCustomers}</p>
       </FormCard>
-      <FormCard title="This Week">
-        <p className="text-[#ef4444] font-bold">Sales: {weekSales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {weekCustomers}</p>
+      <FormCard title="Wiki Hii">
+        <p className="text-[#2563EB] font-bold">Uuzaji: {weekSales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Wateja: {weekCustomers}</p>
       </FormCard>
-      <FormCard title="This Month">
-        <p className="text-[#ef4444] font-bold">Sales: {monthSales.toLocaleString()} TZS</p>
-        <p className="text-[#ef4444] font-bold">Customers: {monthCustomers}</p>
+      <FormCard title="Mwezi Huu">
+        <p className="text-[#2563EB] font-bold">Uuzaji: {monthSales.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Wateja: {monthCustomers}</p>
       </FormCard>
     </div>
 
-    {/* Profile Summary */}
+    {/* Muhtasari wa Profaili */}
     <CustomCard>
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-        <div className="flex-shrink-0 bg-[#ef4444]/20 rounded-full p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center text-[#ef4444] text-3xl font-bold uppercase shadow-inner">
+        <div className="flex-shrink-0 bg-[#2563EB]/20 rounded-full p-4 w-20 h-20 md:w-28 md:h-28 flex items-center justify-center text-[#2563EB] text-3xl font-bold uppercase shadow-inner">
           {employee.name?.charAt(0)}
         </div>
         <div>
           <h2 className="text-xl md:text-2xl font-semibold text-gray-800">{employee.name}</h2>
           <p className="text-gray-500">{employee.email}</p>
-          <p className="text-sm text-[#ef4444] font-medium mt-1">{employee.active ? "🟢 Active" : "🔴 Inactive"}</p>
+          <p className="text-sm text-[#2563EB] font-medium mt-1">{employee.active ? "🟢 Hai" : "🔴 Haitaendi"} </p>
         </div>
       </div>
     </CustomCard>
 
-    {/* Basic Info */}
-    <FormCard title="Basic Information">
+    {/* Taarifa za Msingi */}
+    <FormCard title="Taarifa za Msingi">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="flex items-center gap-3"><Mail className="text-[#ef4444]" /> <span>{employee.email}</span></div>
-        <div className="flex items-center gap-3"><Phone className="text-[#ef4444]" /> <span>{employee.phone || "-"}</span></div>
-        <div className="flex items-center gap-3"><User className="text-[#ef4444]" /> <span>{employee.role}</span></div>
-        <div className="flex items-center gap-3"><Briefcase className="text-[#ef4444]" /> <span>{employee.position || "Not set"}</span></div>
-        <div className="flex items-center gap-3"><Lock className="text-[#ef4444]" /> <span>{employee.active ? "Active" : "Inactive"}</span></div>
+        <div className="flex items-center gap-3"><Mail className="text-[#2563EB]" /> <span>{employee.email}</span></div>
+        <div className="flex items-center gap-3"><Phone className="text-[#2563EB]" /> <span>{employee.phone || "-"}</span></div>
+        <div className="flex items-center gap-3"><User className="text-[#2563EB]" /> <span>{employee.role === "admin" ? "Msimamizi" : "Mfanyakazi"}</span></div>
+        <div className="flex items-center gap-3"><Briefcase className="text-[#2563EB]" /> <span>{employee.position || "Haijawekwa"}</span></div>
+        <div className="flex items-center gap-3"><Lock className="text-[#2563EB]" /> <span>{employee.active ? "Hai" : "Haitaendi"}</span></div>
       </div>
     </FormCard>
 
-    {/* Purchase History Table */}
-    <FormCard title="Sales History">
+    {/* Jedwali la Historia ya Mauzo */}
+    <FormCard title="Historia ya Mauzo">
       <div className="overflow-x-auto">
         <table className="min-w-full border border-[#e5e7eb] text-sm text-left">
           <thead className="bg-[#f9f9f9]">
             <tr>
-              {["Date","Customer","Total","Paid","Loan","Payment Status","Discount","Payment Method","Products"].map((th, idx) => (
+              {["Tarehe","Mteja","Jumla","Imepagwa","Deni","Hali ya Malipo","Punguzo","Mbinu ya Malipo","Bidhaa"].map((th, idx) => (
                 <th key={idx} className="px-3 py-2 border">{th}</th>
               ))}
             </tr>
@@ -252,13 +252,13 @@ const EmployeeProfile = () => {
                 <td className="px-3 py-2">{s.payment_method}</td>
                 <td className="px-3 py-2">
                   {s.sale_items?.map(item => (
-                    <div key={item.id}>{item.products?.name || `Product ${item.product_id}`} x {item.quantity} @ {parseFloat(item.price).toLocaleString()} TZS (Disc: {parseFloat(item.discount || 0)})</div>
+                    <div key={item.id}>{item.products?.name || `Bidhaa ${item.product_id}`} x {item.quantity} @ {parseFloat(item.price).toLocaleString()} TZS (Punguzo: {parseFloat(item.discount || 0)})</div>
                   ))}
                 </td>
               </tr>
             )) : (
               <tr>
-                <td colSpan={9} className="text-center px-3 py-2 text-gray-500">No sales found.</td>
+                <td colSpan={9} className="text-center px-3 py-2 text-gray-500">Hakuna mauzo yaliyopatikana.</td>
               </tr>
             )}
           </tbody>
@@ -266,19 +266,20 @@ const EmployeeProfile = () => {
       </div>
     </FormCard>
 
-    {/* Monthly Sales Chart */}
-    <FormCard title="Monthly Sales Overview">
+    {/* Chati ya Mauzo ya Kila Mwezi */}
+    <FormCard title="Muhtasari wa Mauzo Kila Mwezi">
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={monthlySales}>
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip formatter={(v) => v.toLocaleString()} />
-          <Bar dataKey="total" fill="#ef4444" radius={[4,4,0,0]} />
+          <Bar dataKey="total" fill="#2563EB" radius={[4,4,0,0]} />
         </BarChart>
       </ResponsiveContainer>
     </FormCard>
   </div>
 );
+
 
 };
 

@@ -161,108 +161,108 @@ const handleCreateExpense = async () => {
   }
 };
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
     <div className="max-w-3xl mx-auto space-y-6">
 
-      {/* Back Link */}
-      <Link to="../expenses" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-        <FaArrowLeft /> Back to Expenses
+      {/* Kiungo cha kurudi nyuma */}
+      <Link to="../expenses" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+        <FaArrowLeft /> Rudi kwenye Matumizi
       </Link>
 
-      {/* Page Title */}
-      <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Add New Expense</h1>
+      {/* Kichwa cha ukurasa */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Ongeza Matumizi Mapya</h1>
 
-      {/* Form Card */}
+      {/* Kadi ya Fomu */}
       <FormCard>
         <form className="space-y-4" onSubmit={e => { e.preventDefault(); handleCreateExpense(); }}>
 
-          {/* Expense Name */}
+          {/* Jina la Matumizi */}
           <div>
-            <label className="block font-semibold mb-1">Expense Name *</label>
+            <label className="block font-semibold mb-1">Jina la Matumizi *</label>
             <input
               type="text"
-              placeholder="Enter expense name"
+              placeholder="Weka jina la matumizi"
               value={newExpenseData.name}
               onChange={e => setNewExpenseData({ ...newExpenseData, name: e.target.value })}
-              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
 
-          {/* Amount */}
+          {/* Kiasi */}
           <div>
-            <label className="block font-semibold mb-1">Amount *</label>
+            <label className="block font-semibold mb-1">Kiasi *</label>
             <input
               type="number"
-              placeholder="Enter amount"
+              placeholder="Weka kiasi"
               value={newExpenseData.amount}
               onChange={e => setNewExpenseData({ ...newExpenseData, amount: e.target.value })}
-              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
 
-          {/* Category */}
+          {/* Kategoria */}
           <div>
-            <label className="block font-semibold mb-1">Category</label>
+            <label className="block font-semibold mb-1">Kategoria</label>
             <select
               value={newExpenseData.category}
               onChange={e => setNewExpenseData({ ...newExpenseData, category: e.target.value })}
-              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             >
-              <option value="">Select category</option>
+              <option value="">Chagua kategoria</option>
               {[
-                "Office Supplies",
-                "Travel",
-                "Meals & Entertainment",
-                "Maintenance & Repairs",
-                "Utilities",
-                "Marketing & Advertising",
-                "Transportation",
-                "Software & Subscriptions",
-                "Professional Services",
-                "Other"
+                "Vifaa vya Ofisi",
+                "Usafiri",
+                "Chakula & Burudani",
+                "Matengenezo & Marekebisho",
+                "Huduma za Umeme/Maji",
+                "Masoko & Utangazaji",
+                "Usafirishaji",
+                "Programu & Usajili",
+                "Huduma za Kitaalamu",
+                "Nyingine"
               ].map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
 
-          {/* Description */}
+          {/* Maelezo */}
           <div>
-            <label className="block font-semibold mb-1">Description (optional)</label>
+            <label className="block font-semibold mb-1">Maelezo (hiari)</label>
             <textarea
-              placeholder="Enter description"
+              placeholder="Weka maelezo"
               value={newExpenseData.description}
               onChange={e => setNewExpenseData({ ...newExpenseData, description: e.target.value })}
-              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
-          {/* Office & Entered By (read-only) */}
+          {/* Ofisi & Aliye Ingiza (soma-tu) */}
           {sellerInfo && (
             <div className="space-y-1 text-sm text-gray-700">
-              <p><strong>Office:</strong> {sellerInfo.office_name}</p>
-              <p><strong>Entered By:</strong> {sellerInfo.name}</p>
+              <p><strong>Ofisi:</strong> {sellerInfo.office_name}</p>
+              <p><strong>Imeingizwa Na:</strong> {sellerInfo.name}</p>
             </div>
           )}
 
-          {/* Actions */}
+          {/* Vitendo */}
           <div className="flex gap-2 mt-4">
             <button
               type="submit"
               disabled={loading}
-              className="bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition"
+              className="bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition"
             >
-              {loading ? "Creating..." : <><FaPlus /> Create Expense</>}
+              {loading ? "Inaundwa..." : <><FaPlus /> Unda Matumizi</>}
             </button>
             <Link
-              to="/expenses"
+              to="../expenses"
               className="bg-gray-300 px-6 py-2 rounded-xl hover:bg-gray-400 flex items-center gap-2 transition"
             >
-              <FaTimes /> Cancel
+              <FaTimes /> Ghairi
             </Link>
           </div>
         </form>
@@ -270,6 +270,7 @@ const handleCreateExpense = async () => {
     </div>
   </div>
 );
+
 
 };
 

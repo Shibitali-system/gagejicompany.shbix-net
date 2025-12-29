@@ -2,97 +2,59 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../../supabaseClient";
 import { sendNotification } from "../utils/sendNotification";
+import { useNotification } from '../../hooks/useNotification'; // adjust path kama ni tofauti
 import * as XLSX from "xlsx";
 import { toast, Toaster } from "react-hot-toast";
 import { FaPlus, FaFileExcel, FaArrowLeft, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 
+// Makundi ya bidhaa kwa biashara za jumla
 const categoryOptions = [
-  "Analgesics / Pain Relief",
-  "Anesthetics / Sedatives",
-  "Anti-allergic / Anti-histamines",
-  "Anti-parasitic / Anti-malarial Drugs",
-  "Antibiotics",
-  "Antifungals",
-  "Antiseptics / Disinfectants",
-  "Antipyretics",
-  "Antivirals",
-  "Appetite Stimulants",
-  "Blood Glucose Regulators / Antidiabetics",
-  "Bone Health / Calcium Preparations",
-  "Cardiovascular Drugs",
-  "Chemotherapy / Anticancer Drugs",
-  "Cough & Cold Preparations",
-  "Dermatology / Skin Preparations",
-  "Diabetes / Antidiabetics",
-  "Digestive Enzymes / Gastrointestinal Drugs",
-  "Electrolytes / IV Fluids",
-  "Eye / Ear / Nose Preparations",
-  "Fluids / IV Preparations",
-  "Gastrointestinal Drugs",
-  "Gynecology / Obstetrics",
-  "Hematology / Blood Products",
-  "Hormones & Endocrine",
-  "Hypertension / Antihypertensives",
-  "Immune Modulators / Biologics",
-  "Immunoglobulins / Blood Components",
-  "Medical Devices",
-  "Minerals / Trace Elements",
-  "Musculoskeletal / Orthopedic Drugs",
-  "Neurological / Psychiatric Drugs",
-  "Nutrition & Dietetic Products",
-  "Oncology / Anticancer Drugs",
-  "Ophthalmic Drugs",
-  "Radiology / Contrast Agents",
-  "Renal / Urinary Drugs",
-  "Respiratory Drugs",
-  "Sedatives / Hypnotics",
-  "Vaccines & Immunization",
-  "Vitamins & Supplements",
-  "Wound Care / Dressings",
-  "Others"
+  "Vinywaji",
+  "Vitafunwa na Vyakula",
+  "Vifaa vya Kielektroniki",
+  "Nguo na Mavazi",
+  "Viatu",
+  "Bidhaa za Urembo na Huduma Binafsi",
+  "Vifaa vya Nyumbani na Jikoni",
+  "Samani",
+  "Vifaa vya Kuandikia na Ofisini",
+  "Vinyago na Michezo",
+  "Michezo na Mazoezi ya Mwili",
+  "Vifaa vya Magari",
+  "Vitabu na Magazeti",
+  "Bidhaa za Wanyama wa Kufugwa",
+  "Bustani na Shughuli za Nje",
+  "Zana na Vifaa vya Ufundi",
+  "Vito na Mapambo",
+  "Afya na Ustawi",
+  "Vifaa vya Usafi",
+  "Nyinginezo"
 ];
 
 
 
+// Package types for general products
 const packageOptions = [
-  "Ampules",
-  "Bags",
-  "Blister Packs",
-  "Bottles",
-  "Boxes",
-  "Capsules",
-  "Cream",
-  "Cream Tube",
-  "Drops",
-  "Foam",
-  "Gel",
-  "Granules",
-  "Inhalers",
-  "Kg",
-  "Lotion",
-  "Lozenges",
-  "Mg",
-  "Ml",
-  "Ointment",
-  "Ointment Tube",
-  "Packets",
+  "Box",
+  "Packet",
+  "Piece",
+  "Set",
+  "Bundle",
+  "Bottle",
+  "Can",
+  "Bag",
+  "Jar",
+  "Tube",
+  "Carton",
+  "Roll",
+  "Pack",
   "Pcs",
-  "Patch",
-  "Powder",
-  "Roll-on",
-  "Sachets",
-  "Spray",
-  "Solution",
-  "Spoonful",
-  "Syrup",
-  "Suppository",
-  "Suspension",
-  "Tablets",
-  "Tape",
-  "Transdermal Patch",
-  "Units",
-  "Vials",
-  "Wafers",
+  "Kg",
+  "Litre",
+  "Dozen",
+  "Packet of 6",
+  "Tray",
+  "Bundle of 10",
   "Others"
 ];
 
@@ -120,6 +82,7 @@ const ProductNew = ({ officeName = "" }) => {
   const [excelSummary, setExcelSummary] = useState({ totalProducts: 0, totalStock: 0, totalProfit: 0 });
 
   const [highlightFields, setHighlightFields] = useState([]); // For required field highlighting
+  const notify = useNotification();
 
   useEffect(() => {
     const price = parseFloat(form.price) || 0;
@@ -175,111 +138,148 @@ const ProductNew = ({ officeName = "" }) => {
   }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    // Required fields validation
-    const required = ["name", "price", "purchase_price", "stock", "package_type"];
-    const emptyFields = required.filter(field => !form[field]);
-    if (emptyFields.length > 0) {
-      toast.error("Please fill in all required fields!");
-      setHighlightFields(emptyFields);
-      setLoading(false);
-      return;
+  // Required fields validation
+  const required = ["name", "price", "purchase_price", "stock", "package_type"];
+  const emptyFields = required.filter(field => !form[field]);
+
+  if (emptyFields.length > 0) {
+    toast.error("Please fill in all required fields!");
+    setHighlightFields(emptyFields);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    // 🔐 Get session & access token
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("User not authenticated");
     }
 
-    try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      let userName = "Unknown", officeId = null, officeName = "Unknown", userType = "employee";
+    // 👤 Get authenticated user
+    const { data: { user: authUser } } = await supabase.auth.getUser();
 
-      const { data: systemUser } = await supabase
-        .from("systems_users")
-        .select("customer_name, office_id, office_name")
+    let userName = "Unknown";
+    let officeId = null;
+    let officeName = "Unknown";
+    let userType = "employee";
+
+    // 🔎 Check system user
+    const { data: systemUser } = await supabase
+      .from("systems_users")
+      .select("customer_name, office_id, office_name")
+      .eq("auth_user_id", authUser.id)
+      .maybeSingle();
+
+    if (systemUser) {
+      userName = systemUser.customer_name;
+      officeId = systemUser.office_id;
+      officeName = systemUser.office_name;
+      userType = "system";
+    } else {
+      // 🔎 Check employee
+      const { data: employee } = await supabase
+        .from("employees")
+        .select("name, office_id")
         .eq("auth_user_id", authUser.id)
         .maybeSingle();
 
-      if (systemUser) {
-        userName = systemUser.customer_name;
-        officeId = systemUser.office_id;
-        officeName = systemUser.office_name;
-        userType = "system";
-      } else {
-        const { data: employee } = await supabase
-          .from("employees")
-          .select("name, office_id")
-          .eq("auth_user_id", authUser.id)
+      if (employee) {
+        userName = employee.name;
+        officeId = employee.office_id;
+
+        const { data: officeInfo } = await supabase
+          .from("systems_users")
+          .select("office_name")
+          .eq("office_id", employee.office_id)
           .maybeSingle();
 
-        if (employee) {
-          userName = employee.name;
-          officeId = employee.office_id;
-          const { data: officeInfo } = await supabase
-            .from("systems_users")
-            .select("office_name")
-            .eq("office_id", employee.office_id)
-            .maybeSingle();
-          if (officeInfo) officeName = officeInfo.office_name;
-        }
+        if (officeInfo) officeName = officeInfo.office_name;
       }
-
-      const { error } = await supabase.from("products").insert([{
-        ...form,
-        price: parseFloat(form.price),
-        purchase_price: parseFloat(form.purchase_price),
-        stock: parseInt(form.stock),
-        expiry_date: form.expiry_date || null,
-        entered_by: userName,
-        entered_by_id: authUser.id,
-        office_id: officeId,
-        office_name: officeName,
-        user_type: userType,
-      }]);
-      if (error) throw error;
-
-      await sendNotification({
-        auth_user_id: authUser.id,
-        office_id: officeId,
-        title: "New Product Added",
-        message: `${userName} added a new product: ${form.name}`,
-        link: "/pharmacy/dashboard/products",
-        type: "both",
-      });
-
-      if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-          new Notification("New Product Added", { body: `${userName} added a new product: ${form.name}` });
-        } else if (Notification.permission !== "granted") {
-          Notification.requestPermission();
-        }
-      }
-
-      toast.success("✅ Product added successfully!");
-
-      // Reset form but keep office info
-      setForm({
-        name: "",
-        category: "",
-        description: "",
-        package_type: "",
-        price: "",
-        purchase_price: "",
-        stock: "",
-        expiry_date: "",
-        office_id: form.office_id,
-        office_name: form.office_name,
-      });
-
-      setHighlightFields([]);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      nameRef.current?.focus();
-    } catch (err) {
-      toast.error("❌ Failed to add product: " + err.message);
-      console.error(err);
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 🧾 Insert product
+    const { error } = await supabase.from("products").insert([{
+      ...form,
+      price: Number(form.price),
+      purchase_price: Number(form.purchase_price),
+      stock: Number(form.stock),
+      expiry_date: form.expiry_date || null,
+      entered_by: userName,
+      entered_by_id: authUser.id,
+      office_id: officeId,
+      office_name: officeName,
+      user_type: userType,
+    }]);
+
+    if (error) throw error;
+
+    // 🔔 PUSH NOTIFICATION (Supabase Edge Function)
+    try {
+      await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/quick-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`, // ✅ JWT ya user
+          },
+          body: JSON.stringify({
+            auth_user_id: authUser.id,
+            office_id: officeId,
+            title: "New Product Added",
+            message: `${userName} added a new product: ${form.name}`,
+            url: "/dashboard/products",
+          }),
+        }
+      );
+    } catch (pushErr) {
+      console.warn("🔕 Push notification failed:", pushErr);
+    }
+
+    // 🔔 LOCAL (Browser / PWA) notification
+    notify("New Product Added", {
+      body: `${userName} added a new product: ${form.name}`,
+      icon: "/pwa-192.png",
+      badge: "/badge-72.png",
+    });
+
+    toast.success("✅ Product added successfully!");
+
+    // 🔄 Reset form
+    setForm({
+      name: "",
+      category: "",
+      description: "",
+      package_type: "",
+      price: "",
+      purchase_price: "",
+      stock: "",
+      expiry_date: "",
+      office_id: form.office_id,
+      office_name: form.office_name,
+    });
+
+    setHighlightFields([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    nameRef.current?.focus();
+
+  } catch (err) {
+    toast.error("❌ Failed to add product: " + err.message);
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
   const handleExcelUpload = (e) => {
     const file = e.target.files[0];
@@ -388,46 +388,45 @@ const ProductNew = ({ officeName = "" }) => {
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     {/* Toasts */}
     <Toaster
-  position="top-right"
-  gutter={24}
-  toastOptions={{
-    duration: 5000, // Time in ms, toast ikae kidogo
-    style: {
-      borderRadius: "12px",
-      background: "#ef4444", // Rangi kuu ya app
-      color: "#ffffff", // Text color
-      fontWeight: "bold", // Bold text
-      fontSize: "0.875rem",
-      padding: "10px 16px",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-    },
-    iconTheme: {
-      primary: "#ffffff", // React icon color
-      secondary: "#ef4444", // Background for icon circle
-    },
-    success: {
-      icon: <FaCheckCircle />, // React icon
-      style: { background: "#ef4444", color: "#ffffff", fontWeight: "bold" },
-    },
-    error: {
-      icon: <FaExclamationCircle />, // React icon
-      style: { background: "#ef4444", color: "#ffffff", fontWeight: "bold" },
-    },
-  }}
-/>
-
+      position="top-right"
+      gutter={24}
+      toastOptions={{
+        duration: 5000, // Muda wa ujumbe kuonekana
+        style: {
+          borderRadius: "12px",
+          background: "#2563EB", // Rangi kuu ya app
+          color: "#ffffff",
+          fontWeight: "bold",
+          fontSize: "0.875rem",
+          padding: "10px 16px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+        },
+        iconTheme: {
+          primary: "#ffffff",
+          secondary: "#2563EB",
+        },
+        success: {
+          icon: <FaCheckCircle />,
+          style: { background: "#2563EB", color: "#ffffff", fontWeight: "bold" },
+        },
+        error: {
+          icon: <FaExclamationCircle />,
+          style: { background: "#2563EB", color: "#ffffff", fontWeight: "bold" },
+        },
+      }}
+    />
 
     <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-4 sm:p-5">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3 sm:gap-0">
-        <h1 className="text-xl sm:text-2xl font-bold text-[#ef4444] flex items-center gap-2">
-          <FaPlus /> Add New Product
+        <h1 className="text-xl sm:text-2xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaPlus /> Ongeza Bidhaa Mpya
         </h1>
         <Link
-          to="/pharmacy/dashboard/products"
-          className="flex items-center gap-2 text-[#ef4444] hover:text-[#d63636] font-medium text-sm sm:text-base"
+          to="/dashboard/products"
+          className="flex items-center gap-2 text-[#2563EB] hover:text-[#d63636] font-medium text-sm sm:text-base"
         >
-          <FaArrowLeft /> Back to Products
+          <FaArrowLeft /> Rudi kwenye Bidhaa
         </Link>
       </div>
 
@@ -439,11 +438,13 @@ const ProductNew = ({ officeName = "" }) => {
             onClick={() => toggleView(mode)}
             className={`px-4 sm:px-5 py-2 rounded-2xl font-medium text-sm sm:text-base transition-all shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] transform hover:-translate-y-[1px] active:translate-y-[1px] ${
               viewMode === mode
-                ? "bg-[#ef4444] text-white"
+                ? "bg-[#2563EB] text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
           >
-            {mode === "single" ? "Single Product" : "Bulk Upload (Excel)"}
+            {mode === "single"
+              ? "Bidhaa Moja"
+              : "Pakia Bidhaa Kwa Wingi (Excel)"}
           </button>
         ))}
       </div>
@@ -458,7 +459,7 @@ const ProductNew = ({ officeName = "" }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Product Name*
+                Jina la Bidhaa*
               </label>
               <input
                 ref={nameRef}
@@ -466,22 +467,22 @@ const ProductNew = ({ officeName = "" }) => {
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                className={`w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444] ${
+                className={`w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB] ${
                   highlightFields.includes("name") ? "border-red-500" : ""
                 }`}
               />
             </div>
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Category
+                Kundi
               </label>
               <select
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444]"
+                className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB]"
               >
-                <option value="">Select Category</option>
+                <option value="">Chagua Kundi</option>
                 {categoryOptions.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -495,59 +496,63 @@ const ProductNew = ({ officeName = "" }) => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Selling Price (TZS)*
+                Bei ya Mauzo (TZS)*
               </label>
               <input
                 type="number"
                 name="price"
                 value={form.price}
                 onChange={handleChange}
-                className={`w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444] ${
+                className={`w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB] ${
                   highlightFields.includes("price") ? "border-red-500" : ""
                 }`}
               />
             </div>
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Purchase Price (TZS)*
+                Bei ya Manunuzi (TZS)*
               </label>
               <input
                 type="number"
                 name="purchase_price"
                 value={form.purchase_price}
                 onChange={handleChange}
-                className={`w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444] ${
-                  highlightFields.includes("purchase_price") ? "border-red-500" : ""
+                className={`w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB] ${
+                  highlightFields.includes("purchase_price")
+                    ? "border-red-500"
+                    : ""
                 }`}
               />
             </div>
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Stock*
+                Stoo*
               </label>
               <input
                 type="number"
                 name="stock"
                 value={form.stock}
                 onChange={handleChange}
-                className={`w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444] ${
+                className={`w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB] ${
                   highlightFields.includes("stock") ? "border-red-500" : ""
                 }`}
               />
             </div>
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Package Type*
+                Aina ya Kifungashio*
               </label>
               <select
                 name="package_type"
                 value={form.package_type}
                 onChange={handleChange}
-                className={`w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444] ${
-                  highlightFields.includes("package_type") ? "border-red-500" : ""
+                className={`w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB] ${
+                  highlightFields.includes("package_type")
+                    ? "border-red-500"
+                    : ""
                 }`}
               >
-                <option value="">Select Package</option>
+                <option value="">Chagua Kifungashio</option>
                 {packageOptions.map((pkg) => (
                   <option key={pkg} value={pkg}>
                     {pkg}
@@ -561,25 +566,25 @@ const ProductNew = ({ officeName = "" }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Expiry Date
+                Tarehe ya Kuisha
               </label>
               <input
                 type="date"
                 name="expiry_date"
                 value={form.expiry_date}
                 onChange={handleChange}
-                className="w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444]"
+                className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
             <div>
               <label className="font-bold text-gray-700 text-sm sm:text-base">
-                Expected Profit (TZS)
+                Faida Inayotarajiwa (TZS)
               </label>
               <input
                 type="text"
                 value={expectedProfit.toLocaleString()}
                 readOnly
-                className="w-full border rounded-xl px-3 py-2 text-sm sm:text-sm bg-gray-100"
+                className="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100"
               />
             </div>
           </div>
@@ -587,27 +592,27 @@ const ProductNew = ({ officeName = "" }) => {
           {/* Description */}
           <div>
             <label className="font-bold text-gray-700 text-sm sm:text-base">
-              Description
+              Maelezo
             </label>
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
               rows={3}
-              className="w-full border rounded-xl px-3 py-2 text-sm sm:text-sm focus:ring-2 focus:ring-[#ef4444]"
+              className="w-full border rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
           {/* Office */}
           <div>
             <label className="font-bold text-gray-700 text-sm sm:text-base">
-              Pharmacy / Office
+              Duka la Dawa / Ofisi
             </label>
             <input
               type="text"
               value={form.office_name || ""}
               readOnly
-              className="w-full border rounded-xl px-3 py-2 text-sm sm:text-sm bg-gray-100 text-gray-700"
+              className="w-full border rounded-xl px-3 py-2 text-sm bg-gray-100 text-gray-700"
             />
           </div>
 
@@ -615,9 +620,9 @@ const ProductNew = ({ officeName = "" }) => {
           <button
             type="submit"
             disabled={loading}
-            className="mt-3 flex items-center gap-2 bg-[#ef4444] text-white px-4 py-2 text-sm sm:text-base rounded-2xl shadow hover:bg-[#d63636] transition transform hover:-translate-y-[1px] active:translate-y-[1px] w-full sm:w-auto justify-center"
+            className="mt-3 flex items-center gap-2 bg-[#2563EB] text-white px-4 py-2 text-sm sm:text-base rounded-2xl shadow hover:bg-[#d63636] transition transform hover:-translate-y-[1px] active:translate-y-[1px] w-full sm:w-auto justify-center"
           >
-            <FaCheckCircle /> {loading ? "Saving..." : "Add Product"}
+            <FaCheckCircle /> {loading ? "Inahifadhi..." : "Hifadhi Bidhaa"}
           </button>
         </form>
       )}
@@ -625,14 +630,14 @@ const ProductNew = ({ officeName = "" }) => {
       {/* Bulk Upload */}
       {viewMode === "bulk" && (
         <div className="bg-gray-50 rounded-2xl p-4 sm:p-5 shadow-[0_1px_0px_0_rgba(0,0,0,0.1)]">
-          <h2 className="text-lg sm:text-xl font-bold text-[#ef4444] mb-2 flex items-center gap-2">
-            <FaFileExcel /> Bulk Upload via Excel
+          <h2 className="text-lg sm:text-xl font-bold text-[#2563EB] mb-2 flex items-center gap-2">
+            <FaFileExcel /> Pakia Bidhaa Kwa Wingi (Excel)
           </h2>
           <button
             onClick={handleDownloadSample}
-            className="text-[#ef4444] hover:underline mb-2 inline-block font-semibold text-sm sm:text-base"
+            className="text-[#2563EB] hover:underline mb-2 inline-block font-semibold text-sm sm:text-base"
           >
-            📥 Download Sample Template
+            📥 Pakua Mfano wa Faili
           </button>
           <input
             ref={excelInputRef}
@@ -645,22 +650,22 @@ const ProductNew = ({ officeName = "" }) => {
           {excelData.length > 0 && (
             <div className="mt-4 space-y-1">
               <p className="text-gray-700 text-sm sm:text-base">
-                <b>Total Products:</b> {excelSummary.totalProducts}
+                <b>Jumla ya Bidhaa:</b> {excelSummary.totalProducts}
               </p>
               <p className="text-gray-700 text-sm sm:text-base">
-                <b>Total Stock:</b> {excelSummary.totalStock}
+                <b>Jumla ya Stoo:</b> {excelSummary.totalStock}
               </p>
               <p className="text-gray-700 text-sm sm:text-base">
-                <b>Total Expected Profit (TZS):</b>{" "}
+                <b>Jumla ya Faida Inayotarajiwa (TZS):</b>{" "}
                 {excelSummary.totalProfit.toLocaleString()}
               </p>
 
               <button
                 onClick={handleExcelSave}
                 disabled={loading}
-                className="mt-3 sm:mt-4 flex items-center gap-2 bg-[#ef4444] text-white px-4 py-2 text-sm sm:text-base rounded-2xl shadow hover:bg-[#d63636] transition transform hover:-translate-y-[1px] active:translate-y-[1px] w-full sm:w-auto justify-center"
+                className="mt-3 sm:mt-4 flex items-center gap-2 bg-[#2563EB] text-white px-4 py-2 text-sm sm:text-base rounded-2xl shadow hover:bg-[#d63636] transition transform hover:-translate-y-[1px] active:translate-y-[1px] w-full sm:w-auto justify-center"
               >
-                {loading ? "Uploading..." : "Save All Products"}
+                {loading ? "Inapakia..." : "Hifadhi Bidhaa Zote"}
               </button>
             </div>
           )}
@@ -669,6 +674,7 @@ const ProductNew = ({ officeName = "" }) => {
     </div>
   </div>
 );
+
 
 };
 

@@ -195,7 +195,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -222,48 +222,57 @@ return (
     <div className="max-w-7xl mx-auto space-y-6">
 
       {/* Header Card */}
-      <CustomCard title="Customers">
-        <h1 className="text-3xl font-bold text-[#ef4444]">Customers</h1>
-        <p className="text-gray-500 text-sm">Manage all your customers here. You can add, edit, or view details.</p>
+      <CustomCard title="Wateja">
+        <h1 className="text-3xl font-bold text-[#2563EB]">Wateja</h1>
+        <p className="text-gray-500 text-sm">
+          Dhibiti wateja wako wote hapa. Unaweza kuongeza, kuhariri au kuona taarifa zao.
+        </p>
         <div className="flex flex-wrap gap-2 mt-2">
           <Link
-  to="new"
-  className="
-    bg-white text-[#ef4444] border border-[#e5e7eb] rounded-[4px]
-    px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    hover:bg-[#fdfdfd] hover:shadow-md transition-all duration-200
-    font-sans
-  "
->
-  <FaPlus /> Add New Customer
-</Link>
+            to="new"
+            className="
+              bg-white text-[#2563EB] border border-[#e5e7eb] rounded-[4px]
+              px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+              hover:bg-[#fdfdfd] hover:shadow-md transition-all duration-200
+              font-sans
+            "
+          >
+            <FaPlus /> Ongeza Mteja
+          </Link>
 
           <button
-  onClick={exportToExcel}
-  className="
-    bg-[#ef4444] text-white border border-[#e5e7eb] rounded-[4px]
-    px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    hover:bg-[#d63a3a] hover:shadow-md transition-all duration-200
-    font-sans
-  "
->
-  <FaFileExcel /> Export Excel
-</button>
-
+            onClick={exportToExcel}
+            className="
+              bg-[#2563EB] text-white border border-[#e5e7eb] rounded-[4px]
+              px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+              hover:bg-[#d63a3a] hover:shadow-md transition-all duration-200
+              font-sans
+            "
+          >
+            <FaFileExcel /> Hamisha Excel
+          </button>
         </div>
       </CustomCard>
 
       {/* Filters Card */}
-      <CustomCard title="Filters">
+      <CustomCard title="Vichujio">
         <div className="flex flex-col sm:flex-row flex-wrap gap-2 items-start sm:items-center">
           <div className="flex flex-wrap gap-2 mb-2 sm:mb-0">
             {["today","week","month","year"].map(ft => (
               <button
                 key={ft}
                 onClick={()=>setFilterType(ft)}
-                className={`px-3 py-1 rounded-xl ${filterType===ft ? "bg-[#ef4444] text-white" : "bg-white border"}`}
+                className={`px-3 py-1 rounded-xl ${
+                  filterType===ft ? "bg-[#2563EB] text-white" : "bg-white border"
+                }`}
               >
-                {ft==="today"?"Today":ft==="week"?"This Week":ft==="month"?"This Month":"This Year"}
+                {ft==="today"
+                  ? "Leo"
+                  : ft==="week"
+                  ? "Wiki Hii"
+                  : ft==="month"
+                  ? "Mwezi Huu"
+                  : "Mwaka Huu"}
               </button>
             ))}
           </div>
@@ -271,14 +280,20 @@ return (
             <input
               type="date"
               value={customFrom}
-              onChange={e=>{setCustomFrom(e.target.value); setFilterType("custom");}}
+              onChange={e=>{
+                setCustomFrom(e.target.value);
+                setFilterType("custom");
+              }}
               className="border px-2 py-1 rounded"
             />
-            <span>to</span>
+            <span>hadi</span>
             <input
               type="date"
               value={customTo}
-              onChange={e=>{setCustomTo(e.target.value); setFilterType("custom");}}
+              onChange={e=>{
+                setCustomTo(e.target.value);
+                setFilterType("custom");
+              }}
               className="border px-2 py-1 rounded"
             />
           </div>
@@ -286,62 +301,94 @@ return (
       </CustomCard>
 
       {/* Search Card */}
-      <CustomCard title="Search Customers">
+      <CustomCard title="Tafuta Wateja">
         <div className="mb-2 flex items-center w-full sm:w-1/3">
           <FaSearch className="text-gray-400 mr-2" />
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder="Tafuta kwa jina..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
       </CustomCard>
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <SummaryCard title="Total Customers" value={totals.totalCustomers} />
-        <SummaryCard title="New Today" value={totals.newToday} />
-        
+        <SummaryCard title="Jumla ya Wateja" value={totals.totalCustomers} />
+        <SummaryCard title="Walioongezwa Leo" value={totals.newToday} />
       </div>
 
       {/* Customers Table Card */}
-      <CustomCard title="Customers List">
+      <CustomCard title="Orodha ya Wateja">
         {loading ? (
-          <p className="text-gray-600">Loading customers...</p>
+          <p className="text-gray-600">Inapakia wateja...</p>
         ) : error ? (
           <p className="text-red-600 font-semibold">{error}</p>
         ) : customers.length === 0 ? (
-          <p className="text-gray-600">No customers found.</p>
+          <p className="text-gray-600">Hakuna wateja waliopatikana.</p>
         ) : (
           <div className="overflow-x-auto w-full">
             <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+              <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                 <tr>
-                  {["Name","Type","Phone","Email","Address","Office Name","Created By","Created At","Actions"].map(th => (
-                    <th key={th} className="px-2 sm:px-3 py-2 text-left">{th}</th>
+                  {[
+                    "Jina",
+                    "Aina",
+                    "Simu",
+                    "Barua Pepe",
+                    "Anuani",
+                    "Ofisi",
+                    "Aliyeingiza",
+                    "Tarehe",
+                    "Vitendo"
+                  ].map(th => (
+                    <th key={th} className="px-2 sm:px-3 py-2 text-left">
+                      {th}
+                    </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {customers.map(cust => (
-                  <tr key={cust.id} className="border-b hover:bg-gray-50 transition-colors">
-                    <td className="px-2 sm:px-3 py-2 font-medium">{cust.name}</td>
+                  <tr
+                    key={cust.id}
+                    className="border-b hover:bg-gray-50 transition-colors"
+                  >
+                    <td className="px-2 sm:px-3 py-2 font-medium">
+                      {cust.name}
+                    </td>
                     <td className="px-2 sm:px-3 py-2">
                       {cust.type ? (
-                        <span className="bg-[#ef4444] text-white px-2 py-1 rounded-full text-sm">{cust.type}</span>
+                        <span className="bg-[#2563EB] text-white px-2 py-1 rounded-full text-sm">
+                          {cust.type}
+                        </span>
                       ) : "-"}
                     </td>
                     <td className="px-2 sm:px-3 py-2">{cust.phone || "-"}</td>
                     <td className="px-2 sm:px-3 py-2">{cust.email || "-"}</td>
                     <td className="px-2 sm:px-3 py-2">{cust.address || "-"}</td>
                     <td className="px-2 sm:px-3 py-2">{cust.office_name || "-"}</td>
-                    <td className="px-2 sm:px-3 py-2">{cust.created_by_name || "-"}</td>
-                    <td className="px-2 sm:px-3 py-2">{new Date(cust.created_at).toLocaleString()}</td>
+                    <td className="px-2 sm:px-3 py-2">
+                      {cust.created_by_name || "-"}
+                    </td>
+                    <td className="px-2 sm:px-3 py-2">
+                      {new Date(cust.created_at).toLocaleString()}
+                    </td>
                     <td className="px-2 sm:px-3 py-2 text-center flex flex-col sm:flex-row justify-center gap-2">
-                      <Link to={`${cust.id}`} className="text-blue-600 hover:underline flex items-center gap-1"><FaEye /> View</Link>
-                      <Link to={`edit/${cust.id}`} className="text-[#ef4444] hover:underline flex items-center gap-1"><FaEdit /> Edit</Link>
+                      <Link
+                        to={`${cust.id}`}
+                        className="text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        <FaEye /> Tazama
+                      </Link>
+                      <Link
+                        to={`edit/${cust.id}`}
+                        className="text-[#2563EB] hover:underline flex items-center gap-1"
+                      >
+                        <FaEdit /> Hariri
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -349,13 +396,14 @@ return (
             </table>
           </div>
         )}
+
         {hasMore && (
           <div className="mt-4 text-center">
             <button
               onClick={()=>fetchCustomers(false)}
-              className="bg-[#ef4444] text-white px-4 py-2 rounded hover:bg-[#d63a3a]"
+              className="bg-[#2563EB] text-white px-4 py-2 rounded hover:bg-[#d63a3a]"
             >
-              Load More
+              Pakia Zaidi
             </button>
           </div>
         )}
@@ -364,7 +412,6 @@ return (
     </div>
   </div>
 );
-
 
 
 

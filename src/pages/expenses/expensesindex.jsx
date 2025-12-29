@@ -208,53 +208,52 @@ const RequestExpensesIndex = () => {
     <div className="max-w-7xl mx-auto space-y-6">
 
       <CustomCard>
-  {/* Header */}
-  <div className="flex items-center justify-between mb-3">
-    <Link
-      to="../expenses"
-      className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline"
-    >
-      <FaArrowLeft /> Back to Expenses
-    </Link>
-    <h1 className="text-3xl font-bold text-[#ef4444]">Request Expenses</h1>
-  </div>
+        {/* Kichwa */}
+        <div className="flex items-center justify-between mb-3">
+          <Link
+            to="../expenses"
+            className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline"
+          >
+            <FaArrowLeft /> Rudi kwenye Matumizi
+          </Link>
+          <h1 className="text-3xl font-bold text-[#2563EB]">Omba Matumizi</h1>
+        </div>
 
-  {/* Tips / short instructions */}
-  <p className="text-gray-600 mb-4 text-sm">
-    Use the button below to create a new expense request quickly.
-  </p>
+        {/* Mwongozo mfupi */}
+        <p className="text-gray-600 mb-4 text-sm">
+          Tumia kitufe kilicho hapa chini kuunda ombi jipya la matumizi haraka.
+        </p>
 
-  {/* Action Button */}
-  <div className="flex flex-wrap gap-2">
-    <Link
-      to="../expenses/expenses"
-      className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow transition-all"
-    >
-      <FaPlus /> Request Expenses
-    </Link>
-  </div>
-</CustomCard>
+        {/* Kitufe cha Kutekeleza */}
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="../expenses/expenses"
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow transition-all"
+          >
+            <FaPlus /> Omba Matumizi
+          </Link>
+        </div>
+      </CustomCard>
 
-
-      {/* Filters & Search */}
-      <CustomCard title="Filters & Search">
+      {/* Vichujio & Utafutaji */}
+      <CustomCard title="Vichujio & Utafutaji">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex flex-wrap gap-2 items-center">
             {["today","week","month","year","custom"].map(ft => (
               <button
                 key={ft}
                 onClick={() => setFilterType(ft)}
-                className={`px-3 py-1 rounded-xl ${filterType===ft ? "bg-[#ef4444] text-white" : "bg-white border border-[#e5e7eb]"}`}
+                className={`px-3 py-1 rounded-xl ${filterType===ft ? "bg-[#2563EB] text-white" : "bg-white border border-[#e5e7eb]"}`}
               >
-                {ft==="today"?"Today":ft==="week"?"This Week":ft==="month"?"This Month":ft==="year"?"This Year":"Custom"}
+                {ft==="today"?"Leo":ft==="week"?"Wiki Hii":ft==="month"?"Mwezi Huu":ft==="year"?"Mwaka Huu":"Custom"}
               </button>
             ))}
             {filterType==="custom" && (
               <div className="flex gap-2 items-center ml-2">
                 <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded"/>
-                <span>to</span>
+                <span>hadi</span>
                 <input type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded"/>
-                <button onClick={fetchRequests} className="px-3 py-1 bg-[#ef4444] text-white rounded hover:bg-red-600 transition">Apply</button>
+                <button onClick={fetchRequests} className="px-3 py-1 bg-[#2563EB] text-white rounded hover:bg-red-600 transition">Chukua</button>
               </div>
             )}
           </div>
@@ -262,7 +261,7 @@ const RequestExpensesIndex = () => {
             <FaSearch className="text-gray-400" />
             <input
               type="text"
-              placeholder="Search by name..."
+              placeholder="Tafuta kwa jina..."
               value={searchTerm}
               onChange={e=>setSearchTerm(e.target.value)}
               className="border border-[#e5e7eb] px-3 py-1 rounded w-full sm:w-auto"
@@ -271,39 +270,39 @@ const RequestExpensesIndex = () => {
         </div>
       </CustomCard>
 
-      {/* Analytics */}
+      {/* Takwimu */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FormCard title="Total Requests">
-          <p className="text-[#ef4444] font-bold text-lg">{totals.totalRequests}</p>
+        <FormCard title="Jumla ya Maombi">
+          <p className="text-[#2563EB] font-bold text-lg">{totals.totalRequests}</p>
         </FormCard>
-        <FormCard title="Approved Today">
-          <p className="text-[#ef4444]/80 font-bold text-lg">{totals.totalApprovedToday}</p>
+        <FormCard title="Yameidhinishwa Leo">
+          <p className="text-[#2563EB]/80 font-bold text-lg">{totals.totalApprovedToday}</p>
         </FormCard>
       </div>
 
-      {/* Requests Table */}
-      <CustomCard title="Expense Requests">
+      {/* Jedwali la Maombi */}
+      <CustomCard title="Maombi ya Matumizi">
         {loading ? (
-          <p className="text-gray-600">Loading requests...</p>
+          <p className="text-gray-600">Inapakia maombi...</p>
         ) : requests.length === 0 ? (
-          <p className="text-gray-600">No requests found.</p>
+          <p className="text-gray-600">Hakuna maombi yaliyopatikana.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+              <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                 <tr>
-                  <th className="px-2 py-2">Name</th>
-                  <th className="px-2 py-2">Amount</th>
-                  <th className="px-2 py-2">Category</th>
-                  <th className="px-2 py-2">Description</th>
-                  <th className="px-2 py-2">Office</th>
-                  <th className="px-2 py-2">Created By</th>
-                  <th className="px-2 py-2">Created At</th>
-                  <th className="px-2 py-2">Status</th>
-                  <th className="px-2 py-2">Approved By</th>
-                  <th className="px-2 py-2">Approved At</th>
-                  <th className="px-2 py-2">Comment</th>
-                  <th className="px-2 py-2 text-center">Actions</th>
+                  <th className="px-2 py-2">Jina</th>
+                  <th className="px-2 py-2">Kiasi</th>
+                  <th className="px-2 py-2">Kategoria</th>
+                  <th className="px-2 py-2">Maelezo</th>
+                  <th className="px-2 py-2">Ofisi</th>
+                  <th className="px-2 py-2">Imeingizwa Na</th>
+                  <th className="px-2 py-2">Imeundwa</th>
+                  <th className="px-2 py-2">Hali</th>
+                  <th className="px-2 py-2">Imeidhinishwa Na</th>
+                  <th className="px-2 py-2">Imeidhinishwa</th>
+                  <th className="px-2 py-2">Maoni</th>
+                  <th className="px-2 py-2 text-center">Vitendo</th>
                 </tr>
               </thead>
               <tbody>
@@ -327,31 +326,29 @@ const RequestExpensesIndex = () => {
                           : ""
                       }`}
                     >
-                      {r.status}
+                      {r.status === "Pending" ? "Inasubiri" : r.status === "Approved" ? "Imeidhinishwa" : r.status === "Rejected" ? "Imekataliwa" : r.status}
                     </td>
                     <td className="px-2 py-2">{r.approved_by_name || "-"}</td>
                     <td className="px-2 py-2">{r.approved_at ? new Date(r.approved_at).toLocaleString() : "-"}</td>
                     <td className="px-2 py-2">{r.comment || "-"}</td>
                     <td className="px-2 py-2 text-center flex flex-col sm:flex-row justify-center gap-2">
-  {r.status === "pending" && (
-    <>
-      <button
-        onClick={() => openModal(r, "Approve")}
-        className="bg-[#ef4444] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-2 transition-all"
-      >
-        <FaCheckCircle /> Approve
-      </button>
-      <button
-        onClick={() => openModal(r, "Reject")}
-        className="bg-red-600 text-white px-3 py-1 rounded-xl hover:bg-red-700 flex items-center gap-2 transition-all"
-      >
-        <FaTimesCircle /> Reject
-      </button>
-    </>
-  )}
-</td>
-
-                      
+                      {r.status === "Pending" && (
+                        <>
+                          <button
+                            onClick={() => openModal(r, "Approve")}
+                            className="bg-[#2563EB] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-2 transition-all"
+                          >
+                            <FaCheckCircle /> Thibitisha
+                          </button>
+                          <button
+                            onClick={() => openModal(r, "Reject")}
+                            className="bg-red-600 text-white px-3 py-1 rounded-xl hover:bg-red-700 flex items-center gap-2 transition-all"
+                          >
+                            <FaTimesCircle /> Kataa
+                          </button>
+                        </>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -364,29 +361,29 @@ const RequestExpensesIndex = () => {
       {modalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
-            <h2 className="text-xl font-bold mb-4">{actionType} Request</h2>
-            <p className="mb-2">Comment (optional):</p>
+            <h2 className="text-xl font-bold mb-4">{actionType === "Approve" ? "Thibitisha Ombi" : "Kataa Ombi"}</h2>
+            <p className="mb-2">Maoni (hiari):</p>
             <textarea
               value={comment}
               onChange={e => setComment(e.target.value)}
               className="border rounded w-full px-3 py-2 mb-4"
               rows={4}
-              placeholder="Enter comment"
+              placeholder="Weka maoni"
             />
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setModalOpen(false)}
                 className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
               >
-                Cancel
+                Ghairi
               </button>
               <button
                 onClick={handleModalSubmit}
                 className={`px-4 py-2 rounded text-white ${
-                  actionType === "Approve" ? "bg-[#ef4444] hover:bg-red-600" : "bg-red-600 hover:bg-red-700"
+                  actionType === "Approve" ? "bg-[#2563EB] hover:bg-red-600" : "bg-red-600 hover:bg-red-700"
                 }`}
               >
-                {actionType}
+                {actionType === "Approve" ? "Thibitisha" : "Kataa"}
               </button>
             </div>
           </div>
@@ -395,6 +392,7 @@ const RequestExpensesIndex = () => {
     </div>
   </div>
 );
+
 
 };
 

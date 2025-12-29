@@ -34,10 +34,10 @@ const CustomCard = ({ title, children }) => (
 );
 
 const packages = [
-  { label: "Month - 15,000 TZS", value: 15000, days: 30 },
-  { label: "3 Months - 42,000 TZS", value: 42000, days: 90 },
-  { label: "6 Months - 82,000 TZS", value: 82000, days: 180 },
-  { label: "Year - 160,000 TZS", value: 160000, days: 360 },
+  { label: "Month - 7,000 TZS", value: 7000, days: 30 },
+  { label: "3 Months - 20,000 TZS", value: 20000, days: 90 },
+  { label: "6 Months - 40,000 TZS", value: 40000, days: 180 },
+  { label: "Year - 80,000 TZS", value: 80000, days: 360 },
 ];
 
 export default function SubscriptionPayment() {
@@ -172,32 +172,32 @@ const handleAirPayPayment = async () => {
 
 
 
-  return (
+ return (
   <main className="min-h-screen bg-gradient-to-br from-green-50 to-green-200 flex items-center justify-center py-14 px-4">
     <Toaster position="top-center" />
 
     <section className="w-full max-w-xl bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-green-100 animate-fadeIn space-y-6">
 
-      {/* Header */}
+      {/* Kichwa */}
       <CustomCard>
         <div className="text-center">
-          <Leaf className="mx-auto h-12 w-12 text-[#ef4444]" />
-          <h1 className="text-4xl font-extrabold text-[#ef4444] mt-3">
-            Subscription Payment
+          <Leaf className="mx-auto h-12 w-12 text-[#2563EB]" />
+          <h1 className="text-4xl font-extrabold text-[#2563EB] mt-3">
+            Malipo ya Usajili
           </h1>
           <p className="text-gray-600 mt-2">
-            Select a package and complete your payment securely. Tip: Choose the package that best suits your needs.
+            Chagua kifurushi na maliza malipo yako kwa usalama. Kidokezo: Chagua kifurushi kinachokufaa zaidi.
           </p>
         </div>
       </CustomCard>
 
-      {/* Package Selection */}
-      <FormCard title="Choose Package">
+      {/* Uchaguzi wa Kifurushi */}
+      <FormCard title="Chagua Kifurushi">
         <p className="text-gray-500 text-sm mb-2">
-          Tip: You can upgrade or downgrade your package anytime.
+          Kidokezo: Unaweza kuongeza au kupunguza kifurushi wakati wowote.
         </p>
         <select
-          className="border border-[#ef4444] rounded-lg p-3 w-full mb-4 bg-white shadow-sm focus:ring-2 focus:ring-[#ef4444] focus:outline-none"
+          className="border border-[#2563EB] rounded-lg p-3 w-full mb-4 bg-white shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
           value={selectedPackage.value}
           onChange={(e) =>
             setSelectedPackage(packages.find((p) => p.value === +e.target.value))
@@ -211,43 +211,44 @@ const handleAirPayPayment = async () => {
         </select>
       </FormCard>
 
-      {/* Amount Box */}
-      <FormCard title="Amount to Pay">
+      {/* Sanduku la Kiasi */}
+      <FormCard title="Kiasi cha Kulipwa">
         <p className="text-gray-500 text-sm mb-2">
-          Tip: Make sure you have sufficient funds before proceeding with the payment.
+          Kidokezo: Hakikisha una fedha za kutosha kabla ya kuendelea na malipo.
         </p>
-        <div className="p-4 bg-white border border-[#ef4444] rounded-xl text-[#ef4444] font-bold text-center shadow-sm text-2xl">
+        <div className="p-4 bg-white border border-[#2563EB] rounded-xl text-[#2563EB] font-bold text-center shadow-sm text-2xl">
           {selectedPackage.value} TZS
         </div>
       </FormCard>
 
-      {/* Pay Button */}
+      {/* Kitufe cha Malipo */}
       <FormCard>
         <button
-  onClick={handleAirPayPayment}
-  disabled={isProcessing}
-  className="w-full flex items-center justify-center gap-2 bg-[#ef4444] hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
->
-  {isProcessing ? (
-    <>
-      <Loader2 className="h-5 w-5 animate-spin" />
-      Processing...
-    </>
-  ) : (
-    <>
-      <CreditCard className="h-5 w-5" />
-      Pay with AirPay
-    </>
-  )}
-</button>
+          
+          disabled={isProcessing}
+          className="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Inaprocess...
+            </>
+          ) : (
+            <>
+              <CreditCard className="h-5 w-5" />
+              Lipa kwa AirPay
+            </>
+          )}
+        </button>
 
         <p className="mt-4 text-center text-gray-500 text-sm">
-          Tip: Your subscription will be updated automatically after payment.
+          Kidokezo: Usajili wako utaendelea kuwa mpya moja kwa moja baada ya malipo.
         </p>
       </FormCard>
 
     </section>
   </main>
 );
+
 
 }

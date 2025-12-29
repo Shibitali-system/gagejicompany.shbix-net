@@ -175,35 +175,35 @@ const EmployeeAttendanceProfile = () => {
   if (loading)
     return <p className="p-6 text-gray-600 animate-pulse text-center text-lg">Loading employee data...</p>;
 
-  return (
+ return (
   <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
 
-    {/* Error or no employee message */}
+    {/* Ujumbe wa kosa au hakuna data ya mfanyakazi */}
     {error && <p className="p-6 text-red-600 font-semibold text-center text-lg">{error}</p>}
-    {!employee && !error && <p className="p-6 text-gray-600 text-center text-lg">No employee data found.</p>}
+    {!employee && !error && <p className="p-6 text-gray-600 text-center text-lg">Hakuna data ya mfanyakazi iliyo patikana.</p>}
 
     {employee && (
       <>
-        {/* Header + Tips Card */}
+        {/* Kadi ya Kichwa + Vidokezo */}
         <CustomCard>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[#ef4444] tracking-tight">{employee.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-[#2563EB] tracking-tight">{employee.name}</h1>
             <Link to="../attendances">
               <button className="bg-gray-100 border border-gray-300 text-gray-700 px-5 py-2 rounded-xl hover:bg-gray-200 transition-all">
-                ← Back
+                ← Rudi
               </button>
             </Link>
           </div>
           <p className="text-gray-600 text-sm">
-            Use the form below to add or review attendance. Fields marked with * are required. Select dates carefully to filter attendance history and analytics.
+            Tumia fomu hapa chini kuongeza au kupitia mahudhurio. Sehemu zilizo na * ni lazima ujaze. Chagua tarehe kwa makini ili kuchuja historia ya mahudhurio na uchambuzi.
           </p>
         </CustomCard>
 
-        {/* Filters Card */}
-        <FormCard title="Filter Attendance">
+        {/* Kadi ya Vichujio */}
+        <FormCard title="Chuja Mahudhurio">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="flex items-center gap-2 whitespace-nowrap">
-              <label>From:</label>
+              <label>Kuanzia:</label>
               <input
                 type="date"
                 className="border border-gray-300 rounded px-2 py-1"
@@ -212,7 +212,7 @@ const EmployeeAttendanceProfile = () => {
               />
             </div>
             <div className="flex items-center gap-2 whitespace-nowrap">
-              <label>To:</label>
+              <label>Hadi:</label>
               <input
                 type="date"
                 className="border border-gray-300 rounded px-2 py-1"
@@ -222,63 +222,63 @@ const EmployeeAttendanceProfile = () => {
             </div>
             <button
               onClick={fetchData}
-              className="bg-[#ef4444] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
+              className="bg-[#2563EB] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap"
             >
-              Apply
+              Chukua
             </button>
           </div>
         </FormCard>
 
-        {/* Analytics Cards */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Kadi za Uchambuzi */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-  {/* Today Card */}
-  <FormCard title="Today">
-    <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-      <h3 className="text-[#ef4444] font-semibold text-lg">Today</h3>
-      <p className="text-[#ef4444] font-bold text-2xl mt-2">{todayCount} attendance(s)</p>
-    </div>
-  </FormCard>
+          {/* Kadi ya Leo */}
+          <FormCard title="Leo">
+            <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
+              <h3 className="text-[#2563EB] font-semibold text-lg">Leo</h3>
+              <p className="text-[#2563EB] font-bold text-2xl mt-2">{todayCount} mahudhurio</p>
+            </div>
+          </FormCard>
 
-  {/* This Week Card */}
-  <FormCard title="This Week">
-    <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-      <h3 className="text-[#ef4444] font-semibold text-lg">This Week</h3>
-      <p className="text-[#ef4444] font-bold text-2xl mt-2">{weekCount} attendance(s)</p>
-    </div>
-  </FormCard>
+          {/* Kadi ya Wiki Hii */}
+          <FormCard title="Wiki Hii">
+            <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
+              <h3 className="text-[#2563EB] font-semibold text-lg">Wiki Hii</h3>
+              <p className="text-[#2563EB] font-bold text-2xl mt-2">{weekCount} mahudhurio</p>
+            </div>
+          </FormCard>
 
-  {/* This Month Card */}
-  <FormCard title="This Month">
-    <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
-      <h3 className="text-[#ef4444] font-semibold text-lg">This Month</h3>
-      <p className="text-[#ef4444] font-bold text-2xl mt-2">{monthCount} attendance(s)</p>
-    </div>
-  </FormCard>
+          {/* Kadi ya Mwezi Huu */}
+          <FormCard title="Mwezi Huu">
+            <div className="p-4 flex flex-col items-center justify-center bg-white rounded-xl shadow">
+              <h3 className="text-[#2563EB] font-semibold text-lg">Mwezi Huu</h3>
+              <p className="text-[#2563EB] font-bold text-2xl mt-2">{monthCount} mahudhurio</p>
+            </div>
+          </FormCard>
 
-</div>
+        </div>
 
-        {/* Attendance Table Card */}
-        <FormCard title="Attendance History">
+        {/* Kadi ya Jedwali la Mahudhurio */}
+        <FormCard title="Historia ya Mahudhurio">
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-200 text-sm text-left">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-3 py-2 border">Date</th>
-                  <th className="px-3 py-2 border">Check In</th>
-                  <th className="px-3 py-2 border">Check Out</th>
-                  <th className="px-3 py-2 border">Remarks</th>
-                  <th className="px-3 py-2 border">Comment</th>
-                  <th className="px-3 py-2 border">Status</th>
-                  <th className="px-3 py-2 border">Approved By</th>
-                  <th className="px-3 py-2 border">Approved At</th>
+                  <th className="px-3 py-2 border">Tarehe</th>
+                  <th className="px-3 py-2 border">Kuingia</th>
+                  <th className="px-3 py-2 border">Kutoka</th>
+                  <th className="px-3 py-2 border">Maelezo</th>
+                  <th className="px-3 py-2 border">Maoni</th>
+                  <th className="px-3 py-2 border">Hali</th>
+                  <th className="px-3 py-2 border">Imekubaliwa Na</th>
+                  <th className="px-3 py-2 border">Ili Kubaliwa</th>
                 </tr>
               </thead>
               <tbody>
                 {attendances.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="text-center px-3 py-2 text-gray-500">
-                      No attendance records found.
+                      Hakuna rekodi za mahudhurio.
                     </td>
                   </tr>
                 ) : (
@@ -304,14 +304,14 @@ const EmployeeAttendanceProfile = () => {
           </div>
         </FormCard>
 
-        {/* Monthly Chart Card */}
-        <FormCard title="Monthly Attendance Overview">
+        {/* Kadi ya Chati ya Mwezi */}
+        <FormCard title="Muhtasari wa Mahudhurio wa Mwezi">
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={monthlyAttendance}>
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip formatter={(v) => v.toLocaleString()} />
-              <Bar dataKey="total" fill="#ef4444" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="total" fill="#2563EB" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </FormCard>

@@ -376,7 +376,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -399,37 +399,37 @@ const SummaryCard = ({ title, value, valueColor }) => (
 
   if (loadingUser) return <p className="p-6 text-gray-600">Loading user info...</p>;
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
     
-    {/* Back Link */}
+    {/* Kiungo cha Kurudi */}
     <div className="mb-4">
-      <Link to="../sales" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-        <FaArrowLeft /> Back to Sales List
+      <Link to="../sales" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+        <FaArrowLeft /> Rudi kwenye Orodha ya Mauzo
       </Link>
     </div>
 
     <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Page Title */}
-      <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] mb-4 flex items-center gap-2">
-        <FaChartLine /> Loan Management
+      {/* Kichwa cha Ukurasa */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mb-4 flex items-center gap-2">
+        <FaChartLine /> Usimamizi wa Mikopo
       </h1>
 
-      {/* Analytics Summary Cards */}
+      {/* Kadi za Muhtasari wa Takwimu */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <SummaryCard title="Total Loan" value={`TZS ${analytics.totalLoan.toLocaleString()}`} />
-        <SummaryCard title="Total Paid" value={`TZS ${analytics.totalPaid.toLocaleString()}`} valueColor="text-green-600" />
-        <SummaryCard title="Total Balance" value={`TZS ${analytics.totalBalance.toLocaleString()}`} />
+        <SummaryCard title="Jumla ya Mikopo" value={`TZS ${analytics.totalLoan.toLocaleString()}`} />
+        <SummaryCard title="Jumla Iliyolipwa" value={`TZS ${analytics.totalPaid.toLocaleString()}`} valueColor="text-green-600" />
+        <SummaryCard title="Jumla ya Salio" value={`TZS ${analytics.totalBalance.toLocaleString()}`} />
       </div>
 
-      {/* SMS Controls / Filters */}
+      {/* Udhibiti wa SMS / Vichujio */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] p-4 shadow flex flex-wrap gap-4 items-center">
-        <span className="whitespace-nowrap font-medium">SMS Balance: {smsBalance} TZS</span>
+        <span className="whitespace-nowrap font-medium">Salio la SMS: {smsBalance} TZS</span>
         <input
           type="number"
-          placeholder="Recharge amount"
+          placeholder="Kiasi cha kuongeza"
           value={rechargeAmount}
           onChange={(e) => setRechargeAmount(e.target.value)}
           className="border px-2 py-1 rounded w-32"
@@ -437,9 +437,9 @@ const SummaryCard = ({ title, value, valueColor }) => (
         <button
           disabled={recharging}
           onClick={handleRechargeSMS}
-          className="bg-[#ef4444] text-white px-4 py-1 rounded hover:bg-red-600 flex items-center gap-1"
+          className="bg-[#2563EB] text-white px-4 py-1 rounded hover:bg-red-600 flex items-center gap-1"
         >
-          <FaBolt /> {recharging ? "Recharging..." : "Recharge"}
+          <FaBolt /> {recharging ? "Inaongeza..." : "Ongeza Salio"}
         </button>
 
         <select
@@ -447,19 +447,19 @@ const SummaryCard = ({ title, value, valueColor }) => (
           onChange={(e) => setSmsFilter(e.target.value)}
           className="border px-2 py-1 rounded"
         >
-          <option value="all">All</option>
-          <option value="overdue">Overdue</option>
-          <option value="today">Due Today</option>
-          <option value="3days">Due in 3 Days</option>
-          <option value="7days">Due in 7 Days</option>
-          <option value="30days">Due in 30 Days</option>
-          <option value="custom">Custom Range</option>
+          <option value="all">Zote</option>
+          <option value="overdue">Zilizochelewa</option>
+          <option value="today">Zinafika Leo</option>
+          <option value="3days">Zinafika ndani ya Siku 3</option>
+          <option value="7days">Zinafika ndani ya Siku 7</option>
+          <option value="30days">Zinafika ndani ya Siku 30</option>
+          <option value="custom">Kipindi Maalum</option>
         </select>
 
         {smsFilter === "custom" && (
           <div className="flex items-center gap-2">
             <input type="date" value={customFromDate} onChange={(e) => setCustomFromDate(e.target.value)} className="border px-2 py-1 rounded" />
-            <span>to</span>
+            <span>hadi</span>
             <input type="date" value={customToDate} onChange={(e) => setCustomToDate(e.target.value)} className="border px-2 py-1 rounded" />
           </div>
         )}
@@ -467,19 +467,19 @@ const SummaryCard = ({ title, value, valueColor }) => (
         <button
           disabled={smsSending}
           onClick={handleSendSMS}
-          className="bg-[#ef4444] text-white px-4 py-1 rounded hover:bg-red-600"
+          className="bg-[#2563EB] text-white px-4 py-1 rounded hover:bg-red-600"
         >
-          {smsSending ? "Sending..." : "Send SMS"}
+          {smsSending ? "Inatuma..." : "Tuma SMS"}
         </button>
       </div>
 
-      {/* Search & Export */}
+      {/* Tafuta & Hamisha */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] p-4 shadow flex flex-wrap gap-2 items-center">
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <FaSearch className="text-gray-400" />
           <input
             type="text"
-            placeholder="Search customer or sale ID..."
+            placeholder="Tafuta mteja au ID ya mauzo..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border px-2 py-1 rounded w-full sm:w-64"
@@ -487,34 +487,34 @@ const SummaryCard = ({ title, value, valueColor }) => (
         </div>
         <button
           onClick={exportToExcel}
-          className="bg-[#ef4444] text-white px-4 py-2 rounded flex items-center gap-2 ml-auto hover:bg-red-600"
+          className="bg-[#2563EB] text-white px-4 py-2 rounded flex items-center gap-2 ml-auto hover:bg-red-600"
         >
-          <FaMoneyBillWave /> Export Excel
+          <FaMoneyBillWave /> Hamisha Excel
         </button>
       </div>
 
-      {/* Selected SMS Analytics Cards */}
+      {/* Kadi za Takwimu za Wateja Waliochaguliwa */}
       {selectedForSMS.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <SummaryCard title="Selected Total Loan" value={`TZS ${selectedAnalytics.totalLoan.toLocaleString()}`} />
-          <SummaryCard title="Selected Total Paid" value={`TZS ${selectedAnalytics.totalPaid.toLocaleString()}`} valueColor="text-green-600" />
-          <SummaryCard title="Selected Total Balance" value={`TZS ${selectedAnalytics.totalBalance.toLocaleString()}`} />
-          <SummaryCard title="Selected Customers" value={selectedAnalytics.customerCount} />
+          <SummaryCard title="Jumla ya Mikopo Iliyochaguliwa" value={`TZS ${selectedAnalytics.totalLoan.toLocaleString()}`} />
+          <SummaryCard title="Jumla Iliyolipwa Iliyochaguliwa" value={`TZS ${selectedAnalytics.totalPaid.toLocaleString()}`} valueColor="text-green-600" />
+          <SummaryCard title="Salio la Chaguliwa" value={`TZS ${selectedAnalytics.totalBalance.toLocaleString()}`} />
+          <SummaryCard title="Wateja Waliochaguliwa" value={selectedAnalytics.customerCount} />
         </div>
       )}
 
-      {/* Selected Customers Popup */}
+      {/* Popup ya Wateja Waliochaguliwa */}
       {showSelectedCustomers && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 px-2">
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Selected Customers</h3>
+            <h3 className="text-lg font-bold mb-4">Wateja Waliochaguliwa</h3>
             <div className="overflow-y-auto max-h-64">
               <table className="min-w-full text-sm border">
                 <thead>
                   <tr className="bg-gray-200">
-                    <th className="px-2 py-1 text-left">Customer Name</th>
-                    <th className="px-2 py-1 text-left">Due Date</th>
-                    <th className="px-2 py-1 text-right">Balance</th>
+                    <th className="px-2 py-1 text-left">Jina la Mteja</th>
+                    <th className="px-2 py-1 text-left">Tarehe ya Malipo</th>
+                    <th className="px-2 py-1 text-right">Salio</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -533,46 +533,46 @@ const SummaryCard = ({ title, value, valueColor }) => (
                 onClick={() => setShowSelectedCustomers(false)}
                 className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
               >
-                Close
+                Funga
               </button>
               <button
                 onClick={downloadSelectedCustomersPDF}
-                className="bg-[#ef4444] text-white px-4 py-2 rounded hover:bg-red-600"
+                className="bg-[#2563EB] text-white px-4 py-2 rounded hover:bg-red-600"
               >
-                Download PDF
+                Pakua PDF
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Loans Table */}
+      {/* Jedwali la Mikopo */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow overflow-x-auto">
         <table className="min-w-full text-sm">
-          <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wide">
+          <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wide">
             <tr>
               <th className="px-2 py-2 text-center">SMS</th>
-              <th className="px-2 py-2 text-left">Sale ID</th>
-              <th className="px-2 py-2 text-left">Customer</th>
-              <th className="px-2 py-2 text-left">Loan</th>
-              <th className="px-2 py-2 text-left">Paid</th>
-              <th className="px-2 py-2 text-left">Balance</th>
-              <th className="px-2 py-2 text-left">Due Date</th>
-              <th className="px-2 py-2 text-left">Payments</th>
-              <th className="px-2 py-2 text-left">Add Payment</th>
-              <th className="px-2 py-2 text-left">Seller</th>
-              <th className="px-2 py-2 text-left">Created</th>
-              <th className="px-2 py-2 text-left">Last Payment</th>
+              <th className="px-2 py-2 text-left">ID ya Mauzo</th>
+              <th className="px-2 py-2 text-left">Mteja</th>
+              <th className="px-2 py-2 text-left">Mikopo</th>
+              <th className="px-2 py-2 text-left">Iliyolipwa</th>
+              <th className="px-2 py-2 text-left">Salio</th>
+              <th className="px-2 py-2 text-left">Tarehe ya Malipo</th>
+              <th className="px-2 py-2 text-left">Malipo</th>
+              <th className="px-2 py-2 text-left">Ongeza Malipo</th>
+              <th className="px-2 py-2 text-left">Muuzaji</th>
+              <th className="px-2 py-2 text-left">Iliundwa</th>
+              <th className="px-2 py-2 text-left">Malipo ya Mwisho</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="12" className="p-4 text-center text-gray-600">Loading...</td>
+                <td colSpan="12" className="p-4 text-center text-gray-600">Inapakia...</td>
               </tr>
             ) : filteredSales.length === 0 ? (
               <tr>
-                <td colSpan="12" className="p-4 text-center text-gray-600">No loans found</td>
+                <td colSpan="12" className="p-4 text-center text-gray-600">Hakuna mikopo iliyopatikana</td>
               </tr>
             ) : (
               filteredSales.map((sale) => (
@@ -588,7 +588,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                   <td className="px-2 py-2">{sale.customers?.name || "N/A"}</td>
                   <td className="px-2 py-2">{(sale.loan_amount + (sale.paid_amount || 0)).toLocaleString()}</td>
                   <td className="px-2 py-2">{(sale.paid_amount || 0).toLocaleString()}</td>
-                  <td className="px-2 py-2 font-semibold text-[#ef4444]">{sale.balance.toLocaleString()}</td>
+                  <td className="px-2 py-2 font-semibold text-[#2563EB]">{sale.balance.toLocaleString()}</td>
                   <td className="px-2 py-2">{sale.loan_payment_date.toLocaleDateString()}</td>
                   <td className="px-2 py-2">
                     {sale.loan_payments?.length > 0 ? (
@@ -601,7 +601,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                         ))}
                       </div>
                     ) : (
-                      <span className="text-gray-400 italic">No payments</span>
+                      <span className="text-gray-400 italic">Hakuna malipo</span>
                     )}
                   </td>
                   <td className="px-2 py-2">
@@ -611,15 +611,15 @@ const SummaryCard = ({ title, value, valueColor }) => (
                         <button
                           disabled={addingPayment}
                           onClick={() => handleAddPayment(sale.id)}
-                          className="bg-[#ef4444] text-white px-2 py-0.5 rounded text-xs hover:bg-red-600"
+                          className="bg-[#2563EB] text-white px-2 py-0.5 rounded text-xs hover:bg-red-600"
                         >
-                          {addingPayment ? "..." : "Save"}
+                          {addingPayment ? "..." : "Hifadhi"}
                         </button>
                       </div>
                     ) : (
                       <button
                         onClick={() => setSelectedSale(sale.id)}
-                        className="bg-[#ef4444] text-white px-2 py-0.5 rounded text-xs hover:bg-red-600"
+                        className="bg-[#2563EB] text-white px-2 py-0.5 rounded text-xs hover:bg-red-600"
                       >
                         <FaPlus />
                       </button>

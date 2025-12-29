@@ -155,7 +155,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     `}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -189,7 +189,7 @@ const CustomCard = ({ title, children }) => (
 
       {/* Header */}
       <CustomCard title="Employees">
-        <h1 className="text-3xl font-bold text-[#ef4444]">
+        <h1 className="text-3xl font-bold text-[#2563EB]">
           Employees – {user?.office_name}
         </h1>
         <p className="text-gray-500 text-sm">
@@ -199,7 +199,7 @@ const CustomCard = ({ title, children }) => (
         <div className="flex flex-wrap gap-2 mt-2">
           <Link
             to="new"
-            className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow"
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow"
           >
             + Add New Employee
           </Link>
@@ -225,7 +225,7 @@ const CustomCard = ({ title, children }) => (
               placeholder="Search by name, email or phone"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
@@ -233,7 +233,7 @@ const CustomCard = ({ title, children }) => (
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#ef4444]"
+            className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#2563EB]"
           >
             <option value="">All Roles</option>
             {[...new Set(employees.map(e => e.role))].map(role => (
@@ -244,7 +244,7 @@ const CustomCard = ({ title, children }) => (
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#ef4444]"
+            className="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#2563EB]"
           >
             <option value="">All Status</option>
             <option value="active">Active</option>
@@ -275,7 +275,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* NAME */}
           <div className="flex items-center gap-3 mb-3">
-            <FaUser className="text-[#ef4444]" />
+            <FaUser className="text-[#2563EB]" />
             <div>
               <p className="text-gray-500 text-sm">Name</p>
               <p className="font-semibold text-gray-700">{emp.name}</p>
@@ -284,7 +284,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* ROLE */}
           <div className="flex items-center gap-3 mb-3">
-            <FaUserTag className="text-[#ef4444]" />
+            <FaUserTag className="text-[#2563EB]" />
             <div>
               <p className="text-gray-500 text-sm">Role</p>
               <p className="capitalize font-semibold text-gray-700">{emp.role}</p>
@@ -293,7 +293,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* POSITION */}
           <div className="flex items-center gap-3 mb-3">
-            <FaBriefcase className="text-[#ef4444]" />
+            <FaBriefcase className="text-[#2563EB]" />
             <div>
               <p className="text-gray-500 text-sm">Position</p>
               <p className="capitalize font-semibold text-gray-700">
@@ -304,7 +304,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* EMAIL */}
           <div className="flex items-center gap-3 mb-3">
-            <FaEnvelope className="text-[#ef4444]" />
+            <FaEnvelope className="text-[#2563EB]" />
             <div>
               <p className="text-gray-500 text-sm">Email</p>
               <p className="text-gray-700">{emp.email || "-"}</p>
@@ -313,7 +313,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* PHONE */}
           <div className="flex items-center gap-3 mb-3">
-            <FaPhone className="text-[#ef4444]" />
+            <FaPhone className="text-[#2563EB]" />
             <div>
               <p className="text-gray-500 text-sm">Phone</p>
               <p className="text-gray-700">{emp.phone || "-"}</p>
@@ -322,7 +322,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* PASSWORD */}
           <div className="flex items-center gap-3 mb-3">
-            <FaLock className="text-[#ef4444]" />
+            <FaLock className="text-[#2563EB]" />
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <div>
@@ -335,7 +335,7 @@ const CustomCard = ({ title, children }) => (
               {emp.password && (
                 <button
                   onClick={() => handleCopy(emp.password)}
-                  className="bg-[#ef4444] text-white px-3 py-1 rounded-lg hover:bg-[#d63a3a] flex items-center gap-1 shadow"
+                  className="bg-[#2563EB] text-white px-3 py-1 rounded-lg hover:bg-[#d63a3a] flex items-center gap-1 shadow"
                 >
                   <FaCopy /> Copy
                 </button>
@@ -345,7 +345,7 @@ const CustomCard = ({ title, children }) => (
 
           {/* PERMISSIONS */}
           <div className="flex items-start gap-3 mb-3">
-            <FaKey className="text-[#ef4444] mt-1" />
+            <FaKey className="text-[#2563EB] mt-1" />
             <div>
               <p className="text-gray-500 text-sm">Permissions</p>
 
@@ -354,7 +354,7 @@ const CustomCard = ({ title, children }) => (
                   emp.permissions.map((perm, idx) => (
                     <span
                       key={idx}
-                      className="bg-[#fee2e2] text-[#ef4444] text-xs px-2 py-1 rounded-full"
+                      className="bg-[#fee2e2] text-[#2563EB] text-xs px-2 py-1 rounded-full"
                     >
                       {perm}
                     </span>
@@ -393,7 +393,7 @@ const CustomCard = ({ title, children }) => (
 
             {/* Edit */}
             <Link to={`edit/${emp.id}`}>
-              <button className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow">
+              <button className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow">
                 <FaEdit /> Edit
               </button>
             </Link>

@@ -157,7 +157,7 @@ const NewEmployee = () => {
       {/* Back Link */}
       <Link
         to="../employees"
-        className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline mb-2"
+        className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline mb-2"
       >
         <FaArrowLeft /> Back to Employees List
       </Link>
@@ -177,7 +177,7 @@ const NewEmployee = () => {
               </label>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                   {icon}
                 </span>
 
@@ -194,7 +194,7 @@ const NewEmployee = () => {
                   className="
                     w-full pl-12 pr-4 py-2 rounded-xl
                     border border-gray-300 bg-white
-                    focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                    focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                     shadow-sm
                   "
                 />
@@ -215,7 +215,7 @@ const NewEmployee = () => {
               </label>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                   {icon}
                 </span>
 
@@ -226,7 +226,7 @@ const NewEmployee = () => {
                   className="
                     w-full pl-12 pr-4 py-2 rounded-xl
                     border border-gray-300 bg-white
-                    focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                    focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                     shadow-sm
                   "
                 >
@@ -275,7 +275,7 @@ const NewEmployee = () => {
                     type="checkbox"
                     checked={permissions.includes(p.key)}
                     onChange={() => handlePermissionChange(p.key)}
-                    className="mt-1 h-5 w-5 text-[#ef4444]"
+                    className="mt-1 h-5 w-5 text-[#2563EB]"
                     disabled={p.key === "dashboard"}
                   />
                   <div>
@@ -296,7 +296,7 @@ const NewEmployee = () => {
             </label>
 
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                 <FaLock />
               </span>
 
@@ -309,7 +309,7 @@ const NewEmployee = () => {
                 className="
                   w-full pl-12 pr-4 py-2 rounded-xl
                   border border-gray-300 bg-white
-                  focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                  focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                   shadow-sm
                 "
               />
@@ -328,7 +328,7 @@ const NewEmployee = () => {
                   toast.success("Password copied")
                 }
                 className="
-                  flex items-center gap-1 bg-[#ef4444] text-white
+                  flex items-center gap-1 bg-[#2563EB] text-white
                   px-3 py-1 rounded-lg hover:bg-red-600 shadow
                 "
               >
@@ -342,7 +342,7 @@ const NewEmployee = () => {
             type="submit"
             disabled={loading}
             className="
-              w-full bg-[#ef4444] text-white py-3 rounded-xl
+              w-full bg-[#2563EB] text-white py-3 rounded-xl
               hover:scale-105 hover:shadow-xl transition-all font-semibold
             "
           >

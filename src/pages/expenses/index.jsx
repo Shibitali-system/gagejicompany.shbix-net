@@ -208,42 +208,40 @@ const ExpensesIndex = () => {
     <Toaster position="top-right" />
     <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Header */}
+      {/* Kichwa */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-3xl font-bold text-[#ef4444]">Expenses</h1>
+        <h1 className="text-3xl font-bold text-[#2563EB]">Matumizi</h1>
         <div className="flex flex-wrap gap-2 mt-2 md:mt-0">
           <Link
             to="new"
-            className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
           >
-            <FaPlus /> Add New Expense
+            <FaPlus /> Ongeza Matumizi Mapya
           </Link>
 
           <Link
-  to="expenses"
-  className="
-    bg-white text-[#ef4444] border border-[#e5e7eb] rounded-[4px]
-    px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    hover:bg-[#fdfdfd] hover:shadow-md transition-all duration-200
-    font-sans
-  "
->
-  <FaPlus /> Request Expenses
-</Link>
-
-
+            to="expenses"
+            className="
+              bg-white text-[#2563EB] border border-[#e5e7eb] rounded-[4px]
+              px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+              hover:bg-[#fdfdfd] hover:shadow-md transition-all duration-200
+              font-sans
+            "
+          >
+            <FaPlus /> Omba Matumizi
+          </Link>
 
           <button
             onClick={exportToExcel}
-            className="bg-[#ef4444]/70 text-white px-4 py-2 rounded-xl hover:bg-[#ef4444]/90 flex items-center gap-2 shadow"
+            className="bg-[#2563EB]/70 text-white px-4 py-2 rounded-xl hover:bg-[#2563EB]/90 flex items-center gap-2 shadow"
           >
-            <FaFileExcel /> Export Excel
+            <FaFileExcel /> Hamisha Excel
           </button>
         </div>
       </div>
 
-      {/* Filters */}
-      <CustomCard title="Filters">
+      {/* Vichujio */}
+      <CustomCard title="Vichujio">
         <div className="flex flex-wrap gap-2 items-center">
           {["today","week","month","year"].map(ft => (
             <button
@@ -251,11 +249,11 @@ const ExpensesIndex = () => {
               onClick={() => setFilterType(ft)}
               className={`px-3 py-1 rounded-xl font-medium transition ${
                 filterType === ft
-                  ? "bg-[#ef4444] text-white"
+                  ? "bg-[#2563EB] text-white"
                   : "bg-white border border-[#e5e7eb] text-gray-700 hover:bg-[#ffe5e5]"
               }`}
             >
-              {ft === "today" ? "Today" : ft === "week" ? "This Week" : ft === "month" ? "This Month" : "This Year"}
+              {ft === "today" ? "Leo" : ft === "week" ? "Wiki Hii" : ft === "month" ? "Mwezi Huu" : "Mwaka Huu"}
             </button>
           ))}
 
@@ -264,64 +262,64 @@ const ExpensesIndex = () => {
               type="date"
               value={customFrom}
               onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }}
-              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
             />
-            <span>to</span>
+            <span>hadi</span>
             <input
               type="date"
               value={customTo}
               onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }}
-              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
         </div>
       </CustomCard>
 
-      {/* Search */}
+      {/* Utafutaji */}
       <CustomCard>
         <div className="flex items-center gap-2 w-full sm:w-1/3">
           <FaSearch className="text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder="Tafuta kwa jina..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
       </CustomCard>
 
-      {/* Summary */}
+      {/* Muhtasari */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <CustomCard title="Total Expenses">
-          <p className="text-lg font-bold text-[#ef4444] text-center">{totals.totalExpenses}</p>
+        <CustomCard title="Jumla ya Matumizi">
+          <p className="text-lg font-bold text-[#2563EB] text-center">{totals.totalExpenses}</p>
         </CustomCard>
-        <CustomCard title="Total Today">
-          <p className="text-lg font-bold text-[#ef4444] text-center">{totals.totalToday}</p>
+        <CustomCard title="Jumla Leo">
+          <p className="text-lg font-bold text-[#2563EB] text-center">{totals.totalToday}</p>
         </CustomCard>
       </div>
 
-      {/* Table */}
-      <CustomCard title="Expenses List">
+      {/* Jedwali la Matumizi */}
+      <CustomCard title="Orodha ya Matumizi">
         {loading ? (
-          <p className="text-gray-600">Loading expenses...</p>
+          <p className="text-gray-600">Inapakia matumizi...</p>
         ) : error ? (
           <p className="text-red-600 font-semibold">{error}</p>
         ) : expenses.length === 0 ? (
-          <p className="text-gray-600">No expenses found.</p>
+          <p className="text-gray-600">Hakuna matumizi yaliyopatikana.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+              <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                 <tr>
-                  <th className="px-2 sm:px-3 py-2 text-left">Name</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Amount</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Category</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Description</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Office Name</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Created By</th>
-                  <th className="px-2 sm:px-3 py-2 text-left">Created At</th>
-                  <th className="px-2 sm:px-3 py-2 text-center">Actions</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Jina</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Kiasi</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Kategoria</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Maelezo</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Jina la Ofisi</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Imeingizwa Na</th>
+                  <th className="px-2 sm:px-3 py-2 text-left">Imeingizwa Mnamo</th>
+                  <th className="px-2 sm:px-3 py-2 text-center">Vitendo</th>
                 </tr>
               </thead>
               <tbody>
@@ -335,11 +333,11 @@ const ExpensesIndex = () => {
                     <td className="px-2 sm:px-3 py-2">{exp.created_by_name || "-"}</td>
                     <td className="px-2 sm:px-3 py-2">{new Date(exp.created_at).toLocaleString()}</td>
                     <td className="px-2 sm:px-3 py-2 text-center flex flex-col sm:flex-row justify-center gap-2">
-                      <Link to={`${exp.id}`} className="text-[#ef4444] hover:underline flex items-center gap-1">
-                        <FaEye /> View
+                      <Link to={`${exp.id}`} className="text-[#2563EB] hover:underline flex items-center gap-1">
+                        <FaEye /> Angalia
                       </Link>
-                      <Link to={`edit/${exp.id}`} className="text-[#ef4444] hover:underline flex items-center gap-1">
-                        <FaEdit /> Edit
+                      <Link to={`edit/${exp.id}`} className="text-[#2563EB] hover:underline flex items-center gap-1">
+                        <FaEdit /> Hariri
                       </Link>
                     </td>
                   </tr>
@@ -347,14 +345,14 @@ const ExpensesIndex = () => {
               </tbody>
             </table>
 
-            {/* Load More */}
+            {/* Pata Zaidi */}
             {hasMore && (
               <div className="mt-4 text-center">
                 <button
                   onClick={() => fetchExpenses(false)}
-                  className="bg-[#ef4444]/20 text-[#ef4444] px-4 py-2 rounded hover:bg-[#ef4444]/30"
+                  className="bg-[#2563EB]/20 text-[#2563EB] px-4 py-2 rounded hover:bg-[#2563EB]/30"
                 >
-                  Load More
+                  Pata Zaidi
                 </button>
               </div>
             )}
@@ -364,6 +362,7 @@ const ExpensesIndex = () => {
     </div>
   </div>
 );
+
 
 };
 

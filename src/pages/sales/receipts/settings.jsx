@@ -226,12 +226,12 @@ const EditReceiptInfo = () => {
     {/* Back Button */}
     <Link
       to="../sales"
-      className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline mb-4"
+      className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline mb-4"
     >
       <FaArrowLeft /> Back to Sales List
     </Link>
 
-    <h2 className="text-xl font-semibold mb-6 text-center text-[#ef4444]">
+    <h2 className="text-xl font-semibold mb-6 text-center text-[#2563EB]">
       Edit Receipt Information
     </h2>
 
@@ -245,7 +245,7 @@ const EditReceiptInfo = () => {
             className="h-24 object-contain mb-3 rounded-lg shadow-sm"
           />
           <div className="flex gap-3">
-            <label className="bg-[#ef4444] text-white px-3 py-1 rounded-lg cursor-pointer hover:bg-[#dc2626] transition">
+            <label className="bg-[#2563EB] text-white px-3 py-1 rounded-lg cursor-pointer hover:bg-[#dc2626] transition">
               Change Logo
               <input
                 type="file"
@@ -263,7 +263,7 @@ const EditReceiptInfo = () => {
           </div>
         </div>
       ) : (
-        <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl p-6 cursor-pointer hover:border-[#ef4444] transition">
+        <label className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl p-6 cursor-pointer hover:border-[#2563EB] transition">
           <p className="text-gray-600 mb-2">Upload Office Logo</p>
           <input
             type="file"
@@ -282,7 +282,7 @@ const EditReceiptInfo = () => {
         value={info.office_name}
         placeholder="Enter Office Name"
         onChange={(e) => setInfo({ ...info, office_name: e.target.value })}
-        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
 
       <label className="block font-medium text-gray-700">Address</label>
@@ -290,7 +290,7 @@ const EditReceiptInfo = () => {
         value={info.address}
         placeholder="Enter Office Address"
         onChange={(e) => setInfo({ ...info, address: e.target.value })}
-        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
 
       <label className="block font-medium text-gray-700">Phone</label>
@@ -298,7 +298,7 @@ const EditReceiptInfo = () => {
         value={info.phone}
         placeholder="Enter Phone Number"
         onChange={(e) => setInfo({ ...info, phone: e.target.value })}
-        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
 
       <label className="block font-medium text-gray-700">Email</label>
@@ -306,7 +306,7 @@ const EditReceiptInfo = () => {
         value={info.email}
         placeholder="Enter Email Address"
         onChange={(e) => setInfo({ ...info, email: e.target.value })}
-        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+        className="border border-gray-300 px-3 py-2 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
       />
     </div>
 
@@ -314,7 +314,7 @@ const EditReceiptInfo = () => {
     <button
       onClick={saveInfo}
       disabled={loading}
-      className={`bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#dc2626] shadow mt-6 w-full flex items-center justify-center gap-2 transition ${
+      className={`bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#dc2626] shadow mt-6 w-full flex items-center justify-center gap-2 transition ${
         loading ? "opacity-70 cursor-not-allowed" : ""
       }`}
     >

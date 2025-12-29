@@ -357,7 +357,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -375,21 +375,21 @@ const SummaryCard = ({ title, value, valueColor }) => (
     <Toaster position="top-right" />
     <div className="max-w-4xl mx-auto flex flex-col gap-3">
 
-      {/* ⭐️ START FORM WRAPPER */}
+      {/* ⭐️ ANZA FORM */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
 
-        {/* ---------------- Card 1: Title, Tips, Back ---------------- */}
+        {/* ---------------- Kadi 1: Kichwa, Maelezo, Rudi Nyuma ---------------- */}
         <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-4 flex flex-col gap-1">
-          <h1 className="text-xl sm:text-2xl font-bold text-[#ef4444]">Add New Purchase</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#2563EB]">Ongeza Manunuzi Mpya</h1>
           <p className="text-gray-700 text-sm">
-            Fill supplier, invoice, and select products. Adjust quantities and prices before saving.
+            Jaza supplier, namba ya vocha, na chagua bidhaa. Rekebisha idadi na bei kabla ya kuhifadhi.
           </p>
-          <Link to="../purchases" className="flex items-center gap-2 text-[#ef4444] hover:underline font-medium mt-1 text-sm">
-            <FaArrowLeft /> Back to Purchases
+          <Link to="../purchases" className="flex items-center gap-2 text-[#2563EB] hover:underline font-medium mt-1 text-sm">
+            <FaArrowLeft /> Rudi kwenye Manunuzi
           </Link>
         </div>
 
-        {/* ---------------- Card 2: Supplier & Invoice ---------------- */}
+        {/* ---------------- Kadi 2: Supplier & Invoice ---------------- */}
         <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-4 flex flex-col gap-2">
           <div>
             <label className="block font-medium mb-1 text-sm">Supplier *</label>
@@ -398,9 +398,9 @@ const SummaryCard = ({ title, value, valueColor }) => (
               onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
               className="w-full border border-gray-300 px-2 py-1 rounded text-sm"
             >
-              <option value="">-- Select supplier --</option>
+              <option value="">-- Chagua supplier --</option>
               {suppliersLoading ? (
-                <option>Loading suppliers...</option>
+                <option>Inapakia suppliers...</option>
               ) : (
                 suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)
               )}
@@ -408,7 +408,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
           </div>
 
           <div>
-            <label className="block font-medium mb-1 text-sm">Invoice Number *</label>
+            <label className="block font-medium mb-1 text-sm">Namba ya Vocha *</label>
             <input
               type="text"
               value={formData.invoice_number}
@@ -418,27 +418,27 @@ const SummaryCard = ({ title, value, valueColor }) => (
           </div>
         </div>
 
-        {/* ---------------- Card 3: Products Search & Tip ---------------- */}
+        {/* ---------------- Kadi 3: Kutafuta Bidhaa & Maelezo ---------------- */}
         <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-4 flex flex-col gap-1">
           <div className="flex items-center justify-between mb-1">
-            <label className="block font-medium text-sm">Products</label>
+            <label className="block font-medium text-sm">Bidhaa</label>
             <div className="flex gap-2 items-center">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Tafuta bidhaa..."
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
                 className="border px-2 py-1 rounded text-sm w-60"
               />
-              <span className="text-xs text-gray-500">{products.length} available</span>
+              <span className="text-xs text-gray-500">{products.length} zipo</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {productsLoading ? (
-              <div className="p-2 text-gray-500 text-sm">Loading products...</div>
+              <div className="p-2 text-gray-500 text-sm">Inapakia bidhaa...</div>
             ) : displayedProducts.length === 0 ? (
-              <div className="p-2 text-gray-500 text-sm">No products found.</div>
+              <div className="p-2 text-gray-500 text-sm">Hakuna bidhaa zilizopatikana.</div>
             ) : (
               displayedProducts.map((p) => {
                 const selected = isProductSelected(p.id);
@@ -456,7 +456,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     <div className="flex-1">
                       <div className="font-medium">{p.name}</div>
                       <div className="text-xs text-gray-500">
-                        Price: {(p.price || p.purchase_price || 0).toLocaleString()} — Stock: {p.stock ?? 0}
+                        Bei: {(p.price || p.purchase_price || 0).toLocaleString()} — Hali ya Hifadhi: {p.stock ?? 0}
                       </div>
                     </div>
                     <div className="text-xs text-gray-600">{p.package_type || ""}</div>
@@ -465,20 +465,20 @@ const SummaryCard = ({ title, value, valueColor }) => (
               })
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-1">Tip: Use search to quickly find products.</p>
+          <p className="text-xs text-gray-500 mt-1">Kidokezo: Tumia search kupata bidhaa haraka.</p>
         </div>
 
-        {/* ---------------- Card 4: Selected Products Table ---------------- */}
+        {/* ---------------- Kadi 4: Jedwali la Bidhaa Zilizochaguliwa ---------------- */}
         {selectedProducts.length > 0 && (
           <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-2 overflow-x-auto text-sm">
             <table className="min-w-full border border-gray-200 text-sm">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-3 py-1 border text-left">Product</th>
-                  <th className="px-3 py-1 border">Quantity</th>
-                  <th className="px-3 py-1 border">Unit Price</th>
-                  <th className="px-3 py-1 border">Total</th>
-                  <th className="px-3 py-1 border">Remove</th>
+                  <th className="px-3 py-1 border text-left">Bidhaa</th>
+                  <th className="px-3 py-1 border">Idadi</th>
+                  <th className="px-3 py-1 border">Bei ya Kila Moja</th>
+                  <th className="px-3 py-1 border">Jumla</th>
+                  <th className="px-3 py-1 border">Ondoa</th>
                 </tr>
               </thead>
               <tbody>
@@ -511,9 +511,9 @@ const SummaryCard = ({ title, value, valueColor }) => (
                       <button
                         type="button"
                         onClick={() => removeSelected(s.id)}
-                        className="text-[#ef4444] hover:underline text-sm"
+                        className="text-[#2563EB] hover:underline text-sm"
                       >
-                        Remove
+                        Ondoa
                       </button>
                     </td>
                   </tr>
@@ -522,7 +522,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
               <tfoot>
                 <tr className="bg-gray-100 font-semibold">
                   <td className="px-3 py-1 border text-right" colSpan={3}>
-                    Grand Total
+                    Jumla Kuu
                   </td>
                   <td className="px-3 py-1 border text-right">
                     {selectedProducts
@@ -536,43 +536,41 @@ const SummaryCard = ({ title, value, valueColor }) => (
           </div>
         )}
 
-        {/* ---------------- Card 5: Office Info & Actions ---------------- */}
+        {/* ---------------- Kadi 5: Info ya Ofisi & Vitendo ---------------- */}
         <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-3 flex flex-col gap-2">
           {userInfo && (
             <div className="text-sm text-gray-700">
-              <p><strong>Office:</strong> {userInfo.office_name}</p>
-              <p><strong>Entered by:</strong> {userInfo.name}</p>
+              <p><strong>Ofisi:</strong> {userInfo.office_name}</p>
+              <p><strong>Imeingizwa na:</strong> {userInfo.name}</p>
             </div>
           )}
 
           <div className="flex gap-2">
-            {/* SUBMIT BUTTON NOW WORKS */}
+            {/* BUTTON YA KUHIFADHI */}
             <button
               type="submit"
               disabled={submitting}
-              className="bg-[#ef4444] text-white rounded-md shadow px-4 py-2 hover:bg-red-600 flex items-center gap-2 text-sm font-medium"
+              className="bg-[#2563EB] text-white rounded-md shadow px-4 py-2 hover:bg-red-600 flex items-center gap-2 text-sm font-medium"
             >
-              <FaPlus /> {submitting ? "Saving..." : "Save Purchase"}
+              <FaPlus /> {submitting ? "Inahifadhi..." : "Hifadhi Manunuzi"}
             </button>
 
             <Link
               to="/dashboard/purchases"
               className="bg-white border border-[#e5e7eb] rounded-md shadow px-4 py-2 hover:bg-gray-50 flex items-center gap-2 text-sm font-medium text-gray-700"
             >
-              <FaTimes /> Cancel
+              <FaTimes /> Ghairi
             </Link>
           </div>
         </div>
 
         {error && <p className="text-red-600 mt-2 text-sm">{error}</p>}
       </form>
-      {/* ⭐️ END FORM WRAPPER */}
+      {/* ⭐️ MWISHO FORM */}
 
     </div>
   </div>
 );
-
-
 
 
 };

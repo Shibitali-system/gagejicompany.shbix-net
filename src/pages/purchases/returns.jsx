@@ -201,7 +201,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -226,19 +226,19 @@ const CustomCard = ({ title, children }) => (
     <Toaster position="top-right" />
     <div className="max-w-6xl mx-auto">
 
-      {/* HEADER */}
+      {/* KICHWA */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-          <FaList /> Returned Products
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaList /> Bidhaa Zilirudishwa
         </h1>
         <div className="flex flex-wrap gap-2">
-          <Link to="../purchases" className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 shadow flex items-center gap-2">
-            <FaArrowLeft /> Back to Purchases
+          <Link to="../purchases" className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 shadow flex items-center gap-2">
+            <FaArrowLeft /> Rudi kwenye Manunuzi
           </Link>
 
           <button
             onClick={() => {
-              if (!returns.length) return toast.error("No data to export");
+              if (!returns.length) return toast.error("Hakuna data ya kuhamisha");
               const header = ["Supplier", "Product", "Quantity", "Price", "Amount", "Reason", "Comment", "Status", "Seller", "Date"];
               const rows = returns.map(r => {
                 const p = productsMap[r.product_id] || {};
@@ -263,25 +263,25 @@ const CustomCard = ({ title, children }) => (
               a.download = `purchase_returns_${Date.now()}.csv`;
               a.click();
             }}
-            className="bg-white text-[#ef4444] border border-[#ef4444] px-4 py-2 rounded-xl hover:bg-[#ef4444] hover:text-white shadow flex items-center gap-2"
+            className="bg-white text-[#2563EB] border border-[#2563EB] px-4 py-2 rounded-xl hover:bg-[#2563EB] hover:text-white shadow flex items-center gap-2"
           >
-            <FaDownload /> Export CSV
+            <FaDownload /> Hamisha CSV
           </button>
 
           <Link
             to={`../purchases/returns/record${purchaseId ? `?purchaseId=${purchaseId}` : ""}`}
-            className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 shadow flex items-center gap-2"
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 shadow flex items-center gap-2"
           >
-            <FaPlus /> Record Return
+            <FaPlus /> Rekodi Kurudisha
           </Link>
         </div>
       </div>
 
-      {/* SUMMARY CARDS */}
+      {/* KADI ZA MUHTASARI */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 text-sm">
-        <SummaryCard title="Total Returns" value={returns.length} />
-        <SummaryCard title="Total Quantity" value={totalQty} />
-        <SummaryCard title="Total Amount" value={`TZS ${totalAmt.toLocaleString()}`} />
+        <SummaryCard title="Jumla ya Kurudishwa" value={returns.length} />
+        <SummaryCard title="Jumla ya Idadi" value={totalQty} />
+        <SummaryCard title="Jumla ya Kiasi" value={`TZS ${totalAmt.toLocaleString()}`} />
       </div>
 
       {/* FILTERS */}
@@ -289,27 +289,27 @@ const CustomCard = ({ title, children }) => (
         <FaSearch className="text-gray-400" />
         <input
           type="text"
-          placeholder="Search reason/comment..."
+          placeholder="Tafuta sababu/maoni..."
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          className="flex-1 md:w-1/3 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="flex-1 md:w-1/3 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
         <select
           value={filterType}
           onChange={e => setFilterType(e.target.value)}
-          className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+          className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
         >
-          <option value="today">Today</option>
-          <option value="this_week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="year">This Year</option>
-          <option value="custom">Custom</option>
+          <option value="today">Leo</option>
+          <option value="this_week">Wiki Hii</option>
+          <option value="month">Mwezi Huu</option>
+          <option value="year">Mwaka Huu</option>
+          <option value="custom">Binafsi</option>
         </select>
 
         {filterType === "custom" && (
           <>
             <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} className="border px-2 py-1 rounded" />
-            <span>to</span>
+            <span>hadi</span>
             <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} className="border px-2 py-1 rounded" />
           </>
         )}
@@ -317,43 +317,43 @@ const CustomCard = ({ title, children }) => (
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
-          className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+          className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
         >
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
+          <option value="all">Hali Zote</option>
+          <option value="pending">Inasubiri</option>
+          <option value="approved">Imeidhinishwa</option>
         </select>
       </div>
 
-      {/* RETURNS TABLE */}
+      {/* JEDWALI LA KURUDISHA BIDHAA */}
       {loading ? (
-        <p className="text-gray-600">Loading returns...</p>
+        <p className="text-gray-600">Inapakia kurudisha...</p>
       ) : error ? (
         <p className="text-red-600">{error}</p>
       ) : groupedReturns.length === 0 ? (
-        <p className="text-gray-600">No returns found.</p>
+        <p className="text-gray-600">Hakuna bidhaa zilizorudishwa.</p>
       ) : (
         <div className="space-y-6">
           {groupedReturns.map(g => (
             <div key={g.purchase_id} className="bg-white rounded-2xl shadow">
               <div className="p-4 bg-[#ffe5e5] rounded-t-2xl flex justify-between">
-                <p className="font-semibold text-[#ef4444]">
-                  Purchase #{g.purchase_id} — {g.supplier_name}
+                <p className="font-semibold text-[#2563EB]">
+                  Manunuzi #{g.purchase_id} — {g.supplier_name}
                 </p>
                 <span className="text-gray-600 text-sm">
-                  {new Date(g.date).toLocaleDateString()} | {g.status || "Pending"}
+                  {new Date(g.date).toLocaleDateString()} | {g.status || "Inasubiri"}
                 </span>
               </div>
               <table className="min-w-full border-collapse text-sm">
-                <thead className="bg-[#ef4444] text-white text-xs uppercase">
+                <thead className="bg-[#2563EB] text-white text-xs uppercase">
                   <tr>
-                    <th className="px-3 py-2 text-left">Product</th>
-                    <th className="px-3 py-2 text-left">Qty</th>
-                    <th className="px-3 py-2 text-left">Price</th>
-                    <th className="px-3 py-2 text-left">Amount</th>
-                    <th className="px-3 py-2 text-left">Reason</th>
-                    <th className="px-3 py-2 text-left">Comment</th>
-                    <th className="px-3 py-2 text-left">Seller</th>
+                    <th className="px-3 py-2 text-left">Bidhaa</th>
+                    <th className="px-3 py-2 text-left">Idadi</th>
+                    <th className="px-3 py-2 text-left">Bei</th>
+                    <th className="px-3 py-2 text-left">Kiasi</th>
+                    <th className="px-3 py-2 text-left">Sababu</th>
+                    <th className="px-3 py-2 text-left">Maoni</th>
+                    <th className="px-3 py-2 text-left">Muuzaji</th>
                   </tr>
                 </thead>
                 <tbody>

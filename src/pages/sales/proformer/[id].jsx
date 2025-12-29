@@ -202,7 +202,7 @@ const InfoCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -210,61 +210,56 @@ return (
   <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
     <Toaster position="top-right" />
 
-    {/* Back Link */}
-    <Link to="../sales/proformer" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline mb-4">
-      <FaArrowLeft /> Back to Proformer List
+    {/* Kiungo cha Kurudi */}
+    <Link to="../sales/proformer" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline mb-4">
+      <FaArrowLeft /> Rudi kwenye Orodha ya Proformers
     </Link>
 
-    {/* Action Buttons */}
+    {/* Vitufe vya Vitendo */}
     <div className="flex flex-wrap justify-center sm:justify-end gap-3 mb-6 print:hidden">
-      <button onClick={handlePrint} className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e03636] shadow">
+      <button onClick={handlePrint} className="bg-[#2563EB] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e03636] shadow">
         <FaPrint /> Print
       </button>
-      <button onClick={handleDownloadPDF} className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e03636] shadow">
-        <FaDownload /> Download PDF
-      </button>
-      <button onClick={handleShare} className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e03636] shadow">
-        <FaShareAlt /> Share
-      </button>
+      
     </div>
 
-    {/* Receipt / Invoice Card */}
+    {/* Kadi ya Risiti / Ankara */}
     <div ref={receiptRef} id="receipt-print" className="bg-white rounded-[12px] shadow-lg max-w-3xl mx-auto p-8 border border-[#e5e7eb] print:shadow-none print:border-none">
 
-      {/* Header */}
+      {/* Kichwa */}
       <div className="text-center border-b pb-4 mb-6">
-        <h1 className="text-3xl font-bold text-[#ef4444] uppercase tracking-wide mb-2">{receiptInfo.office_name}</h1>
-        {receiptInfo.logo_url && <img src={receiptInfo.logo_url} alt="Office Logo" className="mx-auto h-20 object-contain mb-2" />}
+        <h1 className="text-3xl font-bold text-[#2563EB] uppercase tracking-wide mb-2">{receiptInfo.office_name}</h1>
+        {receiptInfo.logo_url && <img src={receiptInfo.logo_url} alt="Nembo ya Ofisi" className="mx-auto h-20 object-contain mb-2" />}
         <p className="text-gray-500 mt-1">{receiptInfo.address}</p>
-        <p className="text-gray-500">Phone: {receiptInfo.phone} | Email: {receiptInfo.email}</p>
-        <h2 className="mt-4 text-xl font-semibold text-gray-700">Proformer Invoice</h2>
-        <p className="text-sm text-gray-500">Proformer No: {proformer?.id}</p>
+        <p className="text-gray-500">Simu: {receiptInfo.phone} | Email: {receiptInfo.email}</p>
+        <h2 className="mt-4 text-xl font-semibold text-gray-700">Ankara ya Proformer</h2>
+        <p className="text-sm text-gray-500">Namba ya Proformer: {proformer?.id}</p>
       </div>
 
-      {/* Customer & Status Info */}
+      {/* Taarifa za Mteja & Hali */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
         <div className="space-y-1">
-          <p className="font-semibold text-gray-700">Customer</p>
+          <p className="font-semibold text-gray-700">Mteja</p>
           <p>{proformer?.customer_name || "-"}</p>
         </div>
         <div className="space-y-1 sm:text-right">
-          <p className="font-semibold text-gray-700">Created At:</p>
+          <p className="font-semibold text-gray-700">Iliundwa:</p>
           <p>{proformer?.created_at ? new Date(proformer.created_at).toLocaleString() : "-"}</p>
-          <p className="font-semibold text-gray-700 mt-2">Status:</p>
-          <p>{proformer?.status || "Pending"}</p>
+          <p className="font-semibold text-gray-700 mt-2">Hali:</p>
+          <p>{proformer?.status || "Inasubiri"}</p>
         </div>
       </div>
 
-      {/* Items Table */}
+      {/* Jedwali la Bidhaa */}
       <div className="overflow-x-auto mb-6">
         <table className="w-full border border-[#e5e7eb] text-sm">
-          <thead className="bg-[#ef4444] text-white">
+          <thead className="bg-[#2563EB] text-white">
             <tr>
               <th className="px-3 py-2 text-left">#</th>
-              <th className="px-3 py-2 text-left">Product</th>
-              <th className="px-3 py-2 text-center">Qty</th>
-              <th className="px-3 py-2 text-right">Price</th>
-              <th className="px-3 py-2 text-right">Subtotal</th>
+              <th className="px-3 py-2 text-left">Bidhaa</th>
+              <th className="px-3 py-2 text-center">Kiasi</th>
+              <th className="px-3 py-2 text-right">Bei</th>
+              <th className="px-3 py-2 text-right">Jumla Ndogo</th>
             </tr>
           </thead>
           <tbody>
@@ -283,23 +278,23 @@ return (
               })
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">No items yet</td>
+                <td colSpan={5} className="text-center py-4 text-gray-500">Hakuna bidhaa bado</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Totals */}
+      {/* Jumla */}
       <div className="flex flex-col items-end text-sm mb-6">
-        <p>Grand Total: <span className="font-bold text-[#ef4444]">{proformer?.total_amount?.toLocaleString() || 0}</span></p>
-        {proformer?.status_comment && <p className="text-xs text-gray-500 italic mt-1">Comment: {proformer.status_comment}</p>}
+        <p>Jumla Kuu: <span className="font-bold text-[#2563EB]">{proformer?.total_amount?.toLocaleString() || 0} TZS</span></p>
+        {proformer?.status_comment && <p className="text-xs text-gray-500 italic mt-1">Maoni: {proformer.status_comment}</p>}
       </div>
 
-      {/* Footer / Notes */}
+      {/* Miguso / Maelezo ya Mwisho */}
       <div className="text-center mt-8 border-t pt-4 text-sm text-gray-500">
-        <p>Thank you for your business!</p>
-        <p className="text-xs mt-1 italic">Goods once sold are not returnable without authorization.</p>
+        <p>Asante kwa biashara yako!</p>
+        <p className="text-xs mt-1 italic">Bidhaa baada ya kuuzwa haiwezi kurudishwa bila idhini.</p>
       </div>
 
       <style>{`
@@ -309,13 +304,12 @@ return (
           #receipt-print { position: absolute; left: 0; top: 0; width: 100%; }
           .print\\:hidden { display: none !important; }
           #receipt-print thead { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          #receipt-print thead th { background-color: #ef4444 !important; color: #ffffff !important; }
+          #receipt-print thead th { background-color: #2563EB !important; color: #ffffff !important; }
         }
       `}</style>
     </div>
   </div>
 );
-
 
 };
 

@@ -46,22 +46,145 @@ const CustomCard = ({ title, children }) => (
 
 
 const AVAILABLE_PERMISSIONS = [
-  { key: "dashboard", label: "Dashboard", description: "View the dashboard overview" },
-  { key: "sales", label: "Sales", description: "View and enter sales" },
-  { key: "view_all_sales", label: "View All Sales", description: "Employee can see all pharmacy sales" },
-  { key: "products", label: "Products", description: "View and edit products" },
-  { key: "purchases", label: "Purchases", description: "View and manage purchases" },
-  { key: "suppliers", label: "Suppliers", description: "View and manage suppliers" },
-  { key: "customers", label: "Customers", description: "View and manage customers" },
-  { key: "employees", label: "Employees", description: "View and manage employees (admin only)" },
-  { key: "billing", label: "Billing", description: "View and manage billing" },
-  { key: "reports", label: "Reports", description: "View reports" },
-  { key: "notifications", label: "Notifications", description: "View notifications" },
-  { key: "settings", label: "Settings", description: "Manage settings (admin only)" },
-  { key: "subscription", label: "Subscription", description: "Manage subscription (admin only)" },
-  { key: "help", label: "Help", description: "Access help section" },
-  { key: "profile", label: "Profile", description: "Access profile settings" },
+  {
+    key: "dashboard",
+    label: "Dashibodi",
+    description: "Tazama muhtasari wa dashibodi",
+  },
+
+  {
+    key: "products",
+    label: "Bidhaa",
+    description: "Tazama na usimamishe bidhaa",
+  },
+
+  {
+    key: "sales",
+    label: "Mauzo",
+    description: "Tengeneza na uone mauzo",
+  },
+
+  {
+    key: "purchases",
+    label: "Manunuzi",
+    description: "Simamia manunuzi",
+  },
+
+  {
+    key: "suppliers",
+    label: "Wauzaji",
+    description: "Simamia wauzaji",
+  },
+
+  {
+    key: "customers",
+    label: "Wateja",
+    description: "Simamia wateja",
+  },
+
+  {
+    key: "employees",
+    label: "Wafanyakazi",
+    description: "Simamia wafanyakazi (Kwa Msimamizi tu)",
+  },
+
+  {
+    key: "reports",
+    label: "Ripoti",
+    description: "Tazama ripoti za mfumo",
+  },
+
+  {
+    key: "expenses",
+    label: "Matumizi",
+    description: "Simamia matumizi",
+  },
+
+  {
+    key: "assets",
+    label: "Mali",
+    description: "Simamia mali za kampuni",
+  },
+
+  {
+    key: "insurance",
+    label: "Bima",
+    description: "Simamia rekodi za bima",
+  },
+
+  {
+    key: "meeting",
+    label: "Vikao",
+    description: "Pata mikutano na ratiba",
+  },
+
+  {
+    key: "notebook",
+    label: "Notebook",
+    description: "Maelezo binafsi na rekodi",
+  },
+
+  {
+    key: "deleted",
+    label: "Mauzo Yaliyofutwa",
+    description: "Tazama rekodi za mauzo yaliyofutwa",
+  },
+
+  {
+    key: "expired",
+    label: "Expired",
+    description: "Tazama bidhaa zilizomahitimisha",
+  },
+
+  {
+    key: "attendances",
+    label: "Mahudhurio",
+    description: "Simamia mahudhurio ya wafanyakazi",
+  },
+
+  {
+    key: "notifications",
+    label: "Notifications",
+    description: "Tazama arifa",
+  },
+
+  {
+    key: "identitymanual",
+    label: "Vitambulisho",
+    description: "Simamia kadi za utambulisho",
+  },
+
+  {
+    key: "settings",
+    label: "Settings",
+    description: "Mipangilio ya mfumo (Kwa Msimamizi tu)",
+  },
+
+  {
+    key: "subscription",
+    label: "Subscriptions",
+    description: "Simamia usajili (Kwa Msimamizi tu)",
+  },
+
+  {
+    key: "help",
+    label: "Msaada",
+    description: "Pata msaada na usaidizi",
+  },
+
+  {
+    key: "installinstructions",
+    label: "Install App",
+    description: "Tazama maelekezo ya ufungaji wa app",
+  },
+
+  {
+    key: "profile",
+    label: "Profile",
+    description: "Simamia profaili yako",
+  },
 ];
+
 
 
 
@@ -109,43 +232,63 @@ const NewEmployee = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      if (!officeId) throw new Error("Owner info / office ID missing");
-      if (!formData.email) throw new Error("Email is required for employee registration");
+  try {
+    if (!officeId) throw new Error("Owner info / office ID missing");
+    if (!formData.email) throw new Error("Email is required for employee registration");
 
-      const employeePassword = formData.password || Math.random().toString(36).slice(-8) + Math.random().toString(36).toUpperCase().slice(-4);
-      setGeneratedPassword(employeePassword);
+    // Generate password if empty
+    const employeePassword = formData.password || Math.random().toString(36).slice(-8) + Math.random().toString(36).toUpperCase().slice(-4);
+    setGeneratedPassword(employeePassword);
 
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: employeePassword
-      });
+    // Create auth user
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: formData.email,
+      password: employeePassword
+    });
 
-      if (signUpError) throw signUpError;
+    if (signUpError) throw signUpError;
 
-      const authUserId = signUpData?.user?.id;
-      if (!authUserId) throw new Error("Failed to get auth_user_id from Supabase.");
+    const authUserId = signUpData?.user?.id;
+    if (!authUserId) throw new Error("Failed to get auth_user_id from Supabase.");
 
-      const { error: insertError } = await supabase.from("employees").insert([{
-        ...formData,
-        permissions: formData.role === "employee" ? permissions : AVAILABLE_PERMISSIONS.map(p => p.key),
-        office_id: officeId,
-        password: employeePassword,
-        active: true,
-        auth_user_id: authUserId
-      }]);
+    // Insert into employees table
+    const { error: insertError } = await supabase.from("employees").insert([{
+      ...formData,
+      permissions: formData.role === "employee" ? permissions : AVAILABLE_PERMISSIONS.map(p => p.key),
+      office_id: officeId,
+      password: employeePassword,
+      active: true,
+      auth_user_id: authUserId
+    }]);
 
-      if (insertError) throw insertError;
-      toast.success(`Employee "${formData.name}" added successfully!`);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (insertError) throw insertError;
+
+    // 🔹 Toast message with employee credentials
+    toast.success(
+      <div className="space-y-1 text-sm">
+        <div>Employee <strong>{formData.name}</strong> added successfully!</div>
+        <div>Email: <strong>{formData.email}</strong></div>
+        <div>Password: <strong>{employeePassword}</strong></div>
+        <div className="mt-1 font-medium text-red-600">Please login again to refresh employee</div>
+      </div>,
+      { duration: 6000 } // visible for 6 seconds
+    );
+
+    // 🔹 Redirect to login after 6 seconds
+    setTimeout(() => {
+      navigate("/login");
+    }, 6000);
+
+  } catch (err) {
+    toast.error(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 
 
@@ -154,18 +297,18 @@ const NewEmployee = () => {
     <Toaster position="top-right" />
     <div className="max-w-5xl mx-auto space-y-6">
 
-      {/* Back Link */}
+      {/* Kiungo cha Kurudi */}
       <Link
         to="../employees"
-        className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline mb-2"
+        className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline mb-2"
       >
-        <FaArrowLeft /> Back to Employees List
+        <FaArrowLeft /> Rudi kwenye Orodha ya Wafanyakazi
       </Link>
 
       <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* BASIC INFO */}
-        <FormCard title="Basic Information">
+        {/* TAARIFA ZA MISINGI */}
+        <FormCard title="Taarifa za Msingi">
           {[
             { key: "name", icon: <FaUser /> },
             { key: "email", icon: <FaEnvelope /> },
@@ -173,11 +316,11 @@ const NewEmployee = () => {
           ].map(({ key, icon }, i) => (
             <div className="mb-4 w-full" key={i}>
               <label className="block text-sm font-medium mb-1 capitalize">
-                {key}
+                {key === "name" ? "Jina" : key === "email" ? "Barua Pepe" : "Simu"}
               </label>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                   {icon}
                 </span>
 
@@ -186,15 +329,17 @@ const NewEmployee = () => {
                   name={key}
                   placeholder={
                     key === "phone"
-                      ? "Phone Number"
-                      : key.charAt(0).toUpperCase() + key.slice(1)
+                      ? "Nambari ya Simu"
+                      : key === "name"
+                      ? "Jina"
+                      : "Barua Pepe"
                   }
                   value={formData[key]}
                   onChange={handleChange}
                   className="
                     w-full pl-12 pr-4 py-2 rounded-xl
                     border border-gray-300 bg-white
-                    focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                    focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                     shadow-sm
                   "
                 />
@@ -203,19 +348,19 @@ const NewEmployee = () => {
           ))}
         </FormCard>
 
-        {/* POSITION & ROLE */}
-        <FormCard title="Position & Role">
+        {/* CHEO NA JUKUMU */}
+        <FormCard title="Cheo na Jukumu">
           {[
             { key: "position", icon: <FaBriefcase /> },
             { key: "role", icon: <FaUserTag /> }
           ].map(({ key, icon }, i) => (
             <div className="mb-4" key={i}>
               <label className="block text-sm font-medium mb-1 capitalize">
-                {key}
+                {key === "position" ? "Cheo" : "Jukumu"}
               </label>
 
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                   {icon}
                 </span>
 
@@ -226,23 +371,23 @@ const NewEmployee = () => {
                   className="
                     w-full pl-12 pr-4 py-2 rounded-xl
                     border border-gray-300 bg-white
-                    focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                    focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                     shadow-sm
                   "
                 >
                   {key === "position"
                     ? [
-                        "Manager",
-                        "Accountant",
-                        "Cashier",
-                        "Pharmaceutical Assistant",
-                        "Pharmaceutical Technician",
-                        "Pharmacist",
-                        "Medical Attendant",
-                        "Supervisor",
-                        "Staff",
-                        "Admin",
-                        "Other"
+                        "Meneja",
+                        "Mhasibu",
+                        "Kashier",
+                        "Msaidizi wa Dawa",
+                        "Technician wa Dawa",
+                        "Daktari wa Dawa",
+                        "Mhudumu wa Afya",
+                        "Msimamizi",
+                        "Mfanyakazi",
+                        "Msimamizi Mkuu",
+                        "Nyingine"
                       ].map(v => (
                         <option key={v} value={v}>
                           {v}
@@ -250,7 +395,7 @@ const NewEmployee = () => {
                       ))
                     : ["admin", "employee"].map(v => (
                         <option key={v} value={v}>
-                          {v}
+                          {v === "admin" ? "Msimamizi" : "Mfanyakazi"}
                         </option>
                       ))}
                 </select>
@@ -259,9 +404,9 @@ const NewEmployee = () => {
           ))}
         </FormCard>
 
-        {/* PERMISSIONS */}
+        {/* IDhini */}
         {formData.role === "employee" && (
-          <FormCard title="Permissions">
+          <FormCard title="Idhini">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {AVAILABLE_PERMISSIONS.map(p => (
                 <label
@@ -275,7 +420,7 @@ const NewEmployee = () => {
                     type="checkbox"
                     checked={permissions.includes(p.key)}
                     onChange={() => handlePermissionChange(p.key)}
-                    className="mt-1 h-5 w-5 text-[#ef4444]"
+                    className="mt-1 h-5 w-5 text-[#2563EB]"
                     disabled={p.key === "dashboard"}
                   />
                   <div>
@@ -288,15 +433,15 @@ const NewEmployee = () => {
           </FormCard>
         )}
 
-        {/* PASSWORD */}
-        <FormCard title="Password & Submit">
+        {/* NYWILA & KITUFUCHA */}
+        <FormCard title="Nywila & Kutuma">
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">
-              Password (leave empty to auto-generate)
+              Nywila (acha tupu ili itengenezwe kiotomatiki)
             </label>
 
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#ef4444] text-lg">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2563EB] text-lg">
                 <FaLock />
               </span>
 
@@ -305,18 +450,18 @@ const NewEmployee = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Password"
+                placeholder="Nywila"
                 className="
                   w-full pl-12 pr-4 py-2 rounded-xl
                   border border-gray-300 bg-white
-                  focus:outline-none focus:ring-2 focus:ring-[#ef4444]
+                  focus:outline-none focus:ring-2 focus:ring-[#2563EB]
                   shadow-sm
                 "
               />
             </div>
           </div>
 
-          {/* Generated password box */}
+          {/* Sanduku la Nywila Iliyotengenezwa */}
           {generatedPassword && (
             <div className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm mb-4">
               <span className="font-mono">{generatedPassword}</span>
@@ -325,28 +470,28 @@ const NewEmployee = () => {
                 type="button"
                 onClick={() =>
                   navigator.clipboard.writeText(generatedPassword) &&
-                  toast.success("Password copied")
+                  toast.success("Nywila imekopywa")
                 }
                 className="
-                  flex items-center gap-1 bg-[#ef4444] text-white
+                  flex items-center gap-1 bg-[#2563EB] text-white
                   px-3 py-1 rounded-lg hover:bg-red-600 shadow
                 "
               >
-                <FaCopy /> Copy
+                <FaCopy /> Nakili
               </button>
             </div>
           )}
 
-          {/* SUBMIT BUTTON */}
+          {/* KITUFUCHA */}
           <button
             type="submit"
             disabled={loading}
             className="
-              w-full bg-[#ef4444] text-white py-3 rounded-xl
+              w-full bg-[#2563EB] text-white py-3 rounded-xl
               hover:scale-105 hover:shadow-xl transition-all font-semibold
             "
           >
-            {loading ? "Processing..." : "Add Employee"}
+            {loading ? "Inaendelea..." : "Ongeza Mfanyakazi"}
           </button>
         </FormCard>
       </form>
@@ -354,6 +499,8 @@ const NewEmployee = () => {
   </div>
 );
 
+
 };
 
 export default NewEmployee;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

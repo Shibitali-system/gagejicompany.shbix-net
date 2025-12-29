@@ -184,13 +184,13 @@ const PosHome = () => {
                   </p>
                   <div className="flex justify-center gap-4 flex-wrap">
                     <button
-                      onClick={() => navigate("/pos/signup")}
+                      onClick={() => navigate("/signup")}
                       className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300"
                     >
                       <FaUserPlus className="text-xl" /> {t.register}
                     </button>
                     <button
-                      onClick={() => navigate("/pos/login")}
+                      onClick={() => navigate("/login")}
                       className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300"
                     >
                       <FaSignInAlt className="text-xl" /> {t.login}

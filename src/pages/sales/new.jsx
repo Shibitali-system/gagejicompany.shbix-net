@@ -1,9 +1,30 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from '../../../supabaseClient';
+import { useNotification } from '../../hooks/useNotification'; // adjust path kama ni tofauti
 import { sendNotification } from "../utils/sendNotification";
 import { FaPlus, FaTimes, FaSearch, FaUserPlus, FaUserSlash, FaArrowLeft } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+
+// ---------------------- Summary Card Component ----------------------
+const SummaryCard = ({ title, value, valueColor }) => (
+  <div
+    className={`
+      bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4
+      flex flex-col items-center justify-center
+      transition-all duration-200
+      hover:bg-[#fdfdfd]
+      transform hover:-translate-y-[2px] active:translate-y-[1px]
+      shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+      font-sans
+      w-full
+    `}
+    style={{ willChange: 'transform' }}
+  >
+    <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
+  </div>
+);
 
 const NewSale = () => {
   const navigate = useNavigate();
@@ -22,13 +43,14 @@ const NewSale = () => {
   const [loading, setLoading] = useState(false);
   const [sellerInfo, setSellerInfo] = useState(null); 
   const [showCustomerForm, setShowCustomerForm] = useState(false);
-  const [newCustomerData, setNewCustomerData] = useState({ name: "", email: "", phone: "", address: "", type: "hospital" });
+  const [newCustomerData, setNewCustomerData] = useState({ name: "", email: "", phone: "", address: "", type: "Biashara" });
   const [saleDateTime, setSaleDateTime] = useState(new Date().toISOString().slice(0,16));
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [paymentStatus, setPaymentStatus] = useState("Paid");
   const [loanAmount, setLoanAmount] = useState(0);
   const [paidAmount, setPaidAmount] = useState(0);
   const [loanPaymentDate, setLoanPaymentDate] = useState("");
+  const notify = useNotification();
 
   // --- Fetch seller info ---
   useEffect(() => {
@@ -232,7 +254,7 @@ const filteredProducts = useMemo(() => {
     setCustomers(prev => [...prev, data]);
 
     setShowCustomerForm(false);
-    setNewCustomerData({ name: "", email: "", phone: "", address: "", type: "hospital" });
+    setNewCustomerData({ name: "", email: "", phone: "", address: "", type: "Biashara" });
     toast.success("Customer created successfully");
   } catch (err) {
     toast.error(err.message);
@@ -244,88 +266,132 @@ const filteredProducts = useMemo(() => {
   // --- Submit Sale ---
 const handleSubmit = async (e) => {
   e.preventDefault();
-  if(!selectedCustomer) return toast.error("Please select or create a customer");
-  if(selectedProducts.length === 0) return toast.error("Please select at least one product");
-  if(!sellerInfo) return toast.error("Seller info not loaded");
 
-  for(const p of selectedProducts) 
-    if(p.quantity > p.stock) 
+  if (!selectedCustomer)
+    return toast.error("Please select or create a customer");
+
+  if (selectedProducts.length === 0)
+    return toast.error("Please select at least one product");
+
+  if (!sellerInfo)
+    return toast.error("Seller info not loaded");
+
+  for (const p of selectedProducts)
+    if (p.quantity > p.stock)
       return toast.error(`Stock insufficient for ${p.name}`);
 
-  if(paymentStatus === "Loan") {
-    if(!loanPaymentDate) return toast.error("Please select Loan Payment Date");
-    if(loanAmount <= 0) return toast.error("Loan Amount must be greater than 0");
+  if (paymentStatus === "Loan") {
+    if (!loanPaymentDate)
+      return toast.error("Please select Loan Payment Date");
+    if (loanAmount <= 0)
+      return toast.error("Loan Amount must be greater than 0");
   }
 
-  let paid = 0, remainingLoan = 0, finalLoanPaymentDate = null;
+  let paid = 0,
+    remainingLoan = 0,
+    finalLoanPaymentDate = null;
 
-  if(paymentStatus === "Paid") {
-    paid = grandTotal; remainingLoan = 0; finalLoanPaymentDate = new Date(saleDateTime).toISOString();
-  } else if(paymentStatus === "Loan") {
+  if (paymentStatus === "Paid") {
+    paid = grandTotal;
+    remainingLoan = 0;
+    finalLoanPaymentDate = new Date(saleDateTime).toISOString();
+  } else if (paymentStatus === "Loan") {
     paid = paidAmount || (grandTotal - loanAmount);
     remainingLoan = loanAmount;
     finalLoanPaymentDate = new Date(loanPaymentDate).toISOString();
-  } else { paid=0; remainingLoan=0; finalLoanPaymentDate=null; }
+  }
 
   setLoading(true);
+
   try {
+    // 🔐 Get access token
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) throw new Error("User not authenticated");
+
     // 1️⃣ Insert sale
-    const { data: saleData, error: saleError } = await supabase.from("sales").insert([{
-      customer_id: selectedCustomer.id,
-      seller_id: sellerInfo.id,
-      seller_type: sellerInfo.type,
-      office_id: sellerInfo.office_id,
-      office_name: sellerInfo.office_name,
-      total_amount: grandTotal,
-      discount_type: discountType,
-      discount_value: discountType === "total" ? totalDiscount : productDiscountTotal,
-      comment,
-      payment_method: paymentMethod,
-      payment_status: paymentStatus,
-      paid_amount: paid,
-      loan_amount: remainingLoan,
-      loan_payment_date: finalLoanPaymentDate,
-      created_at: new Date(saleDateTime).toISOString()
-    }]).select().maybeSingle();
-    if(saleError) throw saleError;
+    const { data: saleData, error: saleError } = await supabase
+      .from("sales")
+      .insert([{
+        customer_id: selectedCustomer.id,
+        seller_id: sellerInfo.id,
+        seller_type: sellerInfo.type,
+        office_id: sellerInfo.office_id,
+        office_name: sellerInfo.office_name,
+        total_amount: grandTotal,
+        discount_type: discountType,
+        discount_value:
+          discountType === "total" ? totalDiscount : productDiscountTotal,
+        comment,
+        payment_method: paymentMethod,
+        payment_status: paymentStatus,
+        paid_amount: paid,
+        loan_amount: remainingLoan,
+        loan_payment_date: finalLoanPaymentDate,
+        created_at: new Date(saleDateTime).toISOString(),
+      }])
+      .select()
+      .maybeSingle();
+
+    if (saleError) throw saleError;
 
     // 2️⃣ Insert sale items
-    const saleItemsData = selectedProducts.map(p => ({
+    const saleItemsData = selectedProducts.map((p) => ({
       sale_id: saleData.id,
       product_id: p.id,
       quantity: p.quantity,
       price: p.price,
-      discount: discountType === "product" ? p.discount : 0
+      discount: discountType === "product" ? p.discount : 0,
     }));
-    const { error: itemsError } = await supabase.from("sale_items").insert(saleItemsData);
-    if(itemsError) throw itemsError;
+
+    const { error: itemsError } = await supabase
+      .from("sale_items")
+      .insert(saleItemsData);
+
+    if (itemsError) throw itemsError;
 
     // 3️⃣ Update stock
-    for(const p of selectedProducts)
-      await supabase.from("products").update({ stock: p.stock - p.quantity }).eq("id", p.id);
-
-    // 4️⃣ Send Notification (In-app + Push)
-    await sendNotification({
-      auth_user_id: sellerInfo.id,
-      office_id: sellerInfo.office_id,
-      title: "New Sale Recorded",
-      message: `Sale of ${selectedProducts.length} products was recorded by ${sellerInfo.name} for ${selectedCustomer.name}.`,
-      link: "/sales/dashboard", // change to your sales dashboard route
-      type: "both"
-    });
-
-    // Optional browser notification
-    if("Notification" in window && Notification.permission === "granted") {
-      new Notification("New Sale Recorded", {
-        body: `Sale of ${selectedProducts.length} products recorded by ${sellerInfo.name}`,
-      });
-    } else if("Notification" in window && Notification.permission !== "granted") {
-      Notification.requestPermission();
+    for (const p of selectedProducts) {
+      await supabase
+        .from("products")
+        .update({ stock: p.stock - p.quantity })
+        .eq("id", p.id);
     }
 
-    toast.success("Sale recorded successfully ✔ Notifications sent!");
+    // 4️⃣ PUSH NOTIFICATION (Edge Function)
+    try {
+      await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/quick-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            auth_user_id: sellerInfo.id,
+            office_id: sellerInfo.office_id,
+            title: "New Sale Recorded",
+            message: `Sale of ${selectedProducts.length} products was recorded by ${sellerInfo.name} for ${selectedCustomer.name}.`,
+            url: "/dashboard/sales",
+          }),
+        }
+      );
+    } catch (pushErr) {
+      console.warn("🔕 Push notification failed:", pushErr);
+    }
 
-    // 5️⃣ Reset form & UI state
+    // 5️⃣ LOCAL / PWA notification
+    notify("New Sale Recorded", {
+      body: `Sale of ${selectedProducts.length} products recorded by ${sellerInfo.name}`,
+      icon: "/pwa-192.png",
+      badge: "/badge-72.png",
+    });
+
+    toast.success("✅ Sale recorded successfully!");
+
+    // 6️⃣ Reset form & UI
     setSelectedCustomer(null);
     setCustomerSearch("");
     setSelectedProducts([]);
@@ -333,40 +399,28 @@ const handleSubmit = async (e) => {
     setTotalDiscount(0);
     setComment("");
     setShowCustomerForm(false);
-    setNewCustomerData({ name: "", email: "", phone: "", address: "", type: "hospital" });
-    setSaleDateTime(new Date().toISOString().slice(0,16));
+    setNewCustomerData({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      type: "Biashara",
+    });
+    setSaleDateTime(new Date().toISOString().slice(0, 16));
     setPaymentStatus("Paid");
     setLoanAmount(0);
     setPaidAmount(0);
     setLoanPaymentDate("");
 
-  } catch(err) {
-    toast.error("Failed to record sale: " + err.message);
+  } catch (err) {
+    toast.error("❌ Failed to record sale: " + err.message);
     console.error(err);
-  } finally { 
-    setLoading(false); 
+  } finally {
+    setLoading(false);
   }
 };
 
-// ---------------------- Summary Card Component ----------------------
-const SummaryCard = ({ title, value, valueColor }) => (
-  <div
-    className={`
-      bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4
-      flex flex-col items-center justify-center
-      transition-all duration-200
-      hover:bg-[#fdfdfd]
-      transform hover:-translate-y-[2px] active:translate-y-[1px]
-      shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-      font-sans
-      w-full
-    `}
-    style={{ willChange: 'transform' }}
-  >
-    <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
-  </div>
-);
+
 
   return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6 font-sans">
@@ -374,63 +428,64 @@ const SummaryCard = ({ title, value, valueColor }) => (
 
     <div className="max-w-5xl mx-auto space-y-6">
 
-      {/* Header Card */}
+      {/* Kadi ya Kichwa */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
                       flex flex-col md:flex-row justify-between items-start md:items-center gap-4
                       transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Record New Sale</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Rekodi Mauzo Mapya</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Use this form to record a new sale. Select the customer, add products, apply discounts, and set payment details. Make sure all required fields are filled before submitting.
+            Tumia fomu hii kurekodi mauzo mapya. Chagua mteja, ongeza bidhaa, weka punguzo, na weka maelezo ya malipo. Hakikisha sehemu zote muhimu zimejazwa kabla ya kutuma.
           </p>
         </div>
-        <Link to="../sales" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-          <FaArrowLeft /> Back to Sales List
+        <Link to="../sales" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+          <FaArrowLeft /> Rudi kwenye Orodha ya Mauzo
         </Link>
       </div>
 
-      {/* Sale Form Card */}
+      {/* Kadi ya Fomu ya Mauzo */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] p-5 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Sale Date/Time */}
+          {/* Tarehe na Wakati wa Mauzo */}
           <div>
-            <label className="block font-semibold mb-1">Sale Date & Time</label>
+            <label className="block font-semibold mb-1">Tarehe na Wakati wa Mauzo</label>
             <input
               type="datetime-local"
               value={saleDateTime}
               onChange={e => setSaleDateTime(e.target.value)}
-              className="border border-gray-300 px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-gray-300 px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
-          {/* Customer Search & Actions */}
+          {/* Utafutaji na Hatua za Mteja */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1">Customer</label>
+            <label className="block font-semibold mb-1">Mteja</label>
             <input
               type="text"
-              placeholder="Search or type new customer..."
+              placeholder="Tafuta au andika mteja mpya..."
               value={customerSearch}
               onChange={e => { setCustomerSearch(e.target.value); setSelectedCustomer(null); }}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
             />
 
             <div className="flex flex-col sm:flex-row gap-2 mt-2">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 bg-[#ef4444] hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold"
+                className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold"
                 onClick={() => setShowCustomerForm(true)}
               >
-                <FaUserPlus /> Create Customer
+                <FaUserPlus /> Unda Mteja
               </button>
               <button
-  type="button"
-  className="flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 text-[#ef4444] px-4 py-2 rounded-xl font-semibold"
-  onClick={() => handleCreateCustomer(true)}
->
-  <FaUserSlash /> No Customer Name
-</button>
-</div>
+                type="button"
+                className="flex items-center justify-center gap-2 bg-gray-200 hover:bg-gray-300 text-[#2563EB] px-4 py-2 rounded-xl font-semibold"
+                onClick={() => handleCreateCustomer(true)}
+              >
+                <FaUserSlash /> Hakuna Jina la Mteja
+              </button>
+            </div>
+
             {customerSearch && (
               <div className="border rounded mt-1 max-h-32 overflow-y-auto bg-white">
                 {filteredCustomers.map(c => (
@@ -438,90 +493,90 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     {c.name}
                   </div>
                 ))}
-                {!filteredCustomers.length && <div className="p-2 text-gray-500">No matching customer found</div>}
+                {!filteredCustomers.length && <div className="p-2 text-gray-500">Hakuna mteja anayefanana</div>}
               </div>
             )}
           </div>
 
-          {/* New Customer Form */}
+          {/* Fomu ya Mteja Mpya */}
           {showCustomerForm && (
             <div className="border p-3 rounded bg-gray-50 space-y-2 mt-2">
               <div>
-                <label className="block font-medium mb-1">Name *</label>
+                <label className="block font-medium mb-1">Jina *</label>
                 <input
                   type="text"
                   value={newCustomerData.name}
                   onChange={e => setNewCustomerData({ ...newCustomerData, name: e.target.value })}
                   className="w-full border px-2 py-1 rounded"
-                  placeholder="Enter customer name"
+                  placeholder="Weka jina la mteja"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Email <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Barua Pepe <span className="text-gray-500">(hiari)</span></label>
                 <input
                   type="email"
                   value={newCustomerData.email}
                   onChange={e => setNewCustomerData({ ...newCustomerData, email: e.target.value })}
                   className="w-full border px-2 py-1 rounded"
-                  placeholder="Enter email (optional)"
+                  placeholder="Weka barua pepe (hiari)"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Phone <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Simu <span className="text-gray-500">(hiari)</span></label>
                 <input
                   type="text"
                   value={newCustomerData.phone}
                   onChange={e => setNewCustomerData({ ...newCustomerData, phone: e.target.value })}
                   className="w-full border px-2 py-1 rounded"
-                  placeholder="Enter phone (optional)"
+                  placeholder="Weka nambari ya simu (hiari)"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Address <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Anuani <span className="text-gray-500">(hiari)</span></label>
                 <textarea
                   value={newCustomerData.address}
                   onChange={e => setNewCustomerData({ ...newCustomerData, address: e.target.value })}
                   className="w-full border px-2 py-1 rounded"
-                  placeholder="Enter address (optional)"
+                  placeholder="Weka anuani (hiari)"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 bg-[#ef4444] hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold w-full sm:w-auto"
+                  className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-600 text-white px-4 py-2 rounded-xl font-semibold w-full sm:w-auto"
                   onClick={() => handleCreateCustomer(false)}
                 >
-                  <FaUserPlus /> Create Customer
+                  <FaUserPlus /> Unda Mteja
                 </button>
                 <button
                   type="button"
                   className="bg-gray-300 px-4 py-2 rounded-xl w-full sm:w-auto"
                   onClick={() => setShowCustomerForm(false)}
                 >
-                  Cancel
+                  Ghairi
                 </button>
               </div>
             </div>
           )}
 
-          {/* Product Selection */}
+          {/* Uchaguzi wa Bidhaa */}
           <div className="flex flex-col sm:flex-row gap-2 mb-2">
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Tafuta bidhaa..."
                 value={productSearch}
                 onChange={e => setProductSearch(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
               />
               <FaSearch className="absolute right-3 top-3 text-gray-400" />
             </div>
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444] w-full sm:w-auto"
+              className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB] w-full sm:w-auto"
             >
-              <option value="">All Categories</option>
+              <option value="">Kundi Zote</option>
               {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
@@ -533,29 +588,29 @@ const SummaryCard = ({ title, value, valueColor }) => (
                 className="flex justify-between items-center p-2 border rounded cursor-pointer hover:bg-[#ffe5e5]"
                 onClick={() => handleAddProduct(p)}
               >
-                {p.name} - {p.price.toLocaleString()} TZS (Stock: {p.stock})
-                <FaPlus className="text-[#ef4444]" />
+                {p.name} - {p.price.toLocaleString()} TZS (Hisa: {p.stock})
+                <FaPlus className="text-[#2563EB]" />
               </div>
             ))}
-            {!filteredProducts.length && <div className="p-2 text-gray-500">No matching product found</div>}
+            {!filteredProducts.length && <div className="p-2 text-gray-500">Hakuna bidhaa inayofanana</div>}
           </div>
 
-          {/* Selected Products */}
+          {/* Bidhaa Zilizochaguliwa */}
           {selectedProducts.length > 0 && (
             <div className="space-y-2">
-              <h2 className="font-semibold text-lg">Selected Products</h2>
+              <h2 className="font-semibold text-lg">Bidhaa Zilizochaguliwa</h2>
               <div className="space-y-2">
                 {selectedProducts.map(p => (
                   <div key={p.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center border p-2 rounded gap-2 sm:gap-0">
                     <div className="flex-1">
                       <p className="font-medium">{p.name}</p>
-                      <p className="text-sm text-gray-500">Price: {p.price.toLocaleString()} TZS | Stock: {p.stock}</p>
+                      <p className="text-sm text-gray-500">Bei: {p.price.toLocaleString()} TZS | Hisa: {p.stock}</p>
                       {discountType === "product" && (
                         <input
                           type="number"
                           min="0"
                           max="100"
-                          placeholder="Discount %"
+                          placeholder="Punguzo %"
                           value={p.discount || ""}
                           onChange={(e) => handleProductDiscountChange(p.id, parseFloat(e.target.value) || 0)}
                           className="border rounded px-2 py-1 mt-1 w-24"
@@ -581,10 +636,10 @@ const SummaryCard = ({ title, value, valueColor }) => (
             </div>
           )}
 
-          {/* Discounts & Comments */}
+          {/* Punguzo na Maoni */}
           <div className="flex flex-col md:flex-row flex-wrap gap-4 items-start md:items-center">
             <div>
-              <label className="block font-semibold mb-1">Discount Type</label>
+              <label className="block font-semibold mb-1">Aina ya Punguzo</label>
               <div className="flex flex-wrap gap-2">
                 {["none", "product", "total"].map(type => (
                   <button
@@ -593,11 +648,11 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     onClick={() => setDiscountType(type)}
                     className={`px-4 py-2 rounded-xl border font-medium ${
                       discountType === type
-                        ? "bg-[#ef4444] text-white border-[#ef4444]"
+                        ? "bg-[#2563EB] text-white border-[#2563EB]"
                         : "bg-white text-gray-700 border-gray-300 hover:bg-[#ffe5e5]"
                     }`}
                   >
-                    {type === "none" ? "None" : type === "product" ? "Per Product" : "Total"}
+                    {type === "none" ? "Hakuna" : type === "product" ? "Kila Bidhaa" : "Jumla"}
                   </button>
                 ))}
               </div>
@@ -605,45 +660,45 @@ const SummaryCard = ({ title, value, valueColor }) => (
 
             {discountType === "total" && (
               <div className="flex-1 min-w-[150px]">
-                <label className="block font-semibold mb-1">Total Discount (TZS)</label>
+                <label className="block font-semibold mb-1">Jumla ya Punguzo (TZS)</label>
                 <input
                   type="number"
                   min="0"
                   value={totalDiscount}
                   onChange={(e) => setTotalDiscount(parseFloat(e.target.value) || 0)}
-                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
                 />
               </div>
             )}
 
             <div className="flex-1 min-w-[150px]">
-              <label className="block font-semibold mb-1">Comment</label>
+              <label className="block font-semibold mb-1">Maoni</label>
               <input
                 type="text"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="Optional comment for this sale"
-                className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-[#ef4444]"
+                placeholder="Maoni hiari kwa mauzo haya"
+                className="w-full border px-3 py-2 rounded focus:ring-2 focus:ring-[#2563EB]"
               />
             </div>
           </div>
 
-          {/* Analytics */}
+          {/* Uchambuzi */}
           <div className="p-4 border rounded bg-gray-50 space-y-1">
-            <p>Subtotal: {subtotal.toLocaleString()} TZS</p>
-            <p>Product Discount Total: {productDiscountTotal.toLocaleString()} TZS</p>
-            <p>Grand Total: {grandTotal.toLocaleString()} TZS</p>
-            <p>Total Products: {selectedProducts.length}</p>
+            <p>Jumla Ndogo: {subtotal.toLocaleString()} TZS</p>
+            <p>Jumla ya Punguzo la Bidhaa: {productDiscountTotal.toLocaleString()} TZS</p>
+            <p>Jumla Kuu: {grandTotal.toLocaleString()} TZS</p>
+            <p>Idadi ya Bidhaa: {selectedProducts.length}</p>
           </div>
 
-          {/* Payment Details */}
+          {/* Maelezo ya Malipo */}
           <div className="flex flex-col md:flex-row flex-wrap gap-4 items-start md:items-center">
             <div className="flex-1 min-w-[150px]">
-              <label className="block font-semibold mb-1">Payment Method</label>
+              <label className="block font-semibold mb-1">Njia ya Malipo</label>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
               >
                 {["Cash", "Card", "Mobile Money", "Bank Transfer"].map(method => (
                   <option key={method} value={method}>{method}</option>
@@ -652,7 +707,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
             </div>
 
             <div className="flex-1 min-w-[150px]">
-              <label className="block font-semibold mb-1">Payment Status</label>
+              <label className="block font-semibold mb-1">Hali ya Malipo</label>
               <select
                 value={paymentStatus}
                 onChange={(e) => {
@@ -672,7 +727,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     setLoanAmount(0);
                   }
                 }}
-                className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
               >
                 {["Paid", "Loan", "Not Paid", "Provided Free", "Sponsored"].map(status => (
                   <option key={status} value={status}>{status}</option>
@@ -684,7 +739,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
           {paymentStatus === "Loan" && (
             <div className="flex flex-col md:flex-row gap-4 mt-2">
               <div className="flex-1">
-                <label className="block font-semibold mb-1">Loan Amount (TZS)</label>
+                <label className="block font-semibold mb-1">Kiasi cha Mkopo (TZS)</label>
                 <input
                   type="number"
                   min="0"
@@ -694,23 +749,23 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     setLoanAmount(val);
                     setPaidAmount(grandTotal - val);
                   }}
-                  placeholder="Enter loan amount"
-                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                  placeholder="Weka kiasi cha mkopo"
+                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
                 />
               </div>
 
               <div className="flex-1">
-                <label className="block font-semibold mb-1">Loan Payment Date</label>
+                <label className="block font-semibold mb-1">Tarehe ya Malipo ya Mkopo</label>
                 <input
                   type="date"
                   value={loanPaymentDate}
                   onChange={(e) => setLoanPaymentDate(e.target.value)}
-                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
                 />
               </div>
 
               <div className="flex-1">
-                <label className="block font-semibold mb-1">Paid Amount (TZS)</label>
+                <label className="block font-semibold mb-1">Kiasi Kilicholipwa (TZS)</label>
                 <input
                   type="number"
                   min="0"
@@ -720,8 +775,8 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     setPaidAmount(val);
                     setLoanAmount(grandTotal - val);
                   }}
-                  placeholder="Enter paid amount"
-                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+                  placeholder="Weka kiasi kilicholipwa"
+                  className="border px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
                 />
               </div>
             </div>
@@ -730,9 +785,9 @@ const SummaryCard = ({ title, value, valueColor }) => (
           <button
             type="submit"
             disabled={loading}
-            className="bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 w-full sm:w-auto"
+            className="bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 w-full sm:w-auto"
           >
-            {loading ? "Recording..." : "Record Sale"}
+            {loading ? "Inarekodiwa..." : "Rekodi Mauzo"}
           </button>
 
         </form>

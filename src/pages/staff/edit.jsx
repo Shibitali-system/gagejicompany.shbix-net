@@ -143,11 +143,11 @@ const EmployeeEdit = () => {
     <Toaster position="top-right" />
 
     {/* Back Link */}
-    <Link to="../employees" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
+    <Link to="../employees" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
       <FaArrowLeft /> Back to Employees List
     </Link>
 
-    <h1 className="text-3xl font-bold text-[#ef4444] mb-4">Edit Employee</h1>
+    <h1 className="text-3xl font-bold text-[#2563EB] mb-4">Edit Employee</h1>
 
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name */}
@@ -158,7 +158,7 @@ const EmployeeEdit = () => {
           value={employee.name}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
       </FormCard>
 
@@ -169,7 +169,7 @@ const EmployeeEdit = () => {
           name="email"
           value={employee.email}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
       </FormCard>
 
@@ -180,7 +180,7 @@ const EmployeeEdit = () => {
           name="phone"
           value={employee.phone}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
       </FormCard>
 
@@ -190,7 +190,7 @@ const EmployeeEdit = () => {
           name="role"
           value={employee.role}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         >
           <option value="employee">Employee</option>
           <option value="admin">Admin</option>
@@ -203,7 +203,7 @@ const EmployeeEdit = () => {
           name="position"
           value={employee.position || ""}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           required
         >
           <option value="">Select position</option>
@@ -220,7 +220,7 @@ const EmployeeEdit = () => {
           name="password"
           value={employee.password}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          className="w-full px-4 py-2 border border-[#e5e7eb] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
         />
       </FormCard>
 
@@ -232,7 +232,7 @@ const EmployeeEdit = () => {
               key={perm}
               className={`px-3 py-1 rounded-full border text-sm cursor-pointer transition-all ${
                 employee.permissions.includes(perm)
-                  ? "bg-[#ef4444] text-white border-[#ef4444]"
+                  ? "bg-[#2563EB] text-white border-[#2563EB]"
                   : "bg-gray-100 text-gray-700 border-[#e5e7eb] hover:bg-[#ffe5e5]"
               }`}
             >
@@ -269,7 +269,7 @@ const EmployeeEdit = () => {
       <div className="flex justify-end">
         <button
           type="submit"
-          className="px-6 py-2 bg-[#ef4444] text-white rounded-xl hover:bg-red-600 transition-all"
+          className="px-6 py-2 bg-[#2563EB] text-white rounded-xl hover:bg-red-600 transition-all"
         >
           Save Changes
         </button>

@@ -230,140 +230,140 @@ const SupplierNew = () => {
     
     <div className="max-w-5xl mx-auto">
       {/* Single Card Container */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[8px] shadow-lg p-6 sm:p-8 space-y-6">
-        
+      <div className="bg-white border border-[#e5e7eb] rounded-lg shadow-lg p-4 sm:p-6 md:p-8 space-y-6">
+
         {/* Back Link */}
-        <Link to="../suppliers" className="flex items-center gap-2 text-[#ef4444] font-semibold hover:underline text-sm">
-          <FaArrowLeft /> Back to Suppliers
+        <Link to="../suppliers" className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline text-sm">
+          <FaArrowLeft /> Rudi kwenye Wauzaji
         </Link>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div className="flex flex-col gap-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-              {bulkMode ? "Bulk Upload Suppliers (Excel)" : "Add New Supplier"}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+              {bulkMode ? "Pakia Wauzaji Wengi (Excel)" : "Ongeza Muuzaji Mpya"}
             </h1>
             <p className="text-gray-600 text-sm sm:text-base">
               {bulkMode 
-                ? "Upload multiple suppliers at once via Excel." 
-                : "Add a new supplier to the system."}
+                ? "Pakia wauzaji wengi kwa wakati mmoja kupitia Excel." 
+                : "Ongeza muuzaji mpya kwenye mfumo."}
             </p>
           </div>
           
           {user && (
-            <div className="text-sm text-gray-500 mt-2 sm:mt-0">
-              Office: <span className="font-semibold text-[#ef4444]">{user.office_name}</span>
+            <div className="text-sm text-gray-500 mt-2 md:mt-0">
+              Ofisi: <span className="font-semibold text-[#2563EB]">{user.office_name}</span>
             </div>
           )}
         </div>
 
         {/* Toggle Bulk/Single */}
-        <div className="flex flex-wrap justify-between items-center gap-2">
+        <div className="flex flex-wrap justify-start md:justify-between items-center gap-2">
           <button
             onClick={() => setBulkMode(!bulkMode)}
-            className="flex items-center gap-2 bg-[#ef4444] text-white px-3 py-2 rounded-[4px] hover:bg-[#d63a3a] text-sm font-medium shadow"
+            className="flex items-center gap-2 bg-[#2563EB] text-white px-3 py-2 rounded-md hover:bg-[#d63a3a] text-sm font-medium shadow"
           >
-            {bulkMode ? <><FaUserPlus /> Single Add</> : <><FaUsers /> Bulk Upload</>}
+            {bulkMode ? <><FaUserPlus /> Ongeza Moja</> : <><FaUsers /> Pakia Wengi</>}
           </button>
           
           {bulkMode && (
             <button
               onClick={handleDownloadTemplate}
-              className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-[4px] hover:bg-blue-700 text-sm font-medium shadow"
+              className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 text-sm font-medium shadow"
             >
-              <FaDownload /> Download Template
+              <FaDownload /> Pakua Kiolezo
             </button>
           )}
         </div>
 
         {!bulkMode ? (
           /* Single Add Form */
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { name: "name", label: "Supplier Name *", icon: <FaUserPlus className="text-[#ef4444]" /> },
-              { name: "contact_person", label: "Contact Person", icon: <FaUserPlus className="text-[#ef4444]" /> },
-              { name: "phone", label: "Phone", icon: <FaPhoneAlt className="text-[#ef4444]" /> },
-              { name: "email", label: "Email", icon: <FaEnvelope className="text-[#ef4444]" /> },
-              { name: "payment_terms", label: "Payment Terms", icon: <FaBuilding className="text-[#ef4444]" /> },
+              { name: "name", label: "Jina la Muuzaji *", icon: <FaUserPlus className="text-[#2563EB]" /> },
+              { name: "contact_person", label: "Mtu wa Kuwasiliana", icon: <FaUserPlus className="text-[#2563EB]" /> },
+              { name: "phone", label: "Namba ya Simu", icon: <FaPhoneAlt className="text-[#2563EB]" /> },
+              { name: "email", label: "Barua Pepe", icon: <FaEnvelope className="text-[#2563EB]" /> },
+              { name: "payment_terms", label: "Masharti ya Malipo", icon: <FaBuilding className="text-[#2563EB]" /> },
             ].map((field) => (
               <div key={field.name}>
-                <label className="block font-semibold mb-1 flex items-center gap-2">{field.icon} {field.label}</label>
+                <label className="block font-semibold mb-1 flex items-center gap-2 text-sm sm:text-base">{field.icon} {field.label}</label>
                 <input
                   type={field.name === "email" ? "email" : "text"}
                   name={field.name}
                   value={supplierData[field.name]}
                   onChange={handleChange}
-                  placeholder={`Enter ${field.label.toLowerCase()}`}
-                  className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+                  placeholder={`Weka ${field.label.toLowerCase()}`}
+                  className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
                   required={field.name === "name"}
                 />
               </div>
             ))}
 
-            <div className="col-span-2">
-              <label className="block font-semibold mb-1 flex items-center gap-2">
-                <FaBuilding className="text-[#ef4444]" /> Address
+            <div className="col-span-1 md:col-span-2">
+              <label className="block font-semibold mb-1 flex items-center gap-2 text-sm sm:text-base">
+                <FaBuilding className="text-[#2563EB]" /> Anwani
               </label>
               <textarea
                 name="address"
                 value={supplierData.address}
                 onChange={handleChange}
-                placeholder="Enter address"
-                className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+                placeholder="Weka anwani"
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
                 rows={2}
               />
             </div>
 
-            <div className="col-span-2">
-              <label className="block font-semibold mb-1 flex items-center gap-2">
-                <FaFileAlt className="text-[#ef4444]" /> Notes
+            <div className="col-span-1 md:col-span-2">
+              <label className="block font-semibold mb-1 flex items-center gap-2 text-sm sm:text-base">
+                <FaFileAlt className="text-[#2563EB]" /> Maelezo
               </label>
               <textarea
                 name="notes"
                 value={supplierData.notes}
                 onChange={handleChange}
-                placeholder="Additional notes"
-                className="border border-gray-300 rounded-[4px] px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+                placeholder="Maelezo ya ziada"
+                className="border border-gray-300 rounded-md px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
                 rows={3}
               />
             </div>
 
-            <div className="col-span-2 flex justify-center mt-4">
+            <div className="col-span-1 md:col-span-2 flex justify-center mt-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 bg-[#ef4444] hover:bg-[#d63a3a] text-white font-semibold px-6 py-3 rounded-[4px] shadow-md transition-transform hover:scale-105"
+                className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#d63a3a] text-white font-semibold px-6 py-3 rounded-md shadow transition-transform hover:scale-105 w-full md:w-auto justify-center"
               >
-                <FaSave /> {loading ? "Saving..." : "Save Supplier"}
+                <FaSave /> {loading ? "Inaendelea kuhifadhi..." : "Hifadhi Muuzaji"}
               </button>
             </div>
           </form>
         ) : (
           /* Bulk Upload */
           <div className="space-y-4">
-            <div className="border border-dashed border-[#ef4444] p-6 rounded-[4px] text-center">
-              <FaUpload className="mx-auto text-[#ef4444] text-3xl mb-2" />
-              <p className="font-semibold mb-2">Upload Excel file (.xlsx)</p>
+            <div className="border border-dashed border-[#2563EB] p-4 sm:p-6 rounded-md text-center">
+              <FaUpload className="mx-auto text-[#2563EB] text-3xl mb-2" />
+              <p className="font-semibold mb-2 text-sm sm:text-base">Pakia faili la Excel (.xlsx)</p>
               <input type="file" accept=".xlsx,.xls" onChange={handleExcelUpload} className="block mx-auto" />
             </div>
 
             {excelSuppliers.length > 0 && (
               <>
-                <div className="grid sm:grid-cols-4 gap-4 bg-[#fff5f5] p-4 rounded-[4px] border border-[#f5e5e5]">
-                  <SummaryCard title="Total Suppliers" value={analytics.total} />
-                  <SummaryCard title="With Email" value={analytics.withEmail} />
-                  <SummaryCard title="With Phone" value={analytics.withPhone} />
-                  <SummaryCard title="With Payment Terms" value={analytics.withTerms} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-[#fff5f5] p-4 rounded-md border border-[#f5e5e5] text-sm">
+                  <SummaryCard title="Jumla ya Wauzaji" value={analytics.total} />
+                  <SummaryCard title="Wanaopatikana kwa Barua Pepe" value={analytics.withEmail} />
+                  <SummaryCard title="Wanaopatikana kwa Simu" value={analytics.withPhone} />
+                  <SummaryCard title="Wana Masharti ya Malipo" value={analytics.withTerms} />
                 </div>
 
-                <div className="max-h-64 overflow-y-auto border p-2 rounded-[4px] bg-gray-50">
+                <div className="max-h-64 overflow-y-auto border p-2 rounded-md bg-gray-50">
                   <table className="w-full text-sm">
-                    <thead className="bg-[#ef4444] text-white">
+                    <thead className="bg-[#2563EB] text-white text-xs sm:text-sm">
                       <tr>
-                        <th className="p-2 text-left">Name</th>
-                        <th className="p-2 text-left">Phone</th>
-                        <th className="p-2 text-left">Email</th>
-                        <th className="p-2 text-left">Payment Terms</th>
+                        <th className="p-2 text-left">Jina</th>
+                        <th className="p-2 text-left">Simu</th>
+                        <th className="p-2 text-left">Barua Pepe</th>
+                        <th className="p-2 text-left">Masharti ya Malipo</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -379,18 +379,18 @@ const SupplierNew = () => {
                   </table>
                   {excelSuppliers.length > 10 && (
                     <p className="text-xs text-gray-500 text-center mt-1">
-                      Showing first 10 of {excelSuppliers.length} records
+                      Kuonyesha rekodi 10 za kwanza kati ya {excelSuppliers.length}
                     </p>
                   )}
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-2">
                   <button
                     onClick={handleBulkInsert}
                     disabled={loading || excelSuppliers.length === 0}
-                    className="flex items-center gap-2 bg-[#ef4444] hover:bg-[#d63a3a] text-white px-6 py-3 rounded-[4px] shadow font-semibold"
+                    className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#d63a3a] text-white px-6 py-3 rounded-md shadow font-semibold w-full md:w-auto justify-center"
                   >
-                    <FaSave /> {loading ? "Uploading..." : "Save All Suppliers"}
+                    <FaSave /> {loading ? "Inaendelea kupakia..." : "Hifadhi Wauzaji Wote"}
                   </button>
                 </div>
               </>
@@ -401,6 +401,7 @@ const SupplierNew = () => {
     </div>
   </div>
 );
+
 
 };
 

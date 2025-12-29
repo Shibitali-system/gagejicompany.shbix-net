@@ -6,13 +6,13 @@ import { FaArrowLeft, FaPlus, FaTimes, FaUser } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
 
 /**
- * Staff Attendance (creates records into staff_attendance table WITHOUT foreign key constraints)
+ * Mahudhurio ya Wafanyakazi (inaunda rekodi kwenye meza ya staff_attendance bila FK constraints)
  *
- * Requirements satisfied:
- * - Uses "staff_attendance" table that expects staff_id, entered_by, office_id as TEXT (no FK)
- * - Dropdown lists only employees of the current user's office (fetched in batches)
- * - Time inputs use "HH:MM" format acceptable by PostgreSQL time column
- * - Robust validation + friendly toasts + loading states
+ * Inakidhi:
+ * - Inatumia meza ya "staff_attendance" inayotarajia staff_id, entered_by, office_id kama TEXT (hakuna FK)
+ * - Dropdown inaorodhesha wafanyakazi tu wa ofisi ya mtumiaji (inachukuliwa kwa batches)
+ * - Time inputs zinatumia format ya "HH:MM" inayokubalika na PostgreSQL time column
+ * - Validation thabiti + toasts rafiki + loading states
  */
 
 const FormCard = ({ title, children }) => (
@@ -22,9 +22,7 @@ const FormCard = ({ title, children }) => (
     hover:bg-[#fdfdfd] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
     font-sans w-full
   ">
-    <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">
-      {title}
-    </p>
+    <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
     <div className="w-full">{children}</div>
   </div>
 );
@@ -37,24 +35,19 @@ const CustomCard = ({ title, children }) => (
     font-sans w-full
   ">
     {title && (
-      <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-1">
-        {title}
-      </p>
+      <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-1">{title}</p>
     )}
     <div className="w-full">{children}</div>
   </div>
 );
 
-const BATCH_SIZE = 500; // fetch employees in batches (tuneable)
+const BATCH_SIZE = 500; // wafanyakazi wanachukuliwa kwa batches
 
 const NewAttendance = () => {
-  const [userInfo, setUserInfo] = useState(null); // { id, name, office_id, office_name }
-  const [employees, setEmployees] = useState([]); // employees for this office
+  const [userInfo, setUserInfo] = useState(null); 
+  const [employees, setEmployees] = useState([]); 
   const [loadingEmployees, setLoadingEmployees] = useState(false);
-
   const [submitting, setSubmitting] = useState(false);
-
-
 
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [form, setForm] = useState({
@@ -65,14 +58,13 @@ const NewAttendance = () => {
     comment: ""
   });
 
-  // load authenticated user info (systems_users OR employees)
+  // Pata info ya mtumiaji aliye authenticate
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (!authUser?.id) throw new Error("Not authenticated");
+        if (!authUser?.id) throw new Error("Hauja authenticate");
 
-        // try systems_users
         const { data: systemUser } = await supabase
           .from("systems_users")
           .select("id, customer_name, office_id, office_name, auth_user_id")
@@ -89,7 +81,6 @@ const NewAttendance = () => {
           return;
         }
 
-        // try employees
         const { data: employeeUser } = await supabase
           .from("employees")
           .select("id, name, office_id, office_name, auth_user_id")
@@ -106,17 +97,17 @@ const NewAttendance = () => {
           return;
         }
 
-        toast.error("User record not found in systems_users or employees");
+        toast.error("Rekodi ya mtumiaji haipatikani kwenye systems_users au employees");
       } catch (err) {
         console.error("fetchUser error:", err);
-        toast.error("Failed to fetch user info");
+        toast.error("Imeshindikana kupata info ya mtumiaji");
       }
     };
 
     fetchUser();
   }, []);
 
-  // fetch employees for user's office in batches
+  // Chukua wafanyakazi wa ofisi ya mtumiaji
   useEffect(() => {
     if (!userInfo?.office_id) return;
 
@@ -136,7 +127,7 @@ const NewAttendance = () => {
 
           if (error) {
             console.error("fetchEmployees batch error:", error);
-            toast.error("Failed to load employees");
+            toast.error("Imeshindikana kupakia wafanyakazi");
             break;
           }
 
@@ -144,14 +135,14 @@ const NewAttendance = () => {
 
           all = [...all, ...data];
 
-          if (data.length < BATCH_SIZE) break; // finished
+          if (data.length < BATCH_SIZE) break;
           from += BATCH_SIZE;
         }
 
         if (!cancelled) setEmployees(all);
       } catch (err) {
         console.error("fetchEmployees error:", err);
-        toast.error("Failed to load employees");
+        toast.error("Imeshindikana kupakia wafanyakazi");
       } finally {
         if (!cancelled) setLoadingEmployees(false);
       }
@@ -159,41 +150,33 @@ const NewAttendance = () => {
 
     fetchEmployeesBatch(userInfo.office_id);
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [userInfo]);
 
-  // handle form field updates
-  const onChange = (field, val) => {
-    setForm(prev => ({ ...prev, [field]: val }));
-  };
+  const onChange = (field, val) => setForm(prev => ({ ...prev, [field]: val }));
 
-  // Validate and submit attendance record
   const handleSubmit = async (e) => {
     e?.preventDefault?.();
 
-    if (!userInfo) return toast.error("User info not loaded");
-    if (!selectedEmployeeId) return toast.error("Please select a staff member");
-    if (!form.date) return toast.error("Please pick a date");
+    if (!userInfo) return toast.error("Info ya mtumiaji haijapakuliwa");
+    if (!selectedEmployeeId) return toast.error("Tafadhali chagua mfanyakazi");
+    if (!form.date) return toast.error("Tafadhali chagua tarehe");
 
-    // Check times: accept "" or "HH:MM"
-    const checkIn = form.check_in ? form.check_in : null;
-    const checkOut = form.check_out ? form.check_out : null;
+    const checkIn = form.check_in || null;
+    const checkOut = form.check_out || null;
 
-    // find staff name from employees list (falls back to empty string)
     const staff = employees.find(emp => String(emp.id) === String(selectedEmployeeId));
     const staff_name = staff?.name || "";
 
     const insertRow = {
-      staff_id: String(selectedEmployeeId), // keep as text on DB (no FK)
+      staff_id: String(selectedEmployeeId),
       staff_name,
-      entered_by: String(userInfo.id), // we store as text (no FK)
+      entered_by: String(userInfo.id),
       office_id: String(userInfo.office_id || ""),
       office_name: userInfo.office_name || null,
       date: form.date,
-      check_in: checkIn,   // time column accepts "HH:MM" or null
-      check_out: checkOut, // time column accepts "HH:MM" or null
+      check_in: checkIn,
+      check_out: checkOut,
       remarks: form.remarks || null,
       comment: form.comment || null,
       status: "Pending"
@@ -201,160 +184,148 @@ const NewAttendance = () => {
 
     setSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("staff_attendance")
-        .insert([insertRow]);
-
+      const { error } = await supabase.from("staff_attendance").insert([insertRow]);
       if (error) throw error;
 
-      toast.success("Attendance submitted successfully");
-      // reset form
+      toast.success("Mahudhurio yamewasilishwa kwa mafanikio");
       setSelectedEmployeeId("");
       setForm({ date: "", check_in: "", check_out: "", remarks: "", comment: "" });
     } catch (err) {
       console.error("submit error:", err);
-      toast.error("Failed to submit attendance: " + (err.message || err.toString()));
+      toast.error("Imeshindikana kuwasilisha mahudhurio: " + (err.message || err.toString()));
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-  <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-    <Toaster position="top-right" />
-    <div className="max-w-3xl mx-auto space-y-4">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+      <Toaster position="top-right" />
+      <div className="max-w-3xl mx-auto space-y-4">
 
-      {/* Card 1: Header + Tips */}
-      <CustomCard>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
-          <Link to="../attendances" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-            <FaArrowLeft /> Back to Attendance Records
-          </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] mt-2 sm:mt-0">Add Staff Attendance</h1>
-        </div>
-        <p className="text-gray-600 text-sm">
-          Fill out the form below to add staff attendance. Fields marked with * are required.
-        </p>
-      </CustomCard>
+        {/* Kadi 1: Kichwa + Maelezo */}
+        <CustomCard>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+            <Link to="../attendances" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+              <FaArrowLeft /> Rudi kwenye Rekodi za Mahudhurio
+            </Link>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mt-2 sm:mt-0">Ongeza Mahudhurio ya Wafanyakazi</h1>
+          </div>
+          <p className="text-gray-600 text-sm">
+            Jaza fomu hapa chini ili kuongeza mahudhurio ya mfanyakazi. Sehemu zilizo na * ni lazima kujazwa.
+          </p>
+        </CustomCard>
 
-      {/* Card 2: Staff Info + Date */}
-      <CustomCard title="Staff & Date">
-        <div className="mb-2 text-sm text-gray-700">
-          <p><strong>Office:</strong> {userInfo?.office_name || "—"}</p>
-          <p><strong>Entered By:</strong> {userInfo?.name || "—"}</p>
-        </div>
+        {/* Kadi 2: Taarifa za Mfanyakazi + Tarehe */}
+        <CustomCard title="Mfanyakazi & Tarehe">
+          <div className="mb-2 text-sm text-gray-700">
+            <p><strong>Ofisi:</strong> {userInfo?.office_name || "—"}</p>
+            <p><strong>Imeingizwa Na:</strong> {userInfo?.name || "—"}</p>
+          </div>
 
-        <div className="space-y-4">
-          {/* Staff dropdown */}
-          <div>
-            <label className="block font-semibold mb-1">Select Staff *</label>
-            <div className="relative">
-              <select
-                value={selectedEmployeeId}
-                onChange={(e) => setSelectedEmployeeId(e.target.value)}
-                className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          <div className="space-y-4">
+            <div>
+              <label className="block font-semibold mb-1">Chagua Mfanyakazi *</label>
+              <div className="relative">
+                <select
+                  value={selectedEmployeeId}
+                  onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                  className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+                  required
+                >
+                  <option value="">-- Chagua mfanyakazi --</option>
+                  {loadingEmployees && <option disabled>Inapakia wafanyakazi...</option>}
+                  {!loadingEmployees && employees.length === 0 && <option disabled>Hakuna mfanyakazi aliye patikana</option>}
+                  {employees.map(emp => (
+                    <option key={emp.id} value={emp.id}>{emp.name}</option>
+                  ))}
+                </select>
+                <div className="absolute right-3 top-2 text-gray-400"><FaUser /></div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-semibold mb-1">Tarehe *</label>
+              <input
+                type="date"
+                value={form.date}
+                onChange={(e) => onChange("date", e.target.value)}
+                className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                 required
-              >
-                <option value="">-- Select staff --</option>
-                {loadingEmployees && <option disabled>Loading staff...</option>}
-                {!loadingEmployees && employees.length === 0 && <option disabled>No staff found</option>}
-                {employees.map(emp => (
-                  <option key={emp.id} value={emp.id}>{emp.name}</option>
-                ))}
-              </select>
-              <div className="absolute right-3 top-2 text-gray-400"><FaUser /></div>
+              />
+            </div>
+          </div>
+        </CustomCard>
+
+        {/* Kadi 3: Muda wa Mahudhurio + Maelezo + Maoni */}
+        <CustomCard title="Maelezo ya Mahudhurio">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block font-semibold mb-1">Angalia Kuingia</label>
+              <input
+                type="time"
+                value={form.check_in}
+                onChange={(e) => onChange("check_in", e.target.value)}
+                className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-1">Angalia Kutoka</label>
+              <input
+                type="time"
+                value={form.check_out}
+                onChange={(e) => onChange("check_out", e.target.value)}
+                className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              />
             </div>
           </div>
 
-          {/* Date */}
-          <div>
-            <label className="block font-semibold mb-1">Date *</label>
-            <input
-              type="date"
-              value={form.date}
-              onChange={(e) => onChange("date", e.target.value)}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-              required
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Maelezo</label>
+            <textarea
+              value={form.remarks}
+              onChange={(e) => onChange("remarks", e.target.value)}
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              placeholder="Hiari"
+              rows={3}
             />
           </div>
-        </div>
-      </CustomCard>
 
-      {/* Card 3: Attendance Times + Remarks + Comment */}
-      <CustomCard title="Attendance Details">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block font-semibold mb-1">Check In</label>
-            <input
-              type="time"
-              value={form.check_in}
-              onChange={(e) => onChange("check_in", e.target.value)}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Maoni</label>
+            <textarea
+              value={form.comment}
+              onChange={(e) => onChange("comment", e.target.value)}
+              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              placeholder="Hiari (inaonekana kwa wahakiki)"
+              rows={2}
             />
           </div>
-          <div>
-            <label className="block font-semibold mb-1">Check Out</label>
-            <input
-              type="time"
-              value={form.check_out}
-              onChange={(e) => onChange("check_out", e.target.value)}
-              className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-            />
+
+          <div className="flex gap-2 mt-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              onClick={handleSubmit}
+              className="bg-[#2563EB] text-white px-5 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2"
+            >
+              <FaPlus />
+              {submitting ? "Inatuma..." : "Wasilisha Mahudhurio"}
+            </button>
+
+            <Link
+              to="/attendances"
+              className="bg-gray-300 px-5 py-2 rounded-xl hover:bg-gray-400 flex items-center gap-2"
+            >
+              <FaTimes />
+              Ghairi
+            </Link>
           </div>
-        </div>
+        </CustomCard>
 
-        {/* Remarks */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Remarks</label>
-          <textarea
-            value={form.remarks}
-            onChange={(e) => onChange("remarks", e.target.value)}
-            className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-            placeholder="Optional"
-            rows={3}
-          />
-        </div>
-
-        {/* Comment */}
-        <div className="mb-4">
-          <label className="block font-semibold mb-1">Comment</label>
-          <textarea
-            value={form.comment}
-            onChange={(e) => onChange("comment", e.target.value)}
-            className="border px-3 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
-            placeholder="Optional (visible to approvers)"
-            rows={2}
-          />
-        </div>
-
-
-
-        {/* Actions */}
-        <div className="flex gap-2 mt-2">
-          <button
-            type="submit"
-            disabled={submitting}
-            onClick={handleSubmit}
-            className="bg-[#ef4444] text-white px-5 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2"
-          >
-            <FaPlus />
-            {submitting ? "Submitting..." : "Submit Attendance"}
-          </button>
-
-          <Link
-            to="/attendances"
-            className="bg-gray-300 px-5 py-2 rounded-xl hover:bg-gray-400 flex items-center gap-2"
-          >
-            <FaTimes />
-            Cancel
-          </Link>
-        </div>
-      </CustomCard>
-
+      </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 export default NewAttendance;

@@ -331,11 +331,11 @@ const EditPurchase = () => {
           <div className="flex items-center justify-between w-full">
             <Link
               to={`../purchases/${id}`}
-              className="flex items-center gap-2 text-[#ef4444] font-semibold hover:underline"
+              className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline"
             >
               <FaArrowLeft /> Back
             </Link>
-            <h1 className="text-2xl font-bold text-[#ef4444]">Edit Purchase</h1>
+            <h1 className="text-2xl font-bold text-[#2563EB]">Edit Purchase</h1>
           </div>
         </CustomCard>
 
@@ -447,7 +447,7 @@ const EditPurchase = () => {
                           <button
                             type="button"
                             onClick={() => removeSelected(s.id)}
-                            className="text-[#ef4444] hover:underline"
+                            className="text-[#2563EB] hover:underline"
                           >
                             Remove
                           </button>
@@ -475,7 +475,7 @@ const EditPurchase = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-[#ef4444] text-white px-6 py-2 rounded-[4px] flex items-center gap-2 hover:bg-red-600 transition-all"
+                className="bg-[#2563EB] text-white px-6 py-2 rounded-[4px] flex items-center gap-2 hover:bg-red-600 transition-all"
               >
                 <FaSave /> {submitting ? "Saving..." : "Save Changes"}
               </button>

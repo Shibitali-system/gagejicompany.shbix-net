@@ -241,47 +241,47 @@ const EnterExpiredProducts = () => {
     }
   };
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right"/>
     <div className="max-w-5xl mx-auto space-y-4">
       
-      {/* Card 1: Header + Tips */}
+      {/* Kadi 1: Kichwa + Maelekezo */}
       <CustomCard>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
-          <Link to="../expired" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-            <FaArrowLeft /> Back to Products
+          <Link to="../expired" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+            <FaArrowLeft /> Rudi kwenye Bidhaa
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] mt-2 sm:mt-0">Enter Expired Products</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mt-2 sm:mt-0">Weka bidhaa zilioisha muda</h1>
         </div>
         <p className="text-gray-600 text-sm">
-          Search and select products below, then set quantity and expiry date to record them.
+          Tafuta na chagua bidhaa hapo chini, kisha weka kiasi na tarehe ya kuisha ili kurekodi.
         </p>
       </CustomCard>
 
-      {/* Card 2: Search + Category + Products List */}
-      <CustomCard title="Search & Products">
+      {/* Kadi 2: Tafuta + Kategoria + Orodha ya Bidhaa */}
+      <CustomCard title="Tafuta & Bidhaa">
         <div className="flex flex-col sm:flex-row gap-2 mb-2">
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Tafuta bidhaa..."
             value={productSearch}
             onChange={e=>setProductSearch(e.target.value)}
-            className="flex-1 border border-[#e5e7eb] px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="flex-1 border border-[#e5e7eb] px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
           <select
             value={selectedCategory}
             onChange={e=>setSelectedCategory(e.target.value)}
-            className="border border-[#e5e7eb] px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="border border-[#e5e7eb] px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           >
-            <option value="">All Categories</option>
+            <option value="">Kategoria Zote</option>
             {categories.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto border border-[#e5e7eb] p-2 rounded">
           {loading ? (
-            <div className="p-2 text-gray-500">Loading products...</div>
+            <div className="p-2 text-gray-500">Inapakia bidhaa...</div>
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map(p => (
               <div
@@ -289,19 +289,19 @@ const EnterExpiredProducts = () => {
                 className="flex justify-between items-center p-2 border border-[#e5e7eb] rounded cursor-pointer hover:bg-red-50"
                 onClick={()=>handleAddProduct(p)}
               >
-                {p.name} - {p.price.toLocaleString()} TZS (Stock: {p.stock})
-                <FaPlus className="text-[#ef4444]"/>
+                {p.name} - {p.price.toLocaleString()} TZS (Hifadhi: {p.stock})
+                <FaPlus className="text-[#2563EB]"/>
               </div>
             ))
           ) : (
-            <div className="p-2 text-gray-500">No matching product found</div>
+            <div className="p-2 text-gray-500">Hakuna bidhaa inayofanana</div>
           )}
         </div>
       </CustomCard>
 
-      {/* Card 3: Selected Products + Submit */}
+      {/* Kadi 3: Bidhaa Zilizochaguliwa + Weka Rekodi */}
       {selectedProducts.length > 0 && (
-        <CustomCard title="Selected Products">
+        <CustomCard title="Bidhaa Zilizochaguliwa">
           {selectedProducts.map(p => (
             <div
               key={p.id}
@@ -309,7 +309,7 @@ const EnterExpiredProducts = () => {
             >
               <div className="flex-1">
                 <p className="font-medium">{p.name}</p>
-                <p className="text-sm text-gray-500">Stock: {p.stock}</p>
+                <p className="text-sm text-gray-500">Hifadhi: {p.stock}</p>
               </div>
               <div className="flex items-center gap-2">
                 <input
@@ -329,7 +329,7 @@ const EnterExpiredProducts = () => {
                 <button
                   type="button"
                   onClick={()=>handleRemoveProduct(p.id)}
-                  className="text-[#ef4444]"
+                  className="text-[#2563EB]"
                 >
                   <FaTimes/>
                 </button>
@@ -337,12 +337,12 @@ const EnterExpiredProducts = () => {
             </div>
           ))}
 
-          {/* Submit Button */}
+          {/* Kitufe cha Weka Rekodi */}
           <button
             type="submit"
             disabled={loading}
             onClick={handleSubmit}
-            className="bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition-all duration-200 mt-2"
+            className="bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 transition-all duration-200 mt-2"
           >
             {loading ? (
               <>
@@ -366,12 +366,12 @@ const EnterExpiredProducts = () => {
                     d="M4 12a8 8 0 018-8v8z"
                   ></path>
                 </svg>
-                Recording...
+                Inarekodiwa...
               </>
             ) : (
               <>
                 <FaSave className="h-5 w-5"/>
-                Record Expired Products
+                Rekodi Bidhaa Zilizopotea Uhai
               </>
             )}
           </button>
@@ -381,7 +381,6 @@ const EnterExpiredProducts = () => {
     </div>
   </div>
 );
-
 
 };
 

@@ -223,17 +223,17 @@ const SettingsPage = () => {
     <Toaster position="top-right" />
 
     <div className="max-w-5xl mx-auto space-y-6">
-      {/* Page Header */}
+      {/* Kichwa cha Ukurasa */}
       <CustomCard>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] mb-2">
-          System Settings
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mb-2">
+          Mipangilio ya Mfumo
         </h1>
         <p className="text-gray-500 text-sm">
-          Manage your system notifications, branding, and default roles. Tips are provided below each section.
+          Simamia taarifa za mfumo, chapa, na nafasi za msingi. Vidokezo vimewekwa chini ya kila sehemu.
         </p>
       </CustomCard>
 
-      {/* Tabs */}
+      {/* Tabu */}
       <div className="flex flex-wrap gap-2">
         {["notifications", "branding", "roles"].map((tab) => (
           <button
@@ -241,36 +241,38 @@ const SettingsPage = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-xl font-semibold transition text-sm sm:text-base ${
               activeTab === tab
-                ? "bg-[#ef4444] text-white shadow"
+                ? "bg-[#2563EB] text-white shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === "notifications" ? "Arifa" :
+             tab === "branding" ? "Chapa" :
+             tab === "roles" ? "Nafasi" : tab}
           </button>
         ))}
       </div>
 
-      {/* Tab Content */}
+      {/* Maudhui ya Tabu */}
       <div className="space-y-6">
-        {/* === Notifications Tab === */}
+        {/* === Tabu la Arifa === */}
         {activeTab === "notifications" && (
-          <FormCard title="Notifications Settings">
+          <FormCard title="Mipangilio ya Arifa">
             <p className="text-gray-500 text-sm mb-3">
-              Toggle your notification preferences. Use the buttons below to select or deselect all options.
+              Washa au zima arifa zako. Tumia vitufe hapo chini kuchagua au kuondoa chaguo zote.
             </p>
 
             <div className="flex justify-end mb-3 gap-2">
               <button
                 onClick={() => toggleAllNotifications(true)}
-                className="px-3 py-1 bg-[#ef4444] text-white rounded"
+                className="px-3 py-1 bg-[#2563EB] text-white rounded"
               >
-                Select All
+                Chagua Zote
               </button>
               <button
                 onClick={() => toggleAllNotifications(false)}
                 className="px-3 py-1 bg-gray-200 text-gray-700 rounded"
               >
-                Deselect All
+                Ondoa Zote
               </button>
             </div>
 
@@ -291,16 +293,16 @@ const SettingsPage = () => {
           </FormCard>
         )}
 
-        {/* === Branding Tab === */}
+        {/* === Tabu la Chapa === */}
         {activeTab === "branding" && (
-          <FormCard title="Branding Settings">
+          <FormCard title="Mipangilio ya Chapa">
             <p className="text-gray-500 text-sm mb-3">
-              Update your system branding. System name and logo will appear across the application.
+              Sasisha chapa ya mfumo. Jina la mfumo na nembo vitaonekana katika programu yote.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-700 mb-1">System Name</label>
+                <label className="block text-gray-700 mb-1">Jina la Mfumo</label>
                 <input
                   type="text"
                   name="system_name"
@@ -311,7 +313,7 @@ const SettingsPage = () => {
               </div>
 
               <div>
-                <label className="block text-gray-700 mb-1">Logo URL</label>
+                <label className="block text-gray-700 mb-1">URL ya Nembo</label>
                 <input
                   type="text"
                   name="logo_url"
@@ -324,11 +326,11 @@ const SettingsPage = () => {
           </FormCard>
         )}
 
-        {/* === Roles Tab === */}
+        {/* === Tabu la Nafasi === */}
         {activeTab === "roles" && (
-          <FormCard title="Default Role">
+          <FormCard title="Nafasi ya Msingi">
             <p className="text-gray-500 text-sm mb-3">
-              Choose the default role assigned to new users.
+              Chagua nafasi ya msingi itakayopangwa kwa watumiaji wapya.
             </p>
 
             <select
@@ -337,27 +339,28 @@ const SettingsPage = () => {
               onChange={handleChange}
               className="w-full border rounded px-3 py-2"
             >
-              <option value="Admin">Admin</option>
-              <option value="Employee">Employee</option>
+              <option value="Admin">Msimamizi</option>
+              <option value="Employee">Mfanyakazi</option>
             </select>
           </FormCard>
         )}
 
-        {/* Save Button */}
+        {/* Kitufe cha Hifadhi */}
         <div className="pt-4">
           <button
             onClick={handleUpdate}
             disabled={updating}
-            className="flex items-center gap-2 bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition"
+            className="flex items-center gap-2 bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition"
           >
             {updating ? <FaSpinner className="animate-spin" /> : <FaSave />}
-            {updating ? "Saving..." : "Save Settings"}
+            {updating ? "Inahifadhi..." : "Hifadhi Mipangilio"}
           </button>
         </div>
       </div>
     </div>
   </div>
 );
+
 
 };
 

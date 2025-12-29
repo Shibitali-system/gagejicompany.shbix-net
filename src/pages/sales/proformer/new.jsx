@@ -165,7 +165,7 @@ const NewProformer = () => {
     setCustomerSearch(data.name);
     setCustomers((prev) => [...prev, data]);
     setShowCustomerForm(false);
-    setNewCustomerData({ name: "", email: "", phone: "", address: "", type: "hospital" });
+    setNewCustomerData({ name: "", email: "", phone: "", address: "", type: "Biashara" });
     toast.success("Customer created successfully");
   } catch (err) {
     toast.error(err.message);
@@ -347,73 +347,73 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
-  return (
+return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6 font-sans">
     <Toaster position="top-right" />
     <div className="max-w-5xl mx-auto space-y-6">
 
-      {/* Header Card */}
+      {/* Kadi ya Kichwa */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
                       flex flex-col md:flex-row justify-between items-start md:items-center gap-4
                       transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Create New Proformer</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Unda Proformer Mpya</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Use this form to create a new proformer. Fill in customer info, add products, apply discounts, and set payment details before saving.
+            Tumia fomu hii kuunda proformer mpya. Jaza taarifa za mteja, ongeza bidhaa, tumia punguzo, na weka maelezo ya malipo kabla ya kuhifadhi.
           </p>
         </div>
-        <Link to="../sales/proformer" className="flex items-center gap-2 font-bold text-[#ef4444] hover:underline">
-          <FaArrowLeft /> Back to Proformers List
+        <Link to="../sales/proformer" className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline">
+          <FaArrowLeft /> Rudi kwenye Orodha ya Proformers
         </Link>
       </div>
 
-      {/* Proformer Form Card */}
+      {/* Kadi ya Fomu ya Proformer */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] p-5 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Date */}
+          {/* Tarehe */}
           <div>
-            <label className="block font-semibold mb-1">Date & Time</label>
+            <label className="block font-semibold mb-1">Tarehe & Saa</label>
             <input
               type="datetime-local"
               value={proformerDateTime}
               onChange={(e) => setProformerDateTime(e.target.value)}
-              className="border border-gray-300 px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-gray-300 px-3 py-2 rounded w-full focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
 
-          {/* Customer Search & Actions */}
+          {/* Utafutaji & Vitendo vya Mteja */}
           <div className="flex flex-col gap-2">
-            <label className="block font-semibold mb-1">Customer</label>
+            <label className="block font-semibold mb-1">Mteja</label>
             <input
               type="text"
-              placeholder="Search or type new customer..."
+              placeholder="Tafuta au andika mteja mpya..."
               value={customerSearch}
               onChange={(e) => {
                 setCustomerSearch(e.target.value);
                 setSelectedCustomer(null);
               }}
-              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
             />
 
             <div className="flex flex-col sm:flex-row gap-2 mt-2">
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 bg-[#ef4444] hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold"
+                className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold"
                 onClick={() => setShowCustomerForm(true)}
               >
-                <FaUserPlus /> Create Customer
+                <FaUserPlus /> Unda Mteja
               </button>
               <button
                 type="button"
-                className="flex items-center justify-center gap-2 bg-gray-200 text-[#ef4444] hover:bg-gray-300 px-4 py-2 rounded-xl font-semibold"
+                className="flex items-center justify-center gap-2 bg-gray-200 text-[#2563EB] hover:bg-gray-300 px-4 py-2 rounded-xl font-semibold"
                 onClick={() => handleCreateCustomer(true)}
               >
-                <FaUserSlash /> No Customer Name
+                <FaUserSlash /> Hakuna Jina la Mteja
               </button>
             </div>
 
@@ -429,99 +429,99 @@ const SummaryCard = ({ title, value, valueColor }) => (
                   </div>
                 ))}
                 {!filteredCustomers.length && (
-                  <div className="p-2 text-gray-500">No matching customer found</div>
+                  <div className="p-2 text-gray-500">Hakuna mteja anayefanana</div>
                 )}
               </div>
             )}
           </div>
 
-          {/* New Customer Form */}
+          {/* Fomu ya Mteja Mpya */}
           {showCustomerForm && (
             <div className="border p-3 rounded bg-gray-50 space-y-2 mt-2">
               <div>
-                <label className="block font-medium mb-1">Name *</label>
+                <label className="block font-medium mb-1">Jina *</label>
                 <input
                   type="text"
                   value={newCustomerData.name}
                   onChange={(e) =>
                     setNewCustomerData({ ...newCustomerData, name: e.target.value })
                   }
-                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
-                  placeholder="Enter customer name"
+                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
+                  placeholder="Ingiza jina la mteja"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Email <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Email <span className="text-gray-500">(hiari)</span></label>
                 <input
                   type="email"
                   value={newCustomerData.email}
                   onChange={(e) =>
                     setNewCustomerData({ ...newCustomerData, email: e.target.value })
                   }
-                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
-                  placeholder="Enter email"
+                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
+                  placeholder="Ingiza email"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Phone <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Simu <span className="text-gray-500">(hiari)</span></label>
                 <input
                   type="text"
                   value={newCustomerData.phone}
                   onChange={(e) =>
                     setNewCustomerData({ ...newCustomerData, phone: e.target.value })
                   }
-                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
-                  placeholder="Enter phone"
+                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
+                  placeholder="Ingiza simu"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Address <span className="text-gray-500">(optional)</span></label>
+                <label className="block font-medium mb-1">Anwani <span className="text-gray-500">(hiari)</span></label>
                 <textarea
                   value={newCustomerData.address}
                   onChange={(e) =>
                     setNewCustomerData({ ...newCustomerData, address: e.target.value })
                   }
-                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
-                  placeholder="Enter address"
+                  className="w-full border px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
+                  placeholder="Ingiza anwani"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   type="button"
-                  className="flex items-center justify-center gap-2 bg-[#ef4444] hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold w-full sm:w-auto"
+                  className="flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold w-full sm:w-auto"
                   onClick={() => handleCreateCustomer(false)}
                 >
-                  <FaUserPlus /> Create Customer
+                  <FaUserPlus /> Unda Mteja
                 </button>
                 <button
                   type="button"
-                  className="bg-gray-200 text-[#ef4444] px-4 py-2 rounded-xl w-full sm:w-auto"
+                  className="bg-gray-200 text-[#2563EB] px-4 py-2 rounded-xl w-full sm:w-auto"
                   onClick={() => setShowCustomerForm(false)}
                 >
-                  Cancel
+                  Ghairi
                 </button>
               </div>
             </div>
           )}
 
-          {/* Product Selection */}
+          {/* Uchaguzi wa Bidhaa */}
           <div className="flex flex-col sm:flex-row gap-2 mb-2">
             <div className="flex-1 relative">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Tafuta bidhaa..."
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
-                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
               />
               <FaSearch className="absolute right-3 top-3 text-gray-400" />
             </div>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444] w-full sm:w-auto"
+              className="border border-gray-300 rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB] w-full sm:w-auto"
             >
-              <option value="">All Categories</option>
+              <option value="">Kategori Zote</option>
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -537,30 +537,30 @@ const SummaryCard = ({ title, value, valueColor }) => (
                 className="flex justify-between items-center p-2 border rounded cursor-pointer hover:bg-[#ffe5e5]"
                 onClick={() => handleAddProduct(p)}
               >
-                {p.name} - {p.price.toLocaleString()} TZS (Stock: {p.stock})
-                <FaPlus className="text-[#ef4444]" />
+                {p.name} - {p.price.toLocaleString()} TZS (Hisa: {p.stock})
+                <FaPlus className="text-[#2563EB]" />
               </div>
             ))}
             {!filteredProducts.length && (
-              <div className="p-2 text-gray-500">No matching product found</div>
+              <div className="p-2 text-gray-500">Hakuna bidhaa inayofanana</div>
             )}
           </div>
 
-          {/* Selected Products */}
+          {/* Bidhaa Zilizochaguliwa */}
           {selectedProducts.length > 0 && (
             <div className="space-y-2">
-              <h2 className="font-semibold text-lg text-[#ef4444]">Selected Products</h2>
+              <h2 className="font-semibold text-lg text-[#2563EB]">Bidhaa Zilizochaguliwa</h2>
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-[#ffe5e5]">
-                      <th className="p-2 text-left">Product</th>
-                      <th className="p-2 text-center">Qty</th>
-                      <th className="p-2 text-center">Price</th>
+                      <th className="p-2 text-left">Bidhaa</th>
+                      <th className="p-2 text-center">Kiasi</th>
+                      <th className="p-2 text-center">Bei</th>
                       {discountType === "product" && (
-                        <th className="p-2 text-center">Discount %</th>
+                        <th className="p-2 text-center">Punguzo %</th>
                       )}
-                      <th className="p-2 text-right">Subtotal</th>
+                      <th className="p-2 text-right">Jumla Ndogo</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -576,7 +576,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                             onChange={(e) =>
                               handleQuantityChange(p.id, parseInt(e.target.value))
                             }
-                            className="w-16 text-center border rounded focus:ring-2 focus:ring-[#ef4444]"
+                            className="w-16 text-center border rounded focus:ring-2 focus:ring-[#2563EB]"
                           />
                         </td>
                         <td className="p-2 text-center">{p.price.toLocaleString()}</td>
@@ -590,7 +590,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                               onChange={(e) =>
                                 handleProductDiscountChange(p.id, parseInt(e.target.value))
                               }
-                              className="w-16 text-center border rounded focus:ring-2 focus:ring-[#ef4444]"
+                              className="w-16 text-center border rounded focus:ring-2 focus:ring-[#2563EB]"
                             />
                           </td>
                         )}
@@ -599,7 +599,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
                           <button
                             type="button"
                             onClick={() => handleRemoveProduct(p.id)}
-                            className="text-[#ef4444] hover:text-red-700"
+                            className="text-[#2563EB] hover:text-red-700"
                           >
                             <FaTimes />
                           </button>
@@ -612,71 +612,70 @@ const SummaryCard = ({ title, value, valueColor }) => (
             </div>
           )}
 
-          {/* Discount & Comment */}
+          {/* Punguzo & Maoni */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div>
-              <label className="block font-semibold mb-1">Discount Type</label>
+              <label className="block font-semibold mb-1">Aina ya Punguzo</label>
               <select
                 value={discountType}
                 onChange={(e) => setDiscountType(e.target.value)}
-                className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+                className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
               >
-                <option value="none">None</option>
-                <option value="product">Per Product</option>
-                <option value="total">Total Discount</option>
+                <option value="none">Hakuna</option>
+                <option value="product">Kwa Bidhaa</option>
+                <option value="total">Punguzo la Jumla</option>
               </select>
             </div>
 
             {discountType === "total" && (
               <div>
-                <label className="block font-semibold mb-1">Total Discount (TZS)</label>
+                <label className="block font-semibold mb-1">Jumla ya Punguzo (TZS)</label>
                 <input
                   type="number"
                   value={totalDiscount}
                   onChange={(e) => setTotalDiscount(parseFloat(e.target.value))}
-                  className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
+                  className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
                 />
               </div>
             )}
 
             <div>
-              <label className="block font-semibold mb-1">Comment</label>
+              <label className="block font-semibold mb-1">Maoni</label>
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#ef4444]"
-                placeholder="Optional comment"
+                className="border rounded-xl px-3 py-2 w-full focus:ring-2 focus:ring-[#2563EB]"
+                placeholder="Maoni hiari"
               />
             </div>
           </div>
 
-          {/* Totals */}
+          {/* Jumla */}
           <div className="mt-6 border-t pt-4 space-y-1">
-            <p>Subtotal: <strong>{subtotal.toLocaleString()} TZS</strong></p>
+            <p>Jumla Ndogo: <strong>{subtotal.toLocaleString()} TZS</strong></p>
             {discountType === "product" && (
-              <p>Discount: <strong>{productDiscountTotal.toLocaleString()} TZS</strong></p>
+              <p>Punguzo: <strong>{productDiscountTotal.toLocaleString()} TZS</strong></p>
             )}
             {discountType === "total" && (
-              <p>Total Discount: <strong>{totalDiscount.toLocaleString()} TZS</strong></p>
+              <p>Punguzo la Jumla: <strong>{totalDiscount.toLocaleString()} TZS</strong></p>
             )}
-            <p className="text-xl font-bold mt-2 text-[#ef4444]">
-              Grand Total: {grandTotal.toLocaleString()} TZS
+            <p className="text-xl font-bold mt-2 text-[#2563EB]">
+              Jumla Kuu: {grandTotal.toLocaleString()} TZS
             </p>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#ef4444] text-white py-3 rounded-xl font-semibold hover:bg-red-700 flex items-center justify-center gap-2"
+            className="w-full bg-[#2563EB] text-white py-3 rounded-xl font-semibold hover:bg-red-700 flex items-center justify-center gap-2"
           >
-            {loading ? "Saving..." : "Save Proformer"}
+            {loading ? "Inahifadhi..." : "Hifadhi Proformer"}
           </button>
         </form>
       </div>
     </div>
   </div>
 );
-
 
 };
 

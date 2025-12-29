@@ -283,39 +283,39 @@ const ExpiredProductsIndex = () => {
     <Toaster position="top-right" />
     <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Header + Tips + Action Buttons */}
+      {/* Kichwa + Vidokezo + Vitufe */}
       <CustomCard>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Expired Products</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Bidhaa zilizoisha Muda</h1>
           <div className="flex flex-wrap gap-2 mt-3 md:mt-0">
             <Link
               to="new"
-              className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
+              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-600 flex items-center gap-2 shadow"
             >
-              <FaExclamationTriangle className="text-white" /> Enter Expired Products
+              <FaExclamationTriangle className="text-white" /> Weka Bidhaa Zilizopotea Uhai
             </Link>
             <button
               onClick={exportToExcel}
               className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 flex items-center gap-2 shadow"
             >
-              <FaFileExcel /> Export Excel
+              <FaFileExcel /> Hamisha Excel
             </button>
           </div>
         </div>
 
-        {/* Tips / Instructions */}
+        {/* Vidokezo / Maelekezo */}
         <p className="text-gray-600 text-sm">
-          Use the buttons above to add or export expired products.
+          Tumia vitufe hapo juu kuongeza au kuhamisha bidhaa zilizopotea uhai.
         </p>
       </CustomCard>
 
-      {/* Filters */}
-      <CustomCard title="Filters">
+      {/* Filteri */}
+      <CustomCard title="Filteri">
         <div className="flex flex-wrap gap-2 mb-2 items-center">
           {["all","today","week","month","year","custom"].map(f => (
             <button
               key={f}
-              className={`px-3 py-1 rounded-xl ${filterType===f?"bg-[#ef4444] text-white":"bg-white border border-[#e5e7eb]"}`}
+              className={`px-3 py-1 rounded-xl ${filterType===f?"bg-[#2563EB] text-white":"bg-white border border-[#e5e7eb]"}`}
               onClick={()=>setFilterType(f)}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -325,7 +325,7 @@ const ExpiredProductsIndex = () => {
           {filterType==="custom" && (
             <div className="flex gap-2 items-center">
               <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded" />
-              <span>to</span>
+              <span>hadi</span>
               <input type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)} className="border border-[#e5e7eb] px-2 py-1 rounded" />
             </div>
           )}
@@ -335,67 +335,67 @@ const ExpiredProductsIndex = () => {
           <FaSearch className="text-gray-400" />
           <input
             type="text"
-            placeholder="Search by product, office, entered by..."
+            placeholder="Tafuta bidhaa, ofisi, aliyeingiza..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full sm:w-1/3 border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full sm:w-1/3 border border-[#e5e7eb] rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
       </CustomCard>
 
-      {/* Summary */}
+      {/* Muhtasari */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <FormCard title="Total Records">
-          <p className="text-[#ef4444] font-bold">{totals.totalProducts}</p>
+        <FormCard title="Jumla ya Rekodi">
+          <p className="text-[#2563EB] font-bold">{totals.totalProducts}</p>
         </FormCard>
-        <FormCard title="Total Quantity">
-          <p className="text-[#ef4444] font-bold">{totals.totalQty}</p>
+        <FormCard title="Jumla ya Kiasi">
+          <p className="text-[#2563EB] font-bold">{totals.totalQty}</p>
         </FormCard>
       </div>
 
-      {/* Delete Selected */}
+      {/* Futa Zilizochaguliwa */}
       {user?.role === "admin" && selectedProducts.length > 0 && (
         <CustomCard>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <button className="px-4 py-2 rounded-xl flex items-center gap-2 bg-[#ef4444] hover:bg-red-600 text-white shadow">
-                <FaTrash /> Delete Selected ({selectedProducts.length})
+              <button className="px-4 py-2 rounded-xl flex items-center gap-2 bg-[#2563EB] hover:bg-red-600 text-white shadow">
+                <FaTrash /> Futa Zilizochaguliwa ({selectedProducts.length})
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent className="rounded-2xl">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-[#ef4444] flex items-center gap-2">
-                  <FaTrash /> Confirm Deletion
+                <AlertDialogTitle className="text-[#2563EB] flex items-center gap-2">
+                  <FaTrash /> Thibitisha Ufutaji
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete <strong>{selectedProducts.length}</strong> expired product(s)? This action cannot be undone.
+                  Una uhakika unataka kufuta <strong>{selectedProducts.length}</strong> bidhaa zilizopotea uhai? Hatua hii haiwezi kubatilishwa.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteSelected} className="bg-[#ef4444] text-white rounded-xl hover:bg-red-600">Yes, Delete</AlertDialogAction>
+                <AlertDialogCancel className="rounded-xl">Ghairi</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteSelected} className="bg-[#2563EB] text-white rounded-xl hover:bg-red-600">Ndiyo, Futa</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </CustomCard>
       )}
 
-      {/* Table */}
-      <CustomCard title="Expired Products">
-        {loading ? <p className="text-gray-600">Loading expired products...</p> :
+      {/* Jedwali */}
+      <CustomCard title="Bidhaa Zilizopotea Uhai">
+        {loading ? <p className="text-gray-600">Inapakia bidhaa zilizopotea uhai...</p> :
          error ? <p className="text-red-600 font-semibold">{error}</p> :
-         filteredProducts.length === 0 ? <p className="text-gray-600">No expired products found.</p> :
+         filteredProducts.length === 0 ? <p className="text-gray-600">Hakuna bidhaa zilizopotea uhai zilizopatikana.</p> :
          <div className="overflow-x-auto">
            <table className="min-w-full border-collapse text-sm">
-             <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+             <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
                <tr>
                  <th className="px-2 text-center">{user.role==="admin" && <input type="checkbox" checked={checkAll} onChange={handleCheckAll} />}</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Product</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Quantity</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Expired Date</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Office Name</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Entered By</th>
-                 <th className="px-2 sm:px-3 py-2 text-left">Created At</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Bidhaa</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Kiasi</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Tarehe ya Kuisha</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Jina la Ofisi</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Aliyeingiza</th>
+                 <th className="px-2 sm:px-3 py-2 text-left">Imeundwa</th>
                </tr>
              </thead>
              <tbody>
@@ -419,6 +419,7 @@ const ExpiredProductsIndex = () => {
     </div>
   </div>
 );
+
 
 };
 

@@ -130,110 +130,111 @@ export default function NewAssetPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <Toaster position="top-right" />
+ return (
+  <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <Toaster position="top-right" />
 
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
 
-        {/* Header Card */}
-        <CustomCard>
-          <div className="flex justify-start w-full mb-3">
-            <Link
-              to="../assets"
-              className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline"
-            >
-              <FaArrowLeft /> Back to Assets List
-            </Link>
+      {/* Kadi ya Kichwa */}
+      <CustomCard>
+        <div className="flex justify-start w-full mb-3">
+          <Link
+            to="../assets"
+            className="flex items-center gap-2 font-bold text-[#2563EB] hover:underline"
+          >
+            <FaArrowLeft /> Rudi kwenye Orodha ya Mali
+          </Link>
+        </div>
+
+        <h1 className="text-2xl font-bold text-[#2563EB] text-center w-full">
+          Ongeza Mali Mpya
+        </h1>
+        <p className="text-gray-500 text-sm text-center w-full">
+          Jaza taarifa hapa chini kuunda mali mpya.
+        </p>
+      </CustomCard>
+
+      {/* Kadi ya Fomu */}
+      <CustomCard title="Maelezo ya Mali">
+        <form onSubmit={handleSubmit} className="space-y-6 w-full">
+
+          <div className="space-y-1">
+            <label className="block font-semibold text-gray-700">Jina*</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Ingiza jina la mali"
+              className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              required
+            />
           </div>
 
-          <h1 className="text-2xl font-bold text-[#2563EB] text-center w-full">
-            Add New Asset
-          </h1>
-          <p className="text-gray-500 text-sm text-center w-full">
-            Fill in the information below to create a new asset.
-          </p>
-        </CustomCard>
+          <div className="space-y-1">
+            <label className="block font-semibold text-gray-700">Kategoria*</label>
+            <input
+              type="text"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              placeholder="Ingiza kategoria"
+              className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              required
+            />
+          </div>
 
-        {/* Form Card */}
-        <CustomCard title="Asset Details">
-          <form onSubmit={handleSubmit} className="space-y-6 w-full">
+          <div className="space-y-1">
+            <label className="block font-semibold text-gray-700">Kiasi</label>
+            <input
+              type="number"
+              name="quantity"
+              value={form.quantity}
+              onChange={handleChange}
+              min={1}
+              className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+            />
+          </div>
 
-            <div className="space-y-1">
-              <label className="block font-semibold text-gray-700">Name*</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Enter asset name"
-                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                required
-              />
-            </div>
+          <div className="space-y-1">
+            <label className="block font-semibold text-gray-700">Tarehe ya Ununuzi*</label>
+            <input
+              type="date"
+              name="purchase_date"
+              value={form.purchase_date}
+              onChange={handleChange}
+              className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
+              required
+            />
+          </div>
 
-            <div className="space-y-1">
-              <label className="block font-semibold text-gray-700">Category*</label>
-              <input
-                type="text"
-                name="category"
-                value={form.category}
-                onChange={handleChange}
-                placeholder="Enter category"
-                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                required
-              />
-            </div>
+          {userInfo && (
+            <SummaryCard title="Ofisi" value={userInfo.office_name} />
+          )}
 
-            <div className="space-y-1">
-              <label className="block font-semibold text-gray-700">Quantity</label>
-              <input
-                type="number"
-                name="quantity"
-                value={form.quantity}
-                onChange={handleChange}
-                min={1}
-                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-              />
-            </div>
+          <div className="flex gap-4 mt-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className={`bg-[#2563EB] text-white px-6 py-2 rounded font-semibold flex items-center justify-center transition`}
+            >
+              {saving ? "Inahifadhi..." : "Ongeza Mali"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("../assets")}
+              className="bg-gray-300 px-6 py-2 rounded font-semibold hover:bg-gray-400"
+            >
+              Ghairi
+            </button>
+          </div>
 
-            <div className="space-y-1">
-              <label className="block font-semibold text-gray-700">Purchase Date*</label>
-              <input
-                type="date"
-                name="purchase_date"
-                value={form.purchase_date}
-                onChange={handleChange}
-                className="border px-4 py-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-                required
-              />
-            </div>
+        </form>
+      </CustomCard>
 
-            {userInfo && (
-              <SummaryCard title="Office" value={userInfo.office_name} />
-            )}
-
-            <div className="flex gap-4 mt-2">
-              <button
-                type="submit"
-                disabled={saving}
-                className={`bg-[#2563EB] text-white px-6 py-2 rounded font-semibold flex items-center justify-center transition`}
-              >
-                {saving ? "Saving..." : "Add Asset"}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate("/systems/hospital/assets")}
-                className="bg-gray-300 px-6 py-2 rounded font-semibold hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
-
-          </form>
-        </CustomCard>
-
-      </div>
     </div>
-  );
+  </div>
+);
+
 }

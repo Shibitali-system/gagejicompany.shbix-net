@@ -186,7 +186,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -194,110 +194,99 @@ return (
   <div className="min-h-screen bg-gray-100 p-4 sm:p-8">
     <Toaster position="top-right" />
 
-    {/* Header + Tips + Action Buttons Card */}
+    {/* Kadi ya Kichwa + Vidokezo + Vitufe vya Hatua */}
     <div className="bg-white rounded-2xl shadow p-6 space-y-4">
-      {/* Header */}
+      {/* Kichwa */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-          <FaBoxOpen /> Sales Receipt
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaBoxOpen /> Risiti ya Mauzo
         </h1>
         <Link
           to="../sales"
-          className="text-[#ef4444] hover:underline flex items-center gap-1 font-bold"
+          className="text-[#2563EB] hover:underline flex items-center gap-1 font-bold"
         >
-          <FaArrowLeft /> Back to Sales List
+          <FaArrowLeft /> Rudi kwenye Orodha ya Mauzo
         </Link>
       </div>
 
-      {/* Tips */}
+      {/* Vidokezo */}
       <p className="text-gray-500 text-sm">
-        Tip: Click "Edit Receipt Info" to set up office info for receipts if not yet. Use the buttons below to print, download or share the receipt.
+        Kumbuka: Bonyeza "Hariri Taarifa za Risiti" kuweka taarifa za ofisi kwa risiti ikiwa bado hazijafanywa. Tumia vitufe hapa chini kuchapisha, kupakua au kushiriki risiti.
       </p>
 
-      {/* Action Buttons */}
+      {/* Vitufe vya Hatua */}
       <div className="flex flex-wrap justify-start sm:justify-end gap-3">
         <button
           onClick={handlePrint}
-          className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e3342f] shadow"
+          className="bg-[#2563EB] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e3342f] shadow"
         >
           <FaPrint /> Print
         </button>
-        <button
-          onClick={handleDownloadPDF}
-          className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e3342f] shadow"
-        >
-          <FaDownload /> Download PDF
-        </button>
-        <button
-          onClick={handleShare}
-          className="bg-[#ef4444] text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-[#e3342f] shadow"
-        >
-          <FaShareAlt /> Share
-        </button>
+        
         <Link
           to="../sales/receipts/settings"
-          className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#e3342f] shadow flex items-center gap-2"
+          className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#e3342f] shadow flex items-center gap-2"
         >
-          Edit Receipt Info
+          Hariri Taarifa za Risiti
         </Link>
       </div>
     </div>
 
-    {/* Receipt Card */}
+    {/* Kadi ya Risiti */}
     <div
       ref={receiptRef}
       id="receipt-print"
       className="bg-white rounded-2xl shadow-lg max-w-3xl mx-auto p-8 border border-gray-200 mt-6 print:shadow-none print:border-none"
     >
-      {/* Header */}
+      {/* Kichwa cha Risiti */}
       <div className="text-center border-b pb-4 mb-6">
-        <h1 className="text-3xl font-bold text-[#ef4444] uppercase tracking-wide mb-2">
+        <h1 className="text-3xl font-bold text-[#2563EB] uppercase tracking-wide mb-2">
           {receiptInfo.office_name || defaultReceiptInfo.office_name}
         </h1>
         {receiptInfo.logo_url && (
           <img
             src={receiptInfo.logo_url}
-            alt="Office Logo"
+            alt="Nembo ya Ofisi"
             className="mx-auto h-20 object-contain mb-2"
             onError={(e) => (e.target.style.display = "none")}
           />
         )}
         <p className="text-gray-600 mt-1">{receiptInfo.address || defaultReceiptInfo.address}</p>
         <p className="text-gray-600">
-          Phone: {receiptInfo.phone || defaultReceiptInfo.phone} | Email: {receiptInfo.email || defaultReceiptInfo.email}
+          Simu: {receiptInfo.phone || defaultReceiptInfo.phone} | Barua Pepe: {receiptInfo.email || defaultReceiptInfo.email}
         </p>
-        <h2 className="mt-4 text-xl font-semibold text-gray-700">Official Sales Receipt</h2>
-        <p className="text-sm text-gray-500">Receipt No: {sale?.id || "N/A"}</p>
+        <h2 className="mt-4 text-xl font-semibold text-gray-700">Risiti Rasmi ya Mauzo</h2>
+        <p className="text-sm text-gray-500">Nambari ya Risiti: {sale?.id || "N/A"}</p>
       </div>
 
-      {/* Customer Info */}
+      {/* Taarifa za Mteja */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
         <div className="space-y-1">
-          <p className="font-semibold text-gray-700">Customer Information</p>
+          <p className="font-semibold text-gray-700">Taarifa za Mteja</p>
           <p>{sale?.customer?.name || "-"}</p>
           <p>{sale?.customer?.phone || "-"}</p>
           <p>{sale?.customer?.address || "-"}</p>
         </div>
         <div className="space-y-1 sm:text-right">
-          <p className="font-semibold text-gray-700">Sale Date:</p>
+          <p className="font-semibold text-gray-700">Tarehe ya Mauzo:</p>
           <p>{sale?.created_at ? new Date(sale.created_at).toLocaleString() : "-"}</p>
-          <p className="font-semibold text-gray-700 mt-2">Payment Method:</p>
+          <p className="font-semibold text-gray-700 mt-2">Njia ya Malipo:</p>
           <p>{sale?.payment_method || "-"}</p>
-          <p className="font-semibold text-gray-700 mt-2">Payment Status:</p>
+          <p className="font-semibold text-gray-700 mt-2">Hali ya Malipo:</p>
           <p>{sale?.payment_status || "-"}</p>
         </div>
       </div>
 
-      {/* Items Table */}
+      {/* Jedwali la Bidhaa */}
       <div className="overflow-x-auto mb-6">
         <table className="w-full border border-gray-300 text-sm">
-          <thead className="bg-[#ef4444] text-white">
+          <thead className="bg-[#2563EB] text-white">
             <tr>
-              <th className="px-3 py-2 text-left">Product</th>
-              <th className="px-3 py-2 text-center">Qty</th>
-              <th className="px-3 py-2 text-right">Price</th>
-              <th className="px-3 py-2 text-right">Discount</th>
-              <th className="px-3 py-2 text-right">Subtotal</th>
+              <th className="px-3 py-2 text-left">Bidhaa</th>
+              <th className="px-3 py-2 text-center">Idadi</th>
+              <th className="px-3 py-2 text-right">Bei</th>
+              <th className="px-3 py-2 text-right">Punguzo</th>
+              <th className="px-3 py-2 text-right">Jumla Ndogo</th>
             </tr>
           </thead>
           <tbody>
@@ -316,34 +305,35 @@ return (
               })
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-4 text-gray-500">No items yet</td>
+                <td colSpan={5} className="text-center py-4 text-gray-500">Hakuna bidhaa bado</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Totals */}
+      {/* Jumla */}
       <div className="flex flex-col items-end text-sm">
         <p>
-          Subtotal: <span className="font-semibold">TZS {sale ? (sale.total_amount - (sale.discount_value || 0)).toLocaleString() : "0"}</span>
+          Jumla Ndogo: <span className="font-semibold">TZS {sale ? (sale.total_amount - (sale.discount_value || 0)).toLocaleString() : "0"}</span>
         </p>
         <p>
-          Discount: <span className="font-semibold">TZS {sale?.discount_value?.toLocaleString() || "0"}</span>
+          Punguzo: <span className="font-semibold">TZS {sale?.discount_value?.toLocaleString() || "0"}</span>
         </p>
-        <p className="text-lg font-bold text-[#ef4444] mt-2">
-          Grand Total: TZS {sale?.total_amount?.toLocaleString() || "0"}
+        <p className="text-lg font-bold text-[#2563EB] mt-2">
+          Jumla Kuu: TZS {sale?.total_amount?.toLocaleString() || "0"}
         </p>
       </div>
 
-      {/* Footer */}
+      {/* Miguso ya Mwisho */}
       <div className="text-center mt-8 border-t pt-4 text-sm text-gray-500">
-        <p>Thank you for your purchase!</p>
-        <p className="text-xs mt-1 italic">Goods once sold are not returnable without authorization.</p>
+        <p>Asante kwa kununua!</p>
+        <p className="text-xs mt-1 italic">Bidhaa zilizouzwa hazirudishwi bila ruhusa.</p>
       </div>
     </div>
   </div>
 );
+
 
 };
 

@@ -61,7 +61,7 @@ const ExpenseProfile = () => {
   const [monthAmount, setMonthAmount] = useState(0);
   const [monthCount, setMonthCount] = useState(0);
 
-  // Fetch expense info
+  // Fetch single expense info
   const fetchExpense = async () => {
     const { data, error } = await supabase
       .from("systems_expenses")
@@ -73,7 +73,7 @@ const ExpenseProfile = () => {
     return data;
   };
 
-  // Fetch all expenses for analytics
+  // Fetch all expenses for analytics (filtered by date)
   const fetchExpenses = async () => {
     let allExpenses = [];
     let offset = 0;
@@ -100,60 +100,61 @@ const ExpenseProfile = () => {
   };
 
   const fetchExpenseData = async () => {
-  setLoading(true);
-  setError(null);
-  try {
-    const exp = await fetchExpense();
-    const allExp = await fetchExpenses();
+    setLoading(true);
+    setError(null);
+    try {
+      const exp = await fetchExpense();
+      const allExp = await fetchExpenses();
 
-    // Fetch users for mapping
-    const { data: systemUsers } = await supabase
-      .from("systems_users")
-      .select("id, customer_name");
+      // Fetch users for mapping
+      const { data: systemUsers } = await supabase
+        .from("systems_users")
+        .select("id, customer_name");
 
-    const { data: employees } = await supabase
-      .from("employees")
-      .select("id, name");
+      const { data: employees } = await supabase
+        .from("employees")
+        .select("id, name");
 
-    const systemUsersMap = new Map(systemUsers.map(u => [u.id, u.customer_name]));
-    const employeesMap = new Map(employees.map(e => [e.id, e.name]));
+      const systemUsersMap = new Map(systemUsers.map(u => [u.id, u.customer_name]));
+      const employeesMap = new Map(employees.map(e => [e.id, e.name]));
 
-    // Map created_by to names
-    const expensesWithNames = allExp.map(e => ({
-      ...e,
-      created_by_name: systemUsersMap.get(e.created_by) || employeesMap.get(e.created_by) || "-"
-    }));
+      // 🔹 Filter expenses by office_id and map created_by
+      const expensesWithNames = allExp
+        .filter(e => e.office_id === exp.office_id)
+        .map(e => ({
+          ...e,
+          created_by_name: systemUsersMap.get(e.created_by) || employeesMap.get(e.created_by) || "-"
+        }));
 
-    const now = new Date();
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const now = new Date();
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay());
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const todayData = expensesWithNames.filter(
-      (e) => new Date(e.created_at).toDateString() === now.toDateString()
-    );
-    const weekData = expensesWithNames.filter((e) => new Date(e.created_at) >= startOfWeek);
-    const monthData = expensesWithNames.filter((e) => new Date(e.created_at) >= startOfMonth);
+      const todayData = expensesWithNames.filter(
+        (e) => new Date(e.created_at).toDateString() === now.toDateString()
+      );
+      const weekData = expensesWithNames.filter((e) => new Date(e.created_at) >= startOfWeek);
+      const monthData = expensesWithNames.filter((e) => new Date(e.created_at) >= startOfMonth);
 
-    setTodayAmount(todayData.reduce((a, e) => a + parseFloat(e.amount), 0));
-    setTodayCount(todayData.length);
+      setTodayAmount(todayData.reduce((a, e) => a + parseFloat(e.amount), 0));
+      setTodayCount(todayData.length);
 
-    setWeekAmount(weekData.reduce((a, e) => a + parseFloat(e.amount), 0));
-    setWeekCount(weekData.length);
+      setWeekAmount(weekData.reduce((a, e) => a + parseFloat(e.amount), 0));
+      setWeekCount(weekData.length);
 
-    setMonthAmount(monthData.reduce((a, e) => a + parseFloat(e.amount), 0));
-    setMonthCount(monthData.length);
+      setMonthAmount(monthData.reduce((a, e) => a + parseFloat(e.amount), 0));
+      setMonthCount(monthData.length);
 
-    setExpense(exp);
-    setExpenses(expensesWithNames);
-  } catch (err) {
-    console.error(err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+      setExpense(exp);
+      setExpenses(expensesWithNames);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -189,81 +190,80 @@ const ExpenseProfile = () => {
 
   const monthlyExpenses = aggregateMonthly(expenses, "amount");
 
-  return (
+ return (
   <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
-    {/* Header */}
+    {/* Kichwa */}
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <h1 className="text-3xl md:text-4xl font-extrabold text-[#ef4444] tracking-tight">{expense.name}</h1>
+      <h1 className="text-3xl md:text-4xl font-extrabold text-[#2563EB] tracking-tight">{expense.name}</h1>
       <Link to="../expenses">
-        <button className="bg-white border border-[#e5e7eb] text-[#ef4444] px-5 py-2 rounded-xl hover:bg-[#ffe5e5] transition-all">
-          ← Back
+        <button className="bg-white border border-[#e5e7eb] text-[#2563EB] px-5 py-2 rounded-xl hover:bg-[#ffe5e5] transition-all">
+          ← Rudi
         </button>
       </Link>
     </div>
 
-    {/* Filters */}
+    {/* Vichujio */}
     <CustomCard>
       <div className="flex flex-col md:flex-row gap-4 items-center overflow-x-auto">
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>From:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Tangu:</label>
           <input
             type="date"
-            className="border border-[#e5e7eb] rounded px-2 py-1 focus:ring-2 focus:ring-[#ef4444]"
+            className="border border-[#e5e7eb] rounded px-2 py-1 focus:ring-2 focus:ring-[#2563EB]"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2 whitespace-nowrap">
-          <Calendar className="text-[#ef4444]" />
-          <label>To:</label>
+          <Calendar className="text-[#2563EB]" />
+          <label>Hadi:</label>
           <input
             type="date"
-            className="border border-[#e5e7eb] rounded px-2 py-1 focus:ring-2 focus:ring-[#ef4444]"
+            className="border border-[#e5e7eb] rounded px-2 py-1 focus:ring-2 focus:ring-[#2563EB]"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
           />
         </div>
         <button
           onClick={fetchExpenseData}
-          className="bg-[#ef4444] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap transition"
+          className="bg-[#2563EB] hover:bg-red-600 text-white px-4 py-1 rounded-xl shadow whitespace-nowrap transition"
         >
-          Apply
+          Weka
         </button>
       </div>
     </CustomCard>
 
-    {/* Analytics Summary */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-  <CustomCard title="Today">
-    <p className="text-[#ef4444] font-bold">Amount: {todayAmount.toLocaleString()} TZS</p>
-    <p className="text-[#ef4444] font-bold">Expenses: {todayCount}</p>
-  </CustomCard>
+    {/* Muhtasari wa Uchambuzi */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <CustomCard title="Leo">
+        <p className="text-[#2563EB] font-bold">Kiasi: {todayAmount.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB] font-bold">Matumizi: {todayCount}</p>
+      </CustomCard>
 
-  <CustomCard title="This Week">
-    <p className="text-[#ef4444]/80 font-bold">Amount: {weekAmount.toLocaleString()} TZS</p>
-    <p className="text-[#ef4444]/80 font-bold">Expenses: {weekCount}</p>
-  </CustomCard>
+      <CustomCard title="Wiki Hii">
+        <p className="text-[#2563EB]/80 font-bold">Kiasi: {weekAmount.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB]/80 font-bold">Matumizi: {weekCount}</p>
+      </CustomCard>
 
-  <CustomCard title="This Month">
-    <p className="text-[#ef4444]/70 font-bold">Amount: {monthAmount.toLocaleString()} TZS</p>
-    <p className="text-[#ef4444]/70 font-bold">Expenses: {monthCount}</p>
-  </CustomCard>
-</div>
+      <CustomCard title="Mwezi Huu">
+        <p className="text-[#2563EB]/70 font-bold">Kiasi: {monthAmount.toLocaleString()} TZS</p>
+        <p className="text-[#2563EB]/70 font-bold">Matumizi: {monthCount}</p>
+      </CustomCard>
+    </div>
 
-
-    {/* Expense History */}
-    <CustomCard title="Expense History">
+    {/* Historia ya Matumizi */}
+    <CustomCard title="Historia ya Matumizi">
       <div className="overflow-x-auto">
         <table className="min-w-full border border-[#e5e7eb] text-sm text-left">
-          <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+          <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
             <tr>
-              <th className="px-3 py-2 border">Date</th>
-              <th className="px-3 py-2 border">Amount</th>
-              <th className="px-3 py-2 border">Category</th>
-              <th className="px-3 py-2 border">Description</th>
-              <th className="px-3 py-2 border">Office</th>
-              <th className="px-3 py-2 border">Entered By</th>
+              <th className="px-3 py-2 border">Tarehe</th>
+              <th className="px-3 py-2 border">Kiasi</th>
+              <th className="px-3 py-2 border">Kategoria</th>
+              <th className="px-3 py-2 border">Maelezo</th>
+              <th className="px-3 py-2 border">Ofisi</th>
+              <th className="px-3 py-2 border">Imeingizwa Na</th>
             </tr>
           </thead>
           <tbody>
@@ -280,7 +280,7 @@ const ExpenseProfile = () => {
             {expenses.length === 0 && (
               <tr>
                 <td colSpan={6} className="text-center px-3 py-2 text-gray-500">
-                  No expenses found.
+                  Hakuna matumizi yaliyopatikana.
                 </td>
               </tr>
             )}
@@ -289,14 +289,14 @@ const ExpenseProfile = () => {
       </div>
     </CustomCard>
 
-    {/* Monthly Expenses Chart */}
-    <CustomCard title="Monthly Expenses Overview">
+    {/* Chati ya Matumizi ya Kila Mwezi */}
+    <CustomCard title="Muhtasari wa Matumizi ya Kila Mwezi">
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={monthlyExpenses}>
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip formatter={(v) => v.toLocaleString()} />
-          <Bar dataKey="total" fill="#ef4444" radius={[8, 8, 0, 0]} />
+          <Bar dataKey="total" fill="#2563EB" radius={[8, 8, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </CustomCard>

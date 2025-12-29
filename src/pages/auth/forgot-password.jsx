@@ -34,12 +34,12 @@ const ForgotPassword = () => {
       <Toaster position="top-right" />
 
       {/* Background */}
-      <img src="/pharmacy1.png" alt="Pharmacy Background" className="absolute inset-0 w-full h-full object-cover z-0"/>
+      <img src="/pos1.jpg" alt="Pharmacy Background" className="absolute inset-0 w-full h-full object-cover z-0"/>
       <div className="absolute inset-0 bg-black/25 z-10"></div>
 
       {/* Neon/Glassy Back to Homepage Button */}
       <button
-        onClick={() => navigate("/pharmacy/home")}
+        onClick={() => navigate("/")}
         className="absolute top-6 left-6 px-6 py-2 rounded-3xl font-semibold text-white text-lg bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 
                    shadow-lg shadow-blue-500/50 backdrop-blur-md border border-white/30 transform transition duration-300 hover:scale-105 hover:shadow-xl hover:from-blue-500 hover:via-purple-600 hover:to-pink-600 flex items-center gap-2 z-20"
       >
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
           Remembered your password?{" "}
           <span
             className="cursor-pointer font-semibold hover:underline"
-            onClick={() => navigate("/pharmacy/login")}
+            onClick={() => navigate("/login")}
           >
             Login here
           </span>

@@ -138,44 +138,58 @@ return (
     <div className="max-w-4xl mx-auto space-y-4">
 
       {/* Card 1: Header */}
-      <CustomCard title="Edit Customer">
+      <CustomCard title="Hariri Mteja">
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-            <FaUserEdit /> Edit Customer
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+            <FaUserEdit /> Hariri Mteja
           </h1>
           <Link
             to="../customers"
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-all"
           >
-            <FaArrowLeft /> Back to List
+            <FaArrowLeft /> Rudi kwenye Orodha
           </Link>
         </div>
         <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-xl">
-          <p><span className="font-semibold">Created by:</span> {customer.created_by_name || "-"}</p>
-          <p><span className="font-semibold">Created at:</span> {dayjs(customer.created_at).format("DD MMM YYYY, h:mm A")}</p>
+          <p>
+            <span className="font-semibold">Aliyeunda:</span>{" "}
+            {customer.created_by_name || "-"}
+          </p>
+          <p>
+            <span className="font-semibold">Tarehe ya kuundwa:</span>{" "}
+            {dayjs(customer.created_at).format("DD MMM YYYY, h:mm A")}
+          </p>
         </div>
       </CustomCard>
 
       {/* Card 2: Customer Information Form */}
-      <CustomCard title="Customer Information">
+      <CustomCard title="Taarifa za Mteja">
         <form onSubmit={handleSubmit} className="space-y-4 w-full">
 
           {[
-            { label: "Customer Name", type: "text", name: "name", required: true },
-            { label: "Customer Type", type: "select", name: "type", options: ["Pharmacy","Hospital","Retail"], required: true },
-            { label: "Email", type: "email", name: "email" },
-            { label: "Phone", type: "text", name: "phone" },
-            { label: "Address", type: "textarea", name: "address", rows: 3 },
+            { label: "Jina la Mteja", type: "text", name: "name", required: true },
+            {
+              label: "Aina ya Mteja",
+              type: "select",
+              name: "type",
+              options: ["Biashara"],
+              required: true
+            },
+            { label: "Barua Pepe", type: "email", name: "email" },
+            { label: "Namba ya Simu", type: "text", name: "phone" },
+            { label: "Anuani", type: "textarea", name: "address", rows: 3 },
           ].map((field, i) => (
             <div className="flex flex-col w-full" key={i}>
-              <label className="block font-semibold mb-1 text-gray-700">{field.label}</label>
+              <label className="block font-semibold mb-1 text-gray-700">
+                {field.label}
+              </label>
               {field.type === "textarea" ? (
                 <textarea
                   name={field.name}
                   value={customer[field.name]}
                   onChange={handleChange}
                   rows={field.rows}
-                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:border-[#ef4444] resize-none"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] resize-none"
                 />
               ) : field.type === "select" ? (
                 <select
@@ -183,11 +197,13 @@ return (
                   value={customer[field.name]}
                   onChange={handleChange}
                   required={field.required}
-                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:border-[#ef4444]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB]"
                 >
-                  <option value="">Select type</option>
+                  <option value="">Chagua aina</option>
                   {field.options.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
                   ))}
                 </select>
               ) : (
@@ -197,7 +213,7 @@ return (
                   value={customer[field.name]}
                   onChange={handleChange}
                   required={field.required}
-                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#ef4444] focus:border-[#ef4444]"
+                  className="w-full border border-gray-300 px-3 py-2 rounded-[4px] focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB]"
                 />
               )}
             </div>
@@ -208,11 +224,11 @@ return (
             <button
               type="submit"
               disabled={saving}
-              className={`bg-[#ef4444] text-white px-5 py-2 rounded-[4px] hover:bg-[#d63a3a] flex items-center justify-center gap-2 ${
+              className={`bg-[#2563EB] text-white px-5 py-2 rounded-[4px] hover:bg-[#d63a3a] flex items-center justify-center gap-2 ${
                 saving ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              <FaUserEdit /> {saving ? "Saving..." : "Save Changes"}
+              <FaUserEdit /> {saving ? "Inahifadhi..." : "Hifadhi Mabadiliko"}
             </button>
           </div>
         </form>

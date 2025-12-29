@@ -38,7 +38,7 @@ const InfoField = ({ label, value, editable, onChange, name, icon }) => (
         value={value}
         name={name}
         onChange={onChange}
-        className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#ef4444] focus:outline-none"
+        className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
       />
     ) : (
       <div className="px-4 py-2 bg-gray-100 rounded-lg">{value || "-"}</div>
@@ -73,31 +73,31 @@ const PasswordChangeForm = ({ onPasswordChange }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-gray-700 mb-1">New Password</label>
+        <label className="block text-gray-700 mb-1">Nenosiri Jipya</label>
         <input
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#ef4444] focus:outline-none"
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
           required
         />
       </div>
       <div>
-        <label className="block text-gray-700 mb-1">Confirm Password</label>
+        <label className="block text-gray-700 mb-1">Thibitisha Nenosiri</label>
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#ef4444] focus:outline-none"
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
           required
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition"
+        className="bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition"
       >
-        {loading ? "Updating..." : "Change Password"}
+        {loading ? "Inasasisha..." : "Badilisha Nenosiri"}
       </button>
     </form>
   );
@@ -117,7 +117,7 @@ const Profile = () => {
       try {
         const { data: authData } = await supabase.auth.getUser();
         const userId = authData?.user?.id;
-        if (!userId) throw new Error("User not authenticated");
+        if (!userId) throw new Error("Mtumiaji hajathibitishwa");
 
         let { data: sysUser } = await supabase
           .from("systems_users")
@@ -134,7 +134,7 @@ const Profile = () => {
             .select("*")
             .eq("auth_user_id", userId)
             .maybeSingle();
-          if (!emp) throw new Error("Profile not found");
+          if (!emp) throw new Error("Profaili haipo");
           setProfile(emp);
           setIsEmployee(true);
         }
@@ -157,7 +157,7 @@ const Profile = () => {
     setUpdating(true);
     try {
       if (isEmployee) {
-        toast.error("Employees cannot edit profile info!");
+        toast.error("Wafanyakazi hawawezi kubadilisha taarifa za profaili!");
         return;
       }
       const { data, error } = await supabase
@@ -172,10 +172,10 @@ const Profile = () => {
 
       if (error) throw error;
       setProfile({ ...profile, ...data });
-      toast.success("Profile updated successfully!");
+      toast.success("Profaili imesasishwa kwa mafanikio!");
       setEditMode(false);
     } catch (err) {
-      toast.error("Update failed: " + err.message);
+      toast.error("Kusasaisha profaili kulishindikana: " + err.message);
     } finally {
       setUpdating(false);
     }
@@ -185,43 +185,43 @@ const Profile = () => {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      toast.success("Password changed successfully!");
+      toast.success("Nenosiri limebadilishwa kwa mafanikio!");
     } catch (err) {
-      toast.error("Failed to change password: " + err.message);
+      toast.error("Imeshindikana kubadilisha nenosiri: " + err.message);
     }
   };
 
-  if (loading) return <p className="p-6 text-gray-600">Loading profile...</p>;
+  if (loading) return <p className="p-6 text-gray-600">Inapakia profaili...</p>;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <Toaster position="top-right" />
       <div className="max-w-4xl mx-auto space-y-8">
 
-        {/* Header */}
-        <h1 className="text-4xl font-bold text-[#ef4444] mb-6">
-          Welcome, {profile?.customer_name || profile?.name || "User"}
+        {/* Kichwa */}
+        <h1 className="text-4xl font-bold text-[#2563EB] mb-6">
+          Karibu, {profile?.customer_name || profile?.name || "Mtumiaji"}
         </h1>
 
-        {/* Profile Card */}
-        <FormCard title="Profile Information">
+        {/* Kadi ya Profaili */}
+        <FormCard title="Taarifa za Profaili">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold flex items-center gap-2 text-[#ef4444]">
-              <FaUser /> Profile Info
+            <h2 className="text-2xl font-semibold flex items-center gap-2 text-[#2563EB]">
+              <FaUser /> Taarifa za Profaili
             </h2>
             {!isEmployee && (
               <button
                 onClick={() => setEditMode(!editMode)}
-                className="flex items-center gap-1 px-4 py-2 bg-[#ef4444] text-white rounded-xl hover:bg-red-600 transition"
+                className="flex items-center gap-1 px-4 py-2 bg-[#2563EB] text-white rounded-xl hover:bg-red-600 transition"
               >
-                <FaEdit /> {editMode ? "Cancel" : "Edit"}
+                <FaEdit /> {editMode ? "Ghairi" : "Badilisha"}
               </button>
             )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <InfoField
-              label="Full Name"
+              label="Jina Kamili"
               value={profile?.customer_name || profile?.name || ""}
               name={isEmployee ? "name" : "customer_name"}
               editable={!isEmployee && editMode}
@@ -229,13 +229,13 @@ const Profile = () => {
               icon={<FaUser />}
             />
             <InfoField
-              label="Email"
+              label="Barua Pepe"
               value={profile?.email || ""}
               editable={false}
               icon={<FaEnvelope />}
             />
             <InfoField
-              label="Phone"
+              label="Simu"
               value={profile?.customer_phone || profile?.phone || ""}
               name={isEmployee ? "phone" : "customer_phone"}
               editable={!isEmployee && editMode}
@@ -243,7 +243,7 @@ const Profile = () => {
               icon={<FaPhone />}
             />
             <InfoField
-              label="Office"
+              label="Ofisi"
               value={profile?.office_name || profile?.office_id || ""}
               name={isEmployee ? "office_id" : "office_name"}
               editable={!isEmployee && editMode}
@@ -251,7 +251,7 @@ const Profile = () => {
               icon={<FaBuilding />}
             />
             <InfoField
-              label="Role"
+              label="Cheo"
               value={profile?.role || ""}
               editable={false}
               icon={<FaUserShield />}
@@ -262,22 +262,22 @@ const Profile = () => {
             <button
               onClick={handleUpdate}
               disabled={updating}
-              className="flex items-center gap-2 bg-[#ef4444] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition mt-6"
+              className="flex items-center gap-2 bg-[#2563EB] text-white px-6 py-2 rounded-xl hover:bg-red-600 transition mt-6"
             >
-              <FaSave /> {updating ? "Updating..." : "Save Changes"}
+              <FaSave /> {updating ? "Inasasisha..." : "Hifadhi Mabadiliko"}
             </button>
           )}
 
           <p className="mt-3 text-gray-500 text-sm">
-            Tip: Keep your profile info updated for accurate records.
+            Kumbuka: Hifadhi taarifa zako za profaili ili rekodi ziwe sahihi.
           </p>
         </FormCard>
 
-        {/* Password Change */}
-        <FormCard title="Change Password">
+        {/* Kubadilisha Nenosiri */}
+        <FormCard title="Badilisha Nenosiri">
           <PasswordChangeForm onPasswordChange={handlePasswordChange} />
           <p className="mt-3 text-gray-500 text-sm">
-            Tip: Use a strong password with letters, numbers & symbols.
+            Kumbuka: Tumia nenosiri imara lenye herufi, namba & alama.
           </p>
         </FormCard>
       </div>

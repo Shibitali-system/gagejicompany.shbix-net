@@ -144,79 +144,79 @@ const EditExpense = ({ user }) => {
       </p>
     );
 
-  return (
+ return (
   <div className="max-w-4xl mx-auto p-6 mt-10 space-y-6">
     <Toaster />
 
-    {/* Header */}
+    {/* Kichwa */}
     <div className="flex items-center justify-between mb-6">
-      <h1 className="text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-        <FaEdit className="text-[#ef4444]" /> Edit Expense
+      <h1 className="text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+        <FaEdit className="text-[#2563EB]" /> Hariri Matumizi
       </h1>
 
       <Link
         to="../expenses"
-        className="flex items-center gap-2 text-[#ef4444] hover:text-red-600 font-medium transition-all"
+        className="flex items-center gap-2 text-[#2563EB] hover:text-red-600 font-medium transition-all"
       >
-        <FaArrowLeft /> Back to List
+        <FaArrowLeft /> Rudi kwenye Orodha
       </Link>
     </div>
 
-    {/* Metadata Card */}
+    {/* Kadi ya Metadata */}
     <CustomCard>
       <p>
-        <span className="font-semibold">Created by:</span> {expense.created_by_name || "-"}
+        <span className="font-semibold">Imeingizwa na:</span> {expense.created_by_name || "-"}
       </p>
       <p>
-        <span className="font-semibold">Created at:</span> {dayjs(expense.created_at).format("DD MMM YYYY, h:mm A")}
+        <span className="font-semibold">Imeundwa:</span> {dayjs(expense.created_at).format("DD MMM YYYY, h:mm A")}
       </p>
     </CustomCard>
 
-    {/* Form Card */}
-    <FormCard title="Edit Expense Details">
+    {/* Kadi ya Fomu */}
+    <FormCard title="Hariri Maelezo ya Matumizi">
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">Expense Name</label>
+          <label className="block font-semibold mb-2 text-gray-700">Jina la Matumizi</label>
           <input
             type="text"
             name="name"
             value={expense.name}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#ef4444] shadow-sm"
+            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#2563EB] shadow-sm"
             required
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">Amount</label>
+          <label className="block font-semibold mb-2 text-gray-700">Kiasi</label>
           <input
             type="number"
             name="amount"
             value={expense.amount}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#ef4444] shadow-sm"
+            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#2563EB] shadow-sm"
             required
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">Category</label>
+          <label className="block font-semibold mb-2 text-gray-700">Kategoria</label>
           <input
             type="text"
             name="category"
             value={expense.category}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#ef4444] shadow-sm"
+            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#2563EB] shadow-sm"
           />
         </div>
 
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">Description</label>
+          <label className="block font-semibold mb-2 text-gray-700">Maelezo</label>
           <textarea
             name="description"
             value={expense.description}
             onChange={handleChange}
-            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#ef4444] shadow-sm"
+            className="w-full border border-gray-300 px-4 py-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#2563EB] shadow-sm"
             rows={4}
           />
         </div>
@@ -225,18 +225,19 @@ const EditExpense = ({ user }) => {
           <button
             type="submit"
             disabled={saving}
-            className={`bg-[#ef4444] text-white px-6 py-3 rounded-2xl shadow-md hover:bg-red-600 transition-all duration-200 flex items-center gap-2 ${
+            className={`bg-[#2563EB] text-white px-6 py-3 rounded-2xl shadow-md hover:bg-red-600 transition-all duration-200 flex items-center gap-2 ${
               saving ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
             <FaEdit />
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? "Inaendelea kuhifadhi..." : "Hifadhi Mabadiliko"}
           </button>
         </div>
       </form>
     </FormCard>
   </div>
 );
+
 
 };
 

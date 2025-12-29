@@ -228,7 +228,7 @@ const InfoCard = ({ title, value, valueColor }) => (
     style={{ willChange: 'transform' }}
   >
     <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#2563EB]"}`}>{value}</p>
   </div>
 );
 
@@ -238,37 +238,37 @@ return (
 
     <div className="max-w-7xl mx-auto space-y-6">
 
-      {/* Header Card */}
+      {/* Kadi ya Kichwa */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
                       flex flex-col md:flex-row items-start md:items-center justify-between gap-4
                       transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">Proformer List</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Orodha ya Proformer</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Tips: Use filters to narrow results. Click on a proformer to view details, update status, or perform actions.
+            Vidokezo: Tumia vichujio kupunguza matokeo. Bonyeza proformer ili kuona maelezo, sasisha hali, au fanya vitendo.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Link to="new" className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#e03636] flex items-center gap-2 shadow-sm">
-            <FaPlus /> Create Proformer
+          <Link to="new" className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#e03636] flex items-center gap-2 shadow-sm">
+            <FaPlus /> Unda Proformer
           </Link>
-          <button onClick={exportExcel} className="bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#e03636] flex items-center gap-2 shadow-sm">
-            <FaFileExcel /> Export Excel
+          <button onClick={exportExcel} className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#e03636] flex items-center gap-2 shadow-sm">
+            <FaFileExcel /> Hamisha Excel
           </button>
         </div>
       </div>
 
-      {/* Filters & Search Card */}
+      {/* Kadi ya Vichujio na Utafutaji */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
                       transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           
-          {/* Filters */}
+          {/* Vichujio */}
           <div className="flex items-center gap-2 flex-wrap">
             {["today","week","month","year","custom"].map(ft => (
               <button key={ft} onClick={() => setFilterType(ft)}
-                      className={`px-3 py-1 rounded-xl border ${filterType===ft ? "bg-[#ef4444] text-white" : "bg-white"}`}>
+                      className={`px-3 py-1 rounded-xl border ${filterType===ft ? "bg-[#2563EB] text-white" : "bg-white"}`}>
                 {ft.charAt(0).toUpperCase() + ft.slice(1)}
               </button>
             ))}
@@ -278,16 +278,16 @@ return (
             </>}
           </div>
 
-          {/* Search */}
+          {/* Utafutaji */}
           <div className="flex items-center gap-2 mt-2 lg:mt-0">
             <FaSearch className="text-gray-400" />
-            <input type="text" placeholder="Search..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+            <input type="text" placeholder="Tafuta..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                    className="border px-3 py-1 rounded w-full lg:w-auto"/>
           </div>
         </div>
       </div>
 
-      {/* Bulk Actions Card */}
+      {/* Kadi ya Vitendo vya Pamoja */}
       {user?.role === "admin" && (
         <div className="flex justify-end">
           <AlertDialog>
@@ -295,10 +295,10 @@ return (
               <button
                 disabled={selectedProformers.length === 0}
                 className={`px-4 py-2 rounded-xl flex items-center gap-2 shadow-md transition-all
-                  ${selectedProformers.length === 0 ? "bg-red-200 cursor-not-allowed text-gray-600" : "bg-[#ef4444] text-white hover:bg-[#e03636]"}`}>
-                <FaTrash /> Delete Selected
+                  ${selectedProformers.length === 0 ? "bg-red-200 cursor-not-allowed text-gray-600" : "bg-[#2563EB] text-white hover:bg-[#e03636]"}`}>
+                <FaTrash /> Futa Zilizochaguliwa
                 {selectedProformers.length > 0 && (
-                  <span className="bg-white text-[#ef4444] px-2 py-0.5 rounded-lg text-xs font-semibold">
+                  <span className="bg-white text-[#2563EB] px-2 py-0.5 rounded-lg text-xs font-semibold">
                     {selectedProformers.length}
                   </span>
                 )}
@@ -306,17 +306,17 @@ return (
             </AlertDialogTrigger>
             <AlertDialogContent className="rounded-[12px]">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-[#ef4444] flex items-center gap-2">
-                  <FaTrash /> Confirm Deletion
+                <AlertDialogTitle className="text-[#2563EB] flex items-center gap-2">
+                  <FaTrash /> Thibitisha Kufutwa
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to delete <strong>{selectedProformers.length}</strong> selected proformer(s)? This action cannot be undone.
+                  Una uhakika unataka kufuta <strong>{selectedProformers.length}</strong> proformer waliyochaguliwa? Kitendo hiki hakiwezi kubadilishwa.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-xl border px-4 py-2">Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteSelected} className="bg-[#ef4444] text-white rounded-xl hover:bg-[#e03636] px-4 py-2">
-                  Yes, Delete
+                <AlertDialogCancel className="rounded-xl border px-4 py-2">Ghairi</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteSelected} className="bg-[#2563EB] text-white rounded-xl hover:bg-[#e03636] px-4 py-2">
+                  Ndiyo, Futa
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -324,12 +324,12 @@ return (
         </div>
       )}
 
-      {/* Table Card */}
+      {/* Kadi ya Jedwali */}
       <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
                       transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]
                       overflow-x-auto">
         <table className="min-w-full border-collapse text-sm">
-          <thead className="bg-[#ef4444] text-white">
+          <thead className="bg-[#2563EB] text-white">
             <tr>
               <th className="px-3 py-3 text-center">
                 <input
@@ -339,22 +339,22 @@ return (
                 />
               </th>
               <th className="px-3 py-3 text-left">SN</th>
-              <th className="px-3 py-3 text-left">Customer</th>
-              <th className="px-3 py-3 text-left">Seller</th>
-              <th className="px-3 py-3 text-left">Office</th>
-              <th className="px-3 py-3 text-left">Status</th>
-              <th className="px-3 py-3 text-left">Comment</th>
-              <th className="px-3 py-3 text-left">Created At</th>
-              <th className="px-3 py-3 text-center">Actions</th>
+              <th className="px-3 py-3 text-left">Mteja</th>
+              <th className="px-3 py-3 text-left">Muuzaji</th>
+              <th className="px-3 py-3 text-left">Ofisi</th>
+              <th className="px-3 py-3 text-left">Hali</th>
+              <th className="px-3 py-3 text-left">Maoni</th>
+              <th className="px-3 py-3 text-left">Imeundwa</th>
+              <th className="px-3 py-3 text-center">Vitendo</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={9} className="text-center p-4">Loading...</td></tr>
+              <tr><td colSpan={9} className="text-center p-4">Inapakia...</td></tr>
             ) : error ? (
               <tr><td colSpan={9} className="text-center text-red-600 p-4">{error}</td></tr>
             ) : filteredProformers.length===0 ? (
-              <tr><td colSpan={9} className="text-center p-4">No proformers found.</td></tr>
+              <tr><td colSpan={9} className="text-center p-4">Hakuna proformer waliopatikana.</td></tr>
             ) : (
               filteredProformers.map((p,index) => (
                 <tr key={p.id} className="border-b last:border-b-0 hover:bg-[#fdeeee]">
@@ -377,11 +377,11 @@ return (
                     {p.status || "-"}
                     {p.status_history.length > 0 && (
                       <details className="mt-1 text-xs text-gray-600">
-                        <summary className="cursor-pointer">History</summary>
+                        <summary className="cursor-pointer">Historia</summary>
                         <ul className="pl-3">
                           {p.status_history.map(h => (
                             <li key={h.id}>
-                              {new Date(h.updated_at).toLocaleString()} - {h.status} {h.comment ? `(${h.comment})` : ""} - by {h.updated_by_name}
+                              {new Date(h.updated_at).toLocaleString()} - {h.status} {h.comment ? `(${h.comment})` : ""} - na {h.updated_by_name}
                             </li>
                           ))}
                         </ul>
@@ -391,19 +391,19 @@ return (
                   <td className="px-3 py-2">{p.status_comment || p.comment || "-"}</td>
                   <td className="px-3 py-2">{new Date(p.created_at).toLocaleString()}</td>
                   <td className="px-3 py-2 text-center flex flex-col sm:flex-row gap-2 justify-center items-center">
-                    <Link to={`${p.id}`} className="text-[#ef4444] hover:underline flex items-center gap-1"><FaEye/> View</Link>
+                    <Link to={`${p.id}`} className="text-[#2563EB] hover:underline flex items-center gap-1"><FaEye/> Angalia</Link>
                     {statusUpdateId===p.id ? (
                       <div className="flex flex-col gap-1">
                         <select value={newStatus} onChange={e=>setNewStatus(e.target.value)} className="border px-2 py-1 rounded">
-                          <option value="">Select status</option>
+                          <option value="">Chagua hali</option>
                           {statusOptions.map(s=> <option key={s} value={s}>{s}</option>)}
                         </select>
-                        <input type="text" value={statusComment} onChange={e=>setStatusComment(e.target.value)} placeholder="Comment (optional)" className="border px-2 py-1 rounded"/>
-                        <button onClick={()=>handleStatusUpdate(p.id)} className="bg-[#ef4444] text-white px-2 py-1 rounded">Save</button>
-                        <button onClick={()=>setStatusUpdateId(null)} className="bg-gray-300 px-2 py-1 rounded">Cancel</button>
+                        <input type="text" value={statusComment} onChange={e=>setStatusComment(e.target.value)} placeholder="Maoni (hiari)" className="border px-2 py-1 rounded"/>
+                        <button onClick={()=>handleStatusUpdate(p.id)} className="bg-[#2563EB] text-white px-2 py-1 rounded">Hifadhi</button>
+                        <button onClick={()=>setStatusUpdateId(null)} className="bg-gray-300 px-2 py-1 rounded">Ghairi</button>
                       </div>
                     ) : (
-                      <button onClick={()=>setStatusUpdateId(p.id)} className="bg-[#ef4444] text-white px-2 py-1 rounded flex items-center gap-1"><FaExchangeAlt/> Change Status</button>
+                      <button onClick={()=>setStatusUpdateId(p.id)} className="bg-[#2563EB] text-white px-2 py-1 rounded flex items-center gap-1"><FaExchangeAlt/> Badilisha Hali</button>
                     )}
                   </td>
                 </tr>
@@ -413,11 +413,11 @@ return (
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* Ukurasa / Pagination */}
       <div className="flex justify-center gap-2 mt-4">
-        <button disabled={page===1} onClick={()=>setPage(p=>p-1)} className="px-3 py-1 border rounded disabled:opacity-50">Prev</button>
+        <button disabled={page===1} onClick={()=>setPage(p=>p-1)} className="px-3 py-1 border rounded disabled:opacity-50">Kabla</button>
         <span className="px-3 py-1">{page} / {totalPages}</span>
-        <button disabled={page===totalPages} onClick={()=>setPage(p=>p+1)} className="px-3 py-1 border rounded disabled:opacity-50">Next</button>
+        <button disabled={page===totalPages} onClick={()=>setPage(p=>p+1)} className="px-3 py-1 border rounded disabled:opacity-50">Ifuatayo</button>
       </div>
 
     </div>

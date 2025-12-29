@@ -6,7 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 const categoryOptions = [ "Analgesics / Pain Relief", "Anesthetics / Sedatives", "Anti-allergic / Anti-histamines", "Anti-parasitic / Anti-malarial Drugs", "Antibiotics", "Antifungals", "Antiseptics / Disinfectants", "Antipyretics", "Antivirals", "Appetite Stimulants", "Blood Glucose Regulators / Antidiabetics", "Bone Health / Calcium Preparations", "Cardiovascular Drugs", "Chemotherapy / Anticancer Drugs", "Cough & Cold Preparations", "Dermatology / Skin Preparations", "Diabetes / Antidiabetics", "Digestive Enzymes / Gastrointestinal Drugs", "Electrolytes / IV Fluids", "Eye / Ear / Nose Preparations", "Fluids / IV Preparations", "Gastrointestinal Drugs", "Gynecology / Obstetrics", "Hematology / Blood Products", "Hormones & Endocrine", "Hypertension / Antihypertensives", "Immune Modulators / Biologics", "Immunoglobulins / Blood Components", "Medical Devices", "Minerals / Trace Elements", "Musculoskeletal / Orthopedic Drugs", "Neurological / Psychiatric Drugs", "Nutrition & Dietetic Products", "Oncology / Anticancer Drugs", "Ophthalmic Drugs", "Radiology / Contrast Agents", "Renal / Urinary Drugs", "Respiratory Drugs", "Sedatives / Hypnotics", "Vaccines & Immunization", "Vitamins & Supplements", "Wound Care / Dressings", "Others" ]; const packageOptions = [ "Ampules", "Bags", "Blister Packs", "Bottles", "Boxes", "Capsules", "Cream", "Cream Tube", "Drops", "Foam", "Gel", "Granules", "Inhalers", "Kg", "Lotion", "Lozenges", "Mg", "Ml", "Ointment", "Ointment Tube", "Packets", "Pcs", "Patch", "Powder", "Roll-on", "Sachets", "Spray", "Solution", "Spoonful", "Syrup", "Suppository", "Suspension", "Tablets", "Tape", "Transdermal Patch", "Units", "Vials", "Wafers", "Others" ];
 // Primary Color
-const primary = "#ef4444";
+const primary = "#2563EB";
 
 // Reusable Card (same design as InfoCard in product detail)
 const FormCard = ({ children }) => (
@@ -160,171 +160,192 @@ const ProductEdit = () => {
   if (loading) return <p>Loading product...</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <Toaster position="top-right" />
+  <div className="min-h-screen bg-gray-50 p-6">
+    <Toaster position="top-right" />
 
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6">
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <h1 className="text-3xl font-bold text-[#ef4444]">Edit Product</h1>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <h1 className="text-3xl font-bold text-[#2563EB]">
+          Hariri Bidhaa
+        </h1>
 
-          <Link
-            to="/pharmacy/dashboard/products"
-            className="flex items-center gap-2 text-[#ef4444] hover:text-red-700 font-medium mt-3 md:mt-0"
+        <Link
+          to="/dashboard/products"
+          className="flex items-center gap-2 text-[#2563EB] hover:text-red-700 font-medium mt-3 md:mt-0"
+        >
+          <FaArrowLeft /> Rudi kwenye Bidhaa
+        </Link>
+      </div>
+
+      {/* Main Card (Container) */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+
+        {/* Form wrapped inside card-style sections */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+
+          {/* PRODUCT INFO */}
+          <FormCard>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Jina la Bidhaa*
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Kundi
+                </label>
+                <select
+                  name="category"
+                  value={form.category}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                >
+                  <option value="">Chagua Kundi</option>
+                  {categoryOptions.map((cat) => (
+                    <option key={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+            </div>
+          </FormCard>
+
+          {/* PRICES + STOCK */}
+          <FormCard>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="font-medium text-gray-700">
+                  Bei ya Kuuza
+                </label>
+                <input
+                  type="number"
+                  name="price"
+                  value={form.price}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Stok
+                </label>
+                <input
+                  type="number"
+                  name="stock"
+                  value={form.stock}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                />
+              </div>
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Aina ya Ufungashaji
+                </label>
+                <select
+                  name="package_type"
+                  value={form.package_type}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                >
+                  <option value="">Chagua Ufungashaji</option>
+                  {packageOptions.map((pkg) => (
+                    <option key={pkg}>{pkg}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Tarehe ya Mwisho wa Matumizi
+                </label>
+                <input
+                  type="date"
+                  name="expiry_date"
+                  value={form.expiry_date}
+                  onChange={handleChange}
+                  className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+                />
+              </div>
+            </div>
+          </FormCard>
+
+          {/* DESCRIPTION */}
+          <FormCard>
+            <label className="font-medium text-gray-700">
+              Maelezo
+            </label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              rows={3}
+              className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+            />
+          </FormCard>
+
+          {/* READ ONLY FIELDS */}
+          <FormCard>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="font-medium text-gray-700">
+                  Jina la Ofisi
+                </label>
+                <input
+                  disabled
+                  value={userInfo?.office_name || ""}
+                  className="w-full border rounded-xl px-3 py-2 bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+
+              <div>
+                <label className="font-medium text-gray-700">
+                  Aliyehariri Mwisho
+                </label>
+                <input
+                  disabled
+                  value={userInfo?.name || ""}
+                  className="w-full border rounded-xl px-3 py-2 bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+            </div>
+          </FormCard>
+
+          {/* SAVE BUTTON */}
+          <button
+            type="submit"
+            disabled={saving}
+            className={`
+              mt-4 flex items-center justify-center gap-2 text-white 
+              px-6 py-3 rounded-xl transition shadow 
+              bg-[#2563EB] hover:bg-red-600 active:scale-95 
+              ${saving ? "opacity-50 cursor-not-allowed" : ""}
+            `}
           >
-            <FaArrowLeft /> Back to Products
-          </Link>
-        </div>
+            <FaCheckCircle />
+            {saving ? "Inahifadhi..." : "Hifadhi Mabadiliko"}
+          </button>
 
-        {/* Main Card (Container) */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6">
-
-          {/* Form wrapped inside card-style sections */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* PRODUCT INFO */}
-            <FormCard>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <div>
-                  <label className="font-medium text-gray-700">Product Name*</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="font-medium text-gray-700">Category</label>
-                  <select
-                    name="category"
-                    value={form.category}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                  >
-                    <option value="">Select Category</option>
-                    {categoryOptions.map((cat) => (
-                      <option key={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-
-              </div>
-            </FormCard>
-
-            {/* PRICES + STOCK */}
-            <FormCard>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="font-medium text-gray-700">Selling Price</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={form.price}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-medium text-gray-700">Stock</label>
-                  <input
-                    type="number"
-                    name="stock"
-                    value={form.stock}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-medium text-gray-700">Package Type</label>
-                  <select
-                    name="package_type"
-                    value={form.package_type}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                  >
-                    <option value="">Select Package</option>
-                    {packageOptions.map((pkg) => (
-                      <option key={pkg}>{pkg}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="font-medium text-gray-700">Expiry Date</label>
-                  <input
-                    type="date"
-                    name="expiry_date"
-                    value={form.expiry_date}
-                    onChange={handleChange}
-                    className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-                  />
-                </div>
-              </div>
-            </FormCard>
-
-            {/* DESCRIPTION */}
-            <FormCard>
-              <label className="font-medium text-gray-700">Description</label>
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                rows={3}
-                className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#ef4444]"
-              />
-            </FormCard>
-
-            {/* READ ONLY FIELDS */}
-            <FormCard>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-medium text-gray-700">Office Name</label>
-                  <input
-                    disabled
-                    value={userInfo?.office_name || ""}
-                    className="w-full border rounded-xl px-3 py-2 bg-gray-100 cursor-not-allowed"
-                  />
-                </div>
-
-                <div>
-                  <label className="font-medium text-gray-700">Last Edited By</label>
-                  <input
-                    disabled
-                    value={userInfo?.name || ""}
-                    className="w-full border rounded-xl px-3 py-2 bg-gray-100 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-            </FormCard>
-
-            {/* SAVE BUTTON */}
-            <button
-              type="submit"
-              disabled={saving}
-              className={`
-                mt-4 flex items-center justify-center gap-2 text-white 
-                px-6 py-3 rounded-xl transition shadow 
-                bg-[#ef4444] hover:bg-red-600 active:scale-95 
-                ${saving ? "opacity-50 cursor-not-allowed" : ""}
-              `}
-            >
-              <FaCheckCircle />
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-
-          </form>
-        </div>
+        </form>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ProductEdit;

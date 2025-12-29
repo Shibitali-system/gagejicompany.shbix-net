@@ -248,24 +248,24 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
 
   return (
   <div className="min-h-screen bg-gray-100 p-6 space-y-6">
-    {/* Header */}
+    {/* Kichwa */}
     <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 className="text-3xl font-bold text-[#ef4444]">Advanced Reports</h1>
+        <h1 className="text-3xl font-bold text-[#2563EB]">Ripoti Zinazoendelea</h1>
         <p className="text-sm text-gray-600">
-          Office: <span className="font-semibold">{sellerInfo?.office_name || sellerInfo?.office_id}</span>
+          Ofisi: <span className="font-semibold">{sellerInfo?.office_name || sellerInfo?.office_id}</span>
         </p>
       </div>
       <button
         onClick={exportAllExcel}
-        className="flex items-center gap-2 bg-[#ef4444] text-white px-4 py-2 rounded-xl shadow hover:bg-red-600 transition"
+        className="flex items-center gap-2 bg-[#2563EB] text-white px-4 py-2 rounded-xl shadow hover:bg-red-600 transition"
       >
-        <FaFileExcel /> Export All
+        <FaFileExcel /> Hamisha Zote
       </button>
     </header>
 
-    {/* Filters */}
-    <CustomCard title="Filters">
+    {/* Vichujio */}
+    <CustomCard title="Vichujio">
       <div className="flex flex-wrap gap-2 items-center">
         {['today', 'week', 'month', 'year', 'custom'].map(f => (
           <button
@@ -273,11 +273,11 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
             onClick={() => setFilterType(f)}
             className={`px-3 py-1 rounded-xl capitalize font-medium transition ${
               filterType === f
-                ? 'bg-[#ef4444] text-white'
+                ? 'bg-[#2563EB] text-white'
                 : 'bg-white border border-[#e5e7eb] text-gray-700 hover:bg-[#ffe5e5]'
             }`}
           >
-            {f}
+            {f === 'today' ? 'Leo' : f === 'week' ? 'Wiki Hii' : f === 'month' ? 'Mwezi Huu' : f === 'year' ? 'Mwaka Huu' : 'Maalum'}
           </button>
         ))}
 
@@ -287,14 +287,14 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
               type="date"
               value={customFrom}
               onChange={e => setCustomFrom(e.target.value)}
-              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
             />
-            <span>to</span>
+            <span>hadi</span>
             <input
               type="date"
               value={customTo}
               onChange={e => setCustomTo(e.target.value)}
-              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#ef4444]"
+              className="border border-[#e5e7eb] px-2 py-1 rounded focus:ring-2 focus:ring-[#2563EB]"
             />
           </div>
         )}
@@ -306,7 +306,7 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Search..."
+              placeholder="Tafuta..."
               className="outline-none px-2 py-1 bg-transparent"
             />
           </div>
@@ -314,29 +314,29 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
       </div>
     </CustomCard>
 
-    {/* Summary Cards */}
+    {/* Kadi za Muhtasari */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {[
-        { title: "Total Sales", value: totals.totalSales.toLocaleString(), icon: FaMoneyBillWave },
-        { title: "Purchase Cost (Sold)", value: totals.totalPurchaseForSales.toLocaleString(), icon: FaShoppingCart },
-        { title: "Total Expenses", value: totals.totalExpenses.toLocaleString(), icon: FaWallet },
-        { title: "Profit", value: totals.profit.toLocaleString(), icon: FaChartLine },
-        { title: "Total Purchases", value: totals.totalPurchases.toLocaleString(), icon: FaBoxes },
-        { title: "Low Stock Items", value: totals.lowStockCount, icon: FaExclamationTriangle },
-        { title: "Overdue Billing", value: totals.overdueCount, icon: FaExclamationTriangle },
+        { title: "Jumla ya Mauzo", value: totals.totalSales.toLocaleString(), icon: FaMoneyBillWave },
+        { title: "Gharama za Manunuzi (Yauzwa)", value: totals.totalPurchaseForSales.toLocaleString(), icon: FaShoppingCart },
+        { title: "Jumla ya Matumizi", value: totals.totalExpenses.toLocaleString(), icon: FaWallet },
+        { title: "Faida", value: totals.profit.toLocaleString(), icon: FaChartLine },
+        { title: "Jumla ya Manunuzi", value: totals.totalPurchases.toLocaleString(), icon: FaBoxes },
+        { title: "Bidhaa Zenye Stock Chini", value: totals.lowStockCount, icon: FaExclamationTriangle },
+        { title: "Malipo Yanayochelewa", value: totals.overdueCount, icon: FaExclamationTriangle },
       ].map((card, idx) => (
         <CustomCard key={idx} title={card.title}>
           <div className="flex items-center justify-between">
-            <div className="text-xl font-bold text-[#ef4444]">{card.value}</div>
-            <card.icon className="text-[#ef4444] text-2xl" />
+            <div className="text-xl font-bold text-[#2563EB]">{card.value}</div>
+            <card.icon className="text-[#2563EB] text-2xl" />
           </div>
         </CustomCard>
       ))}
     </div>
 
-    {/* Report Components */}
+    {/* Vipengele vya Ripoti */}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <CustomCard title="Sales Report">
+      <CustomCard title="Ripoti ya Mauzo">
         <SalesReport
           officeId={sellerInfo.office_id}
           filterType={filterType}
@@ -345,7 +345,7 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
           searchTerm={searchTerm}
         />
       </CustomCard>
-      <CustomCard title="Purchases Report">
+      <CustomCard title="Ripoti ya Manunuzi">
         <PurchasesReport
           officeId={sellerInfo.office_id}
           filterType={filterType}
@@ -354,7 +354,7 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
           searchTerm={searchTerm}
         />
       </CustomCard>
-      <CustomCard title="Expenses Report">
+      <CustomCard title="Ripoti ya Matumizi">
         <ExpensesReport
           officeId={sellerInfo.office_id}
           filterType={filterType}
@@ -366,10 +366,10 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
     </div>
 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
-      <CustomCard title="Low Stock Report">
+      <CustomCard title="Ripoti ya Bidhaa Zenye Stock Chini">
         <LowStockReport officeId={sellerInfo.office_id} />
       </CustomCard>
-      <CustomCard title="Billing Report">
+      <CustomCard title="Ripoti ya Malipo">
         <BillingReport
           officeId={sellerInfo.office_id}
           filterType={filterType}
@@ -380,6 +380,7 @@ const totalPurchases = purchasesData.reduce((sum, p) => sum + Number(p.total_amo
     </div>
   </div>
 );
+
 
 };
 

@@ -264,40 +264,40 @@ const DeletedSalesIndex = () => {
     }
   };
 
-  return (
+ return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-    <Toaster position="top-right" />
+    <Toaster position="top-right"/>
 
-    {/* Header + Tips */}
+    {/* Kichwa + Maelekezo */}
     <CustomCard>
       <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444]">
-          Deleted Sales - {sellerInfo?.office_name || ""}
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">
+          Mauzo Yaliyofutwa - {sellerInfo?.office_name || ""}
         </h1>
       </div>
       <p className="text-gray-600 text-sm">
-        Use the buttons below to restore deleted sales quickly.
+        Tumia vitufe hapo chini kurejesha mauzo yaliyofutwa haraka.
       </p>
     </CustomCard>
 
-    {/* Analytics */}
+    {/* Takwimu */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4">
-      <FormCard title="Total Deleted Sales">
-        <p className="text-[#ef4444] font-bold">{analytics.totalSales}</p>
+      <FormCard title="Jumla ya Mauzo Yaliyofutwa">
+        <p className="text-[#2563EB] font-bold">{analytics.totalSales}</p>
       </FormCard>
-      <FormCard title="Total Amount">
-        <p className="text-[#ef4444] font-bold">TZS {analytics.totalAmount.toLocaleString()}</p>
+      <FormCard title="Jumla ya Kiasi">
+        <p className="text-[#2563EB] font-bold">TZS {analytics.totalAmount.toLocaleString()}</p>
       </FormCard>
     </div>
 
-    {/* Filters */}
-    <CustomCard title="Filters">
+    {/* Vichujio */}
+    <CustomCard title="Vichujio">
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1">
           <FaSearch className="absolute left-2 top-2 text-gray-400" />
           <input
             type="text"
-            placeholder="Filter by customer"
+            placeholder="Chuja kwa mteja"
             className="border rounded pl-8 pr-2 py-1 w-full"
             value={filters.customerName}
             onChange={e => setFilters(f => ({ ...f, customerName: e.target.value }))}
@@ -308,7 +308,7 @@ const DeletedSalesIndex = () => {
           <FaSearch className="absolute left-2 top-2 text-gray-400" />
           <input
             type="text"
-            placeholder="Filter by product"
+            placeholder="Chuja kwa bidhaa"
             className="border rounded pl-8 pr-2 py-1 w-full"
             value={filters.productName}
             onChange={e => setFilters(f => ({ ...f, productName: e.target.value }))}
@@ -320,7 +320,7 @@ const DeletedSalesIndex = () => {
           value={filters.sellerId}
           onChange={e => setFilters(f => ({ ...f, sellerId: e.target.value }))}
         >
-          <option value="">All Sellers</option>
+          <option value="">Wauzaji Wote</option>
           {sellers.map(s => (
             <option key={s.id} value={s.id}>{s.customer_name}</option>
           ))}
@@ -341,23 +341,23 @@ const DeletedSalesIndex = () => {
       </div>
     </CustomCard>
 
-    {/* Deleted Sales Table */}
-    <CustomCard title="Deleted Sales">
+    {/* Jedwali la Mauzo Yaliyofutwa */}
+    <CustomCard title="Mauzo Yaliyofutwa">
       {loading ? (
-        <p>Loading deleted sales...</p>
+        <p>Inapakia mauzo yaliyofutwa...</p>
       ) : filteredSales.length === 0 ? (
-        <p>No deleted sales found.</p>
+        <p>Hakuna mauzo yaliyofutwa yaliyopatikana.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
-            <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
               <tr>
-                <th className="px-2 py-2 text-left">Sale ID</th>
-                <th className="px-2 py-2 text-left">Customer</th>
-                <th className="px-2 py-2 text-left">Products</th>
-                <th className="px-2 py-2 text-left">Deleted By</th>
-                <th className="px-2 py-2 text-right">Total</th>
-                <th className="px-2 py-2 text-center">Actions</th>
+                <th className="px-2 py-2 text-left">ID ya Mauzo</th>
+                <th className="px-2 py-2 text-left">Mteja</th>
+                <th className="px-2 py-2 text-left">Bidhaa</th>
+                <th className="px-2 py-2 text-left">Iliyofutwa Na</th>
+                <th className="px-2 py-2 text-right">Jumla</th>
+                <th className="px-2 py-2 text-center">Vitendo</th>
               </tr>
             </thead>
             <tbody>
@@ -369,7 +369,7 @@ const DeletedSalesIndex = () => {
                     <ul className="list-disc list-inside">
                       {sale.deleted_sale_items.map(i => (
                         <li key={i.id}>
-                          {i.product_name} x{i.quantity} | TZS {i.price.toLocaleString()} | Discount: {i.discount || 0}%
+                          {i.product_name} x{i.quantity} | TZS {i.price.toLocaleString()} | Punguzo: {i.discount || 0}%
                         </li>
                       ))}
                     </ul>
@@ -379,9 +379,9 @@ const DeletedSalesIndex = () => {
                   <td className="px-2 py-2 text-center">
                     <button
                       onClick={() => handleRestoreSale(sale)}
-                      className="bg-[#ef4444] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-1"
+                      className="bg-[#2563EB] text-white px-3 py-1 rounded-xl hover:bg-red-600 flex items-center gap-1"
                     >
-                      <FaUndo /> Restore
+                      <FaUndo /> Rejesha
                     </button>
                   </td>
                 </tr>
@@ -392,7 +392,7 @@ const DeletedSalesIndex = () => {
       )}
     </CustomCard>
 
-    {/* Pagination */}
+    {/* Ukurasa wa Pagination */}
     <CustomCard>
       <div className="flex justify-center gap-2">
         <button
@@ -400,15 +400,15 @@ const DeletedSalesIndex = () => {
           onClick={() => setPage(p => p - 1)}
           className="px-3 py-1 border rounded"
         >
-          Prev
+          Kwenye Tokea
         </button>
-        <span>Page {page}</span>
+        <span>Ukurasa {page}</span>
         <button
           disabled={page * PAGE_SIZE >= filteredSales.length}
           onClick={() => setPage(p => p + 1)}
           className="px-3 py-1 border rounded"
         >
-          Next
+          Ifuatayo
         </button>
       </div>
     </CustomCard>

@@ -210,31 +210,31 @@ const RecordPurchaseReturnPage = () => {
     0
   );
 
-  return (
+ return (
   <div className="min-h-screen p-4 sm:p-6 font-sans">
     <Toaster position="top-right" />
     <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow p-6">
 
-      {/* Header */}
+      {/* KICHWA */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-          <FaBoxOpen /> Record Purchase Return
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaBoxOpen /> Rekodi Kurudisha Manunuzi
         </h1>
         <div className="flex items-center gap-2">
           <Link
             to="../purchases/returns"
-            className="text-[#ef4444] hover:underline flex items-center gap-1 font-bold"
+            className="text-[#2563EB] hover:underline flex items-center gap-1 font-bold"
           >
-            <FaArrowLeft /> Back to Returns List
+            <FaArrowLeft /> Rudi kwenye Orodha ya Kurudisha
           </Link>
         </div>
       </div>
 
-      {/* Selected Purchase Input */}
+      {/* Manunuzi Yaliyochaguliwa */}
       {selectedPurchase && (
         <div className="mb-4">
           <label className="block font-semibold mb-1 text-gray-700">
-            Selected Purchase
+            Manunuzi Yaliyochaguliwa
           </label>
           <input
             type="text"
@@ -242,7 +242,7 @@ const RecordPurchaseReturnPage = () => {
               selectedPurchase
                 ? `#${selectedPurchase} — ${
                     purchases.find((p) => String(p.id) === String(selectedPurchase))
-                      ?.supplier?.name || "No Supplier"
+                      ?.supplier?.name || "Hakuna Supplier"
                   }`
                 : ""
             }
@@ -252,19 +252,19 @@ const RecordPurchaseReturnPage = () => {
         </div>
       )}
 
-      {/* Searchable Purchase Selector */}
+      {/* Kichunguzi cha Manunuzi */}
       <div className="mb-6">
         <label className="block font-semibold mb-1 text-gray-700">
-          Search Purchase
+          Tafuta Manunuzi
         </label>
         <div className="relative">
           <FaSearch className="absolute left-3 top-3 text-gray-400" />
           <input
             type="text"
-            placeholder="Search purchase by ID or supplier..."
+            placeholder="Tafuta manunuzi kwa ID au supplier..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
           />
         </div>
 
@@ -282,39 +282,39 @@ const RecordPurchaseReturnPage = () => {
                   onClick={() => setSelectedPurchase(p.id)}
                 >
                   <p className="text-sm">
-                    <span className="font-bold text-[#ef4444]">#{p.id}</span> —{" "}
-                    {p.supplier?.name || "No Supplier"}
+                    <span className="font-bold text-[#2563EB]">#{p.id}</span> —{" "}
+                    {p.supplier?.name || "Hakuna Supplier"}
                   </p>
                 </div>
               ))
             ) : (
-              <p className="p-3 text-gray-500 text-sm">No purchases found.</p>
+              <p className="p-3 text-gray-500 text-sm">Hakuna manunuzi yanayopatikana.</p>
             )}
           </div>
         )}
       </div>
 
-      {/* Summary */}
+      {/* Muhtasari */}
       {selectedPurchase && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
           <div className="bg-[#fdecea] rounded-2xl p-4 text-center shadow">
-            <p className="text-gray-500">Total Return Quantity</p>
-            <p className="font-bold text-[#ef4444] text-lg">{totalReturnQty}</p>
+            <p className="text-gray-500">Jumla ya Idadi ya Kurudisha</p>
+            <p className="font-bold text-[#2563EB] text-lg">{totalReturnQty}</p>
           </div>
         </div>
       )}
 
-      {/* Products Table */}
+      {/* Jedwali la Bidhaa */}
       {selectedPurchase && products.length > 0 ? (
         <div className="overflow-x-auto mb-6">
           <table className="min-w-full border-collapse text-sm">
-            <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
               <tr>
-                <th className="px-3 py-2 text-left">Product</th>
-                <th className="px-3 py-2 text-left">Purchased Qty</th>
-                <th className="px-3 py-2 text-left">Return Qty</th>
-                <th className="px-3 py-2 text-left">Reason</th>
-                <th className="px-3 py-2 text-left">Comment</th>
+                <th className="px-3 py-2 text-left">Bidhaa</th>
+                <th className="px-3 py-2 text-left">Idadi Iliyonunuliwa</th>
+                <th className="px-3 py-2 text-left">Idadi ya Kurudishwa</th>
+                <th className="px-3 py-2 text-left">Sababu</th>
+                <th className="px-3 py-2 text-left">Maoni</th>
               </tr>
             </thead>
             <tbody>
@@ -331,7 +331,7 @@ const RecordPurchaseReturnPage = () => {
                       onChange={(e) =>
                         handleChange(p.product_id, "quantity", e.target.value)
                       }
-                      className="w-20 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                      className="w-20 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -341,8 +341,8 @@ const RecordPurchaseReturnPage = () => {
                       onChange={(e) =>
                         handleChange(p.product_id, "reason", e.target.value)
                       }
-                      placeholder="Reason"
-                      className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                      placeholder="Sababu"
+                      className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -352,8 +352,8 @@ const RecordPurchaseReturnPage = () => {
                       onChange={(e) =>
                         handleChange(p.product_id, "comment", e.target.value)
                       }
-                      placeholder="Comment"
-                      className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#ef4444]"
+                      placeholder="Maoni"
+                      className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
                     />
                   </td>
                 </tr>
@@ -363,29 +363,30 @@ const RecordPurchaseReturnPage = () => {
         </div>
       ) : selectedPurchase ? (
         <p className="text-gray-500 italic mb-4">
-          No products found for this purchase.
+          Hakuna bidhaa zilizopatikana kwa manunuzi haya.
         </p>
       ) : null}
 
-      {/* Submit Button */}
+      {/* Kitufe cha Kutuma */}
       {selectedPurchase && (
         <div className="text-right">
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className={`bg-[#ef4444] text-white px-6 py-2 rounded-xl shadow flex items-center gap-2 justify-center ml-auto transition ${
+            className={`bg-[#2563EB] text-white px-6 py-2 rounded-xl shadow flex items-center gap-2 justify-center ml-auto transition ${
               submitting
                 ? "opacity-70 cursor-not-allowed"
                 : "hover:bg-[#d13737]"
             }`}
           >
-            <FaSave /> {submitting ? "Submitting..." : "Record Return"}
+            <FaSave /> {submitting ? "Inatumwa..." : "Rekodi Kurudisha"}
           </button>
         </div>
       )}
     </div>
   </div>
 );
+
 
 };
 

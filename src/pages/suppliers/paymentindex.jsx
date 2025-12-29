@@ -213,7 +213,7 @@ const PaymentsIndex = () => {
   const SummaryCard = ({ title, value }) => (
     <div className="bg-white border rounded-[4px] px-5 py-4 flex flex-col items-center justify-center shadow w-full">
       <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-      <p className="text-xl font-semibold mt-1 text-[#ef4444]">{value}</p>
+      <p className="text-xl font-semibold mt-1 text-[#2563EB]">{value}</p>
     </div>
   );
 
@@ -224,119 +224,120 @@ const PaymentsIndex = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <Toaster position="top-right" />
-      <div className="max-w-7xl mx-auto space-y-6">
+  <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <Toaster position="top-right" />
+    <div className="max-w-7xl mx-auto space-y-6">
 
-{/* Back */}
+      {/* Back */}
+      <Link
+        to="../suppliers"
+        className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline text-sm"
+      >
+        <FaArrowLeft /> Rudi kwa Muuzaji
+      </Link>
+
+      <InteractiveCard>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] flex items-center gap-2">
+          <FaMoneyBillWave /> Malipo ya Muuzaji
+        </h1>
+        <p className="text-gray-600 text-sm sm:text-base mt-2 text-center">
+          Simamia malipo ya muuzaji: tafuta, chuja kwa tarehe au hali, na toa Excel.
+        </p>
         <Link
-          to="../suppliers"
-          className="flex items-center gap-2 text-[#ef4444] font-semibold hover:underline text-sm"
+          to="../suppliers/payments"
+          className="mt-3 bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow"
         >
-          <FaArrowLeft /> Back to Supplier
+          <FaPlus /> Ongeza Malipo
         </Link>
+      </InteractiveCard>
 
-        <InteractiveCard>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#ef4444] flex items-center gap-2">
-            <FaMoneyBillWave /> Supplier Payments
-          </h1>
-          <p className="text-gray-600 text-sm sm:text-base mt-2 text-center">
-            Manage supplier payments: search, filter by date or status, and export to Excel.
-          </p>
-          <Link
-            to="../suppliers/payments"
-            className="mt-3 bg-[#ef4444] text-white px-4 py-2 rounded-xl hover:bg-[#d63a3a] flex items-center gap-2 shadow"
-          >
-            <FaPlus /> Add Payment
-          </Link>
-        </InteractiveCard>
-
-        <InteractiveCard>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full items-center justify-center">
-            {["all","today","week","month","year"].map(type => (
-              <button
-                key={type}
-                className={`px-3 py-1 rounded-xl ${filterType === type ? "bg-[#ef4444] text-white" : "bg-white border"}`}
-                onClick={() => setFilterType(type)}
-              >
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </button>
-            ))}
-            <div className="flex gap-2 flex-wrap items-center">
-              <input
-                type="date"
-                value={customFrom}
-                onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }}
-                className="border px-2 py-1 rounded"
-              />
-              <span>to</span>
-              <input
-                type="date"
-                value={customTo}
-                onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }}
-                className="border px-2 py-1 rounded"
-              />
-            </div>
+      <InteractiveCard>
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full items-center justify-center">
+          {["all","today","week","month","year"].map(type => (
             <button
-              onClick={exportToExcel}
-              className="bg-blue-600 text-white px-3 py-1 rounded-xl flex items-center gap-1 whitespace-nowrap"
+              key={type}
+              className={`px-3 py-1 rounded-xl ${filterType === type ? "bg-[#2563EB] text-white" : "bg-white border"}`}
+              onClick={() => setFilterType(type)}
             >
-              <FaFileExcel /> Export Excel
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
+          ))}
+          <div className="flex gap-2 flex-wrap items-center">
+            <input
+              type="date"
+              value={customFrom}
+              onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }}
+              className="border px-2 py-1 rounded"
+            />
+            <span>hadi</span>
+            <input
+              type="date"
+              value={customTo}
+              onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }}
+              className="border px-2 py-1 rounded"
+            />
           </div>
-        </InteractiveCard>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-sm">
-          <SummaryCard title="Total Payments" value={totals.totalPayments} />
-          <SummaryCard title="Total Amount" value={totals.totalAmount.toLocaleString()} />
-          <SummaryCard title="Pending" value={totals.pending} />
-          <SummaryCard title="Completed" value={totals.completed} />
+          <button
+            onClick={exportToExcel}
+            className="bg-blue-600 text-white px-3 py-1 rounded-xl flex items-center gap-1 whitespace-nowrap"
+          >
+            <FaFileExcel /> Export Excel
+          </button>
         </div>
+      </InteractiveCard>
 
-        {loading ? (
-          <p className="text-gray-600">Loading payments...</p>
-        ) : error ? (
-          <p className="text-red-600 font-semibold">{error}</p>
-        ) : payments.length === 0 ? (
-          <p className="text-gray-600">No payments found.</p>
-        ) : (
-          <div className="overflow-x-auto bg-white rounded-2xl shadow">
-            <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-[#ef4444] text-white text-xs uppercase tracking-wider">
-                <tr>
-                  <th className="px-3 py-2 text-left">Supplier Name</th>
-                  <th className="px-3 py-2 text-left">Invoice Number</th>
-                  <th className="px-3 py-2 text-left">Invoice Amount</th>
-                  <th className="px-3 py-2 text-left">Total Invoice Paid</th>
-                  <th className="px-3 py-2 text-left">Amount</th>
-                  <th className="px-3 py-2 text-left">Status</th>
-                  <th className="px-3 py-2 text-left">Notes</th>
-                  <th className="px-3 py-2 text-left">Created By</th>
-                  <th className="px-3 py-2 text-left">Date Added</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map(p => (
-                  <tr key={p.id} className="border-b hover:bg-green-50 transition-colors">
-                    <td className="px-3 py-2">{p.supplier_name || "-"}</td>
-                    <td className="px-3 py-2">{p.invoice_number || "-"}</td>
-                    <td className="px-3 py-2">{p.invoice_amount?.toLocaleString() || 0}</td>
-                    <td className="px-3 py-2">{p.total_invoice_paid?.toLocaleString() || 0}</td>
-                    <td className="px-3 py-2">{p.amount?.toLocaleString() || 0}</td>
-                    <td className="px-3 py-2">{p.status}</td>
-                    <td className="px-3 py-2 truncate max-w-xs" title={p.notes}>{p.notes || "-"}</td>
-                    <td className="px-3 py-2">{p.created_by || "-"}</td>
-                    <td className="px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 text-sm">
+        <SummaryCard title="Jumla ya Malipo" value={totals.totalPayments} />
+        <SummaryCard title="Jumla ya Kiasi" value={totals.totalAmount.toLocaleString()} />
+        <SummaryCard title="Inasubiri" value={totals.pending} />
+        <SummaryCard title="Imekamilika" value={totals.completed} />
       </div>
+
+      {loading ? (
+        <p className="text-gray-600">Inaendelea kupakia malipo...</p>
+      ) : error ? (
+        <p className="text-red-600 font-semibold">{error}</p>
+      ) : payments.length === 0 ? (
+        <p className="text-gray-600">Hakuna malipo yaliyopatikana.</p>
+      ) : (
+        <div className="overflow-x-auto bg-white rounded-2xl shadow">
+          <table className="min-w-full border-collapse text-sm">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
+              <tr>
+                <th className="px-3 py-2 text-left">Jina la Muuzaji</th>
+                <th className="px-3 py-2 text-left">Nambari ya Ankara</th>
+                <th className="px-3 py-2 text-left">Kiasi cha Ankara</th>
+                <th className="px-3 py-2 text-left">Jumla Iliyolipwa</th>
+                <th className="px-3 py-2 text-left">Kiasi</th>
+                <th className="px-3 py-2 text-left">Hali</th>
+                <th className="px-3 py-2 text-left">Maelezo</th>
+                <th className="px-3 py-2 text-left">Imeingizwa Na</th>
+                <th className="px-3 py-2 text-left">Tarehe Imeongezwa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payments.map(p => (
+                <tr key={p.id} className="border-b hover:bg-green-50 transition-colors">
+                  <td className="px-3 py-2">{p.supplier_name || "-"}</td>
+                  <td className="px-3 py-2">{p.invoice_number || "-"}</td>
+                  <td className="px-3 py-2">{p.invoice_amount?.toLocaleString() || 0}</td>
+                  <td className="px-3 py-2">{p.total_invoice_paid?.toLocaleString() || 0}</td>
+                  <td className="px-3 py-2">{p.amount?.toLocaleString() || 0}</td>
+                  <td className="px-3 py-2">{p.status}</td>
+                  <td className="px-3 py-2 truncate max-w-xs" title={p.notes}>{p.notes || "-"}</td>
+                  <td className="px-3 py-2">{p.created_by || "-"}</td>
+                  <td className="px-3 py-2">{new Date(p.created_at).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
     </div>
-  );
+  </div>
+);
+
 };
 
 export default PaymentsIndex;
