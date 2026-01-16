@@ -17,9 +17,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-
-
-
 const statusOptions = ["Pending", "Already Paid", "Rejected by Customer"];
 
 const ProformerIndex = () => {
@@ -40,26 +37,23 @@ const ProformerIndex = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [selectedProformers, setSelectedProformers] = useState([]);
 
+  const handleDeleteSelected = async () => {
+    try {
+      const { error } = await supabase
+        .from("proformer")
+        .delete()
+        .in("id", selectedProformers);
 
-const handleDeleteSelected = async () => {
-  try {
-    const { error } = await supabase
-      .from("proformer")
-      .delete()
-      .in("id", selectedProformers);
+      if (error) throw error;
 
-    if (error) throw error;
+      toast.success("Deleted successfully!");
+      setSelectedProformers([]);
+      fetchProformers();
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
-    toast.success("Deleted successfully!");
-    setSelectedProformers([]);
-    fetchProformers();
-  } catch (err) {
-    toast.error(err.message);
-  }
-};
-
-
-  // Load current user
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -88,7 +82,6 @@ const handleDeleteSelected = async () => {
     fetchUser();
   }, []);
 
-  // Fetch proformers whenever filters change
   useEffect(() => { if(user?.id) fetchProformers(); }, [user, searchTerm, filterType, customFrom, customTo, page]);
 
   const fetchProformers = async () => {
@@ -97,10 +90,24 @@ const handleDeleteSelected = async () => {
       let fromDate, toDate;
       const now = new Date();
       switch(filterType){
-        case "today": fromDate=new Date(now.setHours(0,0,0,0)); toDate=new Date(now.setHours(23,59,59,999)); break;
-        case "week": const d = now.getDay(); const diff= now.getDate()-d+(d===0?-6:1); fromDate=new Date(now.setDate(diff)); fromDate.setHours(0,0,0,0); toDate=new Date(); break;
-        case "month": fromDate=new Date(now.getFullYear(),now.getMonth(),1); fromDate.setHours(0,0,0,0); toDate=new Date(); break;
-        case "year": fromDate=new Date(now.getFullYear(),0,1); fromDate.setHours(0,0,0,0); toDate=new Date(); break;
+        case "today": 
+          fromDate=new Date(now.setHours(0,0,0,0)); 
+          toDate=new Date(now.setHours(23,59,59,999)); 
+          break;
+        case "week": 
+          const d = now.getDay(); 
+          const diff= now.getDate()-d+(d===0?-6:1); 
+          fromDate=new Date(now.setDate(diff)); fromDate.setHours(0,0,0,0); 
+          toDate=new Date(); 
+          break;
+        case "month": 
+          fromDate=new Date(now.getFullYear(),now.getMonth(),1); fromDate.setHours(0,0,0,0); 
+          toDate=new Date(); 
+          break;
+        case "year": 
+          fromDate=new Date(now.getFullYear(),0,1); fromDate.setHours(0,0,0,0); 
+          toDate=new Date(); 
+          break;
         case "custom": 
           if(customFrom && customTo){ 
             fromDate=new Date(customFrom); fromDate.setHours(0,0,0,0); 
@@ -119,7 +126,17 @@ const handleDeleteSelected = async () => {
       else if(user.role==="admin") query = query.eq("office_id", user.office_id);
 
       if(fromDate && toDate) query=query.gte("created_at", fromDate.toISOString()).lte("created_at", toDate.toISOString());
-      if(searchTerm.trim()) query=query.or(`id::text.ilike.%${searchTerm}%,comment.ilike.%${searchTerm}%`);
+
+      if (searchTerm.trim()) {
+  const term = `%${searchTerm.replace(/%/g, "\\%")}%`;
+  query = query.or(
+    [
+      `id::text.ilike.${term}`, // convert UUID to text
+      `comment.ilike.${term}`
+    ].join(",")
+  );
+}
+
 
       const { data, error, count } = await query;
       if(error) throw error;
@@ -174,10 +191,18 @@ const handleDeleteSelected = async () => {
     }
   };
 
-  const filteredProformers = useMemo(()=> {
-    if(!searchTerm.trim()) return proformers;
+  const filteredProformers = useMemo(() => {
+    if (!proformers || proformers.length === 0) return [];
+    if (!searchTerm.trim()) return proformers;
+
     const term = searchTerm.toLowerCase();
-    return proformers.filter(p=>p.id.toString().includes(term) || (p.comment?.toLowerCase().includes(term)) || (p.customer_name?.toLowerCase().includes(term)) || (p.seller_name?.toLowerCase().includes(term)));
+
+    return proformers.filter(p =>
+      (p.id?.toString().toLowerCase().includes(term)) ||
+      (p.comment?.toLowerCase().includes(term)) ||
+      (p.customer_name?.toLowerCase().includes(term)) ||
+      (p.seller_name?.toLowerCase().includes(term))
+    );
   }, [proformers, searchTerm]);
 
   const handleStatusUpdate = async (id) => {
@@ -211,6 +236,8 @@ const handleDeleteSelected = async () => {
 
   const totalPages = Math.ceil(totalCount/perPage);
   if(loadingUser) return <p className="p-6">Loading user...</p>;
+
+  
 
   // ---------------------- Summary / Info Card Component ----------------------
 const InfoCard = ({ title, value, valueColor }) => (

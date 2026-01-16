@@ -267,40 +267,63 @@ const MeetingNew = () => {
         </Card>
       </div>
 
-      {/* Pointi za Utekelezaji */}
-      <Card title="Pointi za Utekelezaji">
-        {implementationPoints.map((point, idx) => (
-          <div key={idx} className="flex gap-2 items-center mb-2">
-            <input
-              type="text"
-              placeholder="Maelezo ya utekelezaji"
-              value={point.description}
-              onChange={e => updateImplementationPoint(idx, "description", e.target.value)}
-              className="border border-[#e5e7eb] rounded-xl px-3 py-1 flex-1 focus:ring-2 focus:ring-[#2563EB]"
-            />
-            <select
-              value={point.responsible_id}
-              onChange={e => updateImplementationPoint(idx, "responsible_id", e.target.value)}
-              className="border border-[#e5e7eb] rounded-xl px-3 py-1 focus:ring-2 focus:ring-[#2563EB]"
-            >
-              <option value="">Chagua anayehusika</option>
-              {allUsers.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-            </select>
-            <button
-              onClick={() => removeImplementationPoint(idx)}
-              className="text-red-500 p-1 rounded hover:bg-red-100"
-            >
-              <FaTrash />
-            </button>
-          </div>
+     {/* Pointi za Utekelezaji */}
+<Card title="Pointi za Utekelezaji">
+  {implementationPoints.map((point, idx) => (
+    <div
+      key={idx}
+      className="flex flex-col sm:flex-row gap-2 sm:items-center mb-3"
+    >
+      {/* Maelezo */}
+      <input
+        type="text"
+        placeholder="Maelezo ya utekelezaji"
+        value={point.description}
+        onChange={e =>
+          updateImplementationPoint(idx, "description", e.target.value)
+        }
+        className="border border-[#e5e7eb] rounded-xl px-3 py-2 w-full sm:flex-1
+                   focus:ring-2 focus:ring-[#2563EB]"
+      />
+
+      {/* Anayehusika */}
+      <select
+        value={point.responsible_id}
+        onChange={e =>
+          updateImplementationPoint(idx, "responsible_id", e.target.value)
+        }
+        className="border border-[#e5e7eb] rounded-xl px-3 py-2 w-full sm:w-56
+                   focus:ring-2 focus:ring-[#2563EB]"
+      >
+        <option value="">Chagua anayehusika</option>
+        {allUsers.map(u => (
+          <option key={u.id} value={u.id}>
+            {u.name}
+          </option>
         ))}
-        <button
-          onClick={addImplementationPoint}
-          className="mt-2 px-4 py-1 rounded-xl bg-[#2563EB] text-white flex items-center gap-2 hover:bg-[#1e4fd8]"
-        >
-          <FaPlus /> Ongeza Pointi
-        </button>
-      </Card>
+      </select>
+
+      {/* Ondoa */}
+      <button
+        onClick={() => removeImplementationPoint(idx)}
+        className="text-red-500 p-2 rounded hover:bg-red-100 self-end sm:self-auto"
+      >
+        <FaTrash />
+      </button>
+    </div>
+  ))}
+
+  {/* Ongeza */}
+  <button
+    onClick={addImplementationPoint}
+    className="mt-2 px-4 py-2 rounded-xl bg-[#2563EB] text-white
+               flex items-center justify-center gap-2
+               hover:bg-[#1e4fd8] w-full sm:w-auto"
+  >
+    <FaPlus /> Ongeza Pointi
+  </button>
+</Card>
+
 
       {/* Washiriki */}
       <Card title="Washiriki">

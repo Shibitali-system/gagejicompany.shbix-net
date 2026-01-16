@@ -14,6 +14,8 @@ import {
   FaBarcode,
   FaBalanceScale,
   FaRegFileAlt,
+  FaTools,
+  FaHammer,
 } from "react-icons/fa";
 import { MdLanguage } from "react-icons/md";
 import { motion } from "framer-motion";
@@ -22,7 +24,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const PosHome = () => {
+const HardwareHome = () => {
   const [language, setLanguage] = useState(
     () => localStorage.getItem("language") || "sw"
   );
@@ -34,27 +36,27 @@ const PosHome = () => {
 
   const texts = {
     sw: {
-      brand: "POS SYSTEM",
-      title: "Mfumo wa Mauzo (POS)",
-      welcome: "Karibu kwenye mfumo wa mauzo ya kisasa!",
+      brand: "HARDWARE SYSTEM",
+      title: "Mfumo wa Usimamizi wa Duka la Hardware",
+      welcome: "Karibu kwenye mfumo wa kisasa wa hardware!",
       slogan:
-        "Simamia mauzo, bidhaa, wateja, na ripoti kwa urahisi na haraka.",
+        "Simamia mauzo ya saruji, nondo, misumari, mabomba, rangi na vifaa vyote vya ujenzi kwa urahisi na haraka.",
       register: "Jisajili",
       login: "Ingia",
       aboutTitle: "Kuhusu Mfumo",
       aboutDesc:
-        "POS System ni mfumo wa mauzo unaokusaidia kudhibiti biashara yako — bidhaa, mauzo, wateja, na ripoti zote kwa ufanisi.",
+        "Hardware System ni mfumo wa kusimamia duka la hardware kwa ufanisi — bidhaa, stock, mauzo, wateja na ripoti zote sehemu moja.",
       benefitsTitle: "Faida za Mfumo",
       benefits: [
         {
           icon: <FaShieldAlt />,
-          title: "Usalama",
-          desc: "Taarifa za mauzo na wateja zinahifadhiwa kwa usalama.",
+          title: "Usalama wa Taarifa",
+          desc: "Taarifa za mauzo, stock na wateja zinahifadhiwa kwa usalama mkubwa.",
         },
         {
           icon: <FaClock />,
-          title: "Ufanisi",
-          desc: "Fanya mauzo haraka na rahisi kwa kutumia POS interface ya kisasa.",
+          title: "Ufanisi wa Kazi",
+          desc: "Fanya mauzo haraka bila makosa ya hesabu au stock.",
         },
         {
           icon: <FaCloud />,
@@ -62,36 +64,36 @@ const PosHome = () => {
           desc: "Fikia taarifa zako popote kupitia intaneti.",
         },
       ],
-      testimonialsTitle: "Ushuhuda wa Watumiaji",
+      testimonialsTitle: "Maoni ya Wateja",
       contactTitle: "Wasiliana Nasi",
     },
     en: {
-      brand: "POS SYSTEM",
-      title: "Point of Sale System",
-      welcome: "Welcome to our modern POS platform!",
+      brand: "HARDWARE SYSTEM",
+      title: "Hardware Store Management System",
+      welcome: "Welcome to the modern hardware management platform!",
       slogan:
-        "Easily manage sales, products, customers, and business reports.",
+        "Manage cement, steel, nails, pipes, paints and all building materials easily and fast.",
       register: "Register",
       login: "Login",
       aboutTitle: "About the System",
       aboutDesc:
-        "POS System helps you manage your business efficiently — products, sales, customers, and reports all in one place.",
+        "Hardware System helps you manage your hardware store efficiently — products, stock, sales, customers and reports in one place.",
       benefitsTitle: "System Benefits",
       benefits: [
         {
           icon: <FaShieldAlt />,
-          title: "Security",
-          desc: "Your sales and customer data are safely protected.",
+          title: "Data Security",
+          desc: "Your sales, stock and customer data are fully protected.",
         },
         {
           icon: <FaClock />,
-          title: "Efficiency",
-          desc: "Sell faster and manage your store seamlessly.",
+          title: "High Efficiency",
+          desc: "Sell faster and manage stock accurately.",
         },
         {
           icon: <FaCloud />,
           title: "Online Access",
-          desc: "Access your POS data anywhere, anytime.",
+          desc: "Access your hardware data anywhere, anytime.",
         },
       ],
       testimonialsTitle: "User Testimonials",
@@ -100,6 +102,7 @@ const PosHome = () => {
   };
 
   const t = texts[language];
+
   const heroImages = ["/pos1.jpg", "/pos2.jpg"];
 
   const sliderSettings = {
@@ -115,42 +118,47 @@ const PosHome = () => {
 
   const testimonials = [
     {
-      name: "Neema Traders",
+      name: "Mlimani Hardware",
       feedback:
-        "POS System imerahisisha usimamizi wa mauzo na stock katika duka letu. Ni rahisi na ya haraka!",
+        "Mfumo huu umetusaidia kufuatilia stock ya saruji na nondo bila makosa. Kazi imekuwa rahisi sana!",
     },
     {
-      name: "Kibo Supermarket",
+      name: "City Builders",
       feedback:
-        "Tunaweza kufuatilia mauzo ya kila siku na ripoti za wafanyakazi kwa urahisi. Mfumo bora kabisa!",
+        "Sasa tunaona mauzo ya kila siku na faida kwa urahisi. Mfumo ni mzuri sana kwa hardware.",
     },
   ];
 
   const features = [
     {
-      title: "Sales Management",
+      title: "Usimamizi wa Mauzo",
       icon: <FaCashRegister />,
-      description: "Record and manage all your daily transactions easily.",
+      description: "Rekodi na simamia mauzo yote ya vifaa vya hardware kwa urahisi.",
     },
     {
-      title: "Product Inventory",
+      title: "Stock & Bidhaa",
       icon: <FaBoxes />,
-      description: "Keep track of all stock and restocking activities.",
+      description: "Fuatilia stock ya nondo, saruji, misumari, mabomba na vifaa vingine.",
     },
     {
-      title: "Customer Profiles",
+      title: "Wateja & Wauzaji",
       icon: <FaUsers />,
-      description: "Manage loyal customers and their purchase history.",
+      description: "Hifadhi taarifa za wateja na suppliers wako.",
     },
     {
-      title: "Reports & Insights",
+      title: "Ripoti & Takwimu",
       icon: <FaChartLine />,
-      description: "Analyze your sales and performance through reports.",
+      description: "Pata ripoti za mauzo, faida na matumizi kwa muda halisi.",
     },
     {
-      title: "Barcode & Receipt Printing",
-      icon: <FaBarcode />,
-      description: "Generate receipts and scan items quickly.",
+      title: "Vipimo & Mizani",
+      icon: <FaBalanceScale />,
+      description: "Dhibiti bidhaa za kilo, mita, na vipimo vingine vya ujenzi.",
+    },
+    {
+      title: "Zana & Vifaa",
+      icon: <FaTools />,
+      description: "Simamia zana kama nyundo, mashine, na vifaa vingine vya kazi.",
     },
   ];
 
@@ -334,11 +342,11 @@ const PosHome = () => {
       <footer className="relative z-10 text-center text-sm text-gray-500 py-8 bg-transparent mt-10">
         <div className="text-gray-600">
           © {new Date().getFullYear()}{" "}
-          <span className="font-semibold text-blue-700">POS System</span>. All rights reserved.
+          <span className="font-semibold text-blue-700">Hardware System</span>. All rights reserved.
         </div>
       </footer>
     </div>
   );
 };
 
-export default PosHome;
+export default HardwareHome;

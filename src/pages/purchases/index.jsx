@@ -336,139 +336,150 @@ const SummaryCard = ({ title, value, valueColor }) => (
  return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
     <Toaster position="top-right" />
+
     <div className="max-w-7xl mx-auto space-y-6">
+      {/* Header Card */}
+      <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">
+            Rekodi za Manunuzi - Kutoka kwa wasambazaji
+          </h1>
+          <p className="text-gray-700 text-sm">
+            Angalia vocha zote za manunuzi, tafuta kwa namba ya vocha, changanya kwa
+            tarehe, na simamia rekodi. Watumiaji wa admin wanaweza kufuta au
+            kuongeza manunuzi mapya.
+          </p>
+        </div>
 
-      <div className="w-full">
-        {/* Kadi yenye Kichwa, Maelezo, na Vitendo vya Kichwa */}
-        <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-6 flex flex-col gap-4 items-start">
-          
-          {/* Kichwa na Maelekezo */}
-          <div className="flex flex-col gap-2 w-full">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB]">Rekodi za Manunuzi</h1>
-
-            <p className="text-gray-700 text-sm">
-              Angalia vocha zote za manunuzi, tafuta kwa namba ya vocha, changanya kwa tarehe, na simamia rekodi. 
-              Watumiaji wa admin wanaweza kufuta manunuzi yaliyochaguliwa au kuongeza mapya. 
-              Tumia vitendo ili kuangalia au kurudisha manunuzi.
-            </p>
-          </div>
-
-          {/* Vitendo vya Kichwa – upande wa kushoto */}
-          <div className="flex flex-wrap gap-2 w-full">
-            {/* Futa Yaliyote Yaliyochaguliwa – ADMIN PEKEE */}
-            {user?.role === "admin" && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <button
-                    disabled={selectedPurchases.length === 0}
-                    className={`px-4 py-2 rounded-xl flex items-center gap-2
-                    ${selectedPurchases.length === 0
+        <div className="flex flex-wrap gap-2">
+          {user?.role === "admin" && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  disabled={selectedPurchases.length === 0}
+                  className={`px-4 py-2 rounded-xl flex items-center gap-2
+                  ${
+                    selectedPurchases.length === 0
                       ? "bg-red-300 cursor-not-allowed"
                       : "bg-[#2563EB] hover:bg-red-700 text-white"
-                    }`}
+                  }`}
+                >
+                  <FaTrash /> Futa Zilizochaguliwa
+                  {selectedPurchases.length > 0 && (
+                    <span className="bg-white text-[#2563EB] px-2 py-0.5 rounded-lg text-xs font-semibold">
+                      {selectedPurchases.length}
+                    </span>
+                  )}
+                </button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent className="rounded-2xl">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2 text-[#2563EB]">
+                    <FaTrash /> Thibitisha Kufuta
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Unakaribia kufuta manunuzi {selectedPurchases.length}. Hatua
+                    hii haiwezi kubadilishwa.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="rounded-xl">
+                    Ghairi
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteSelected}
+                    className="bg-[#2563EB] text-white rounded-xl hover:bg-red-700"
                   >
-                    <FaTrash /> Futa Yaliyote Yaliyochaguliwa
-                    {selectedPurchases.length > 0 && (
-                      <span className="bg-white text-[#2563EB] px-2 py-0.5 rounded-lg text-xs font-semibold">
-                        {selectedPurchases.length}
-                      </span>
-                    )}
-                  </button>
-                </AlertDialogTrigger>
+                    Ndio, Futa
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
 
-                <AlertDialogContent className="rounded-2xl">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="text-[#2563EB] flex items-center gap-2">
-                      <FaTrash /> Thibitisha Kufutwa
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Futa kabisa manunuzi {selectedPurchases.length}? Hatua hii haiwezi kubadilishwa.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
+          <Link
+            to="new"
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
+          >
+            <FaPlus /> Manunuzi Mapya
+          </Link>
 
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-xl">
-                      Ghairi
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={handleDeleteSelected}
-                      className="bg-[#2563EB] text-white rounded-xl hover:bg-red-700"
-                    >
-                      Ndio, Futa
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-
-            <Link
-              to="new"
-              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
-            >
-              <FaPlus /> Manunuzi Mpya
-            </Link>
-
-            <button
-              onClick={exportToExcel}
-              className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
-            >
-              <FaFileExcel /> Hamisha Excel
-            </button>
-          </div>
+          <button
+            onClick={exportToExcel}
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-red-700 flex items-center gap-2"
+          >
+            <FaFileExcel /> Hamisha Excel
+          </button>
         </div>
       </div>
 
-      {/* Vichujio */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[12px] shadow p-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        <div className="flex flex-wrap gap-2 mb-2 sm:mb-0">
-          {["today", "week", "month", "year"].map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilterType(f)}
-              className={`px-3 py-1 rounded-xl ${
-                filterType === f ? "bg-[#2563EB] text-white" : "bg-white border"
-              }`}
-            >
-              {f === "today" ? "Leo" : f === "week" ? "Wiki Hii" : f === "month" ? "Mwezi Huu" : "Mwaka Huu"}
-            </button>
-          ))}
-        </div>
+     {/* Filters */}
+<div className="bg-white border rounded-[12px] shadow p-4 flex flex-col gap-4">
 
-        <div className="flex gap-2 flex-wrap items-center">
-          <input
-            type="date"
-            value={customFrom}
-            onChange={(e) => {
-              setCustomFrom(e.target.value);
-              setFilterType("custom");
-            }}
-            className="border px-2 py-1 rounded"
-          />
-          <span>hadi</span>
-          <input
-            type="date"
-            value={customTo}
-            onChange={(e) => {
-              setCustomTo(e.target.value);
-              setFilterType("custom");
-            }}
-            className="border px-2 py-1 rounded"
-          />
-        </div>
+  {/* Filter buttons */}
+<div className="flex flex-wrap gap-2">
+  {["today", "week", "month", "year"].map((f) => (
+    <button
+      key={f}
+      onClick={() => setFilterType(f)}
+      className={`px-4 py-2 rounded-xl text-sm ${
+        filterType === f
+          ? "bg-[#2563EB] text-white"
+          : "bg-white border"
+      }`}
+    >
+      {f === "today"
+        ? "Leo"
+        : f === "week"
+        ? "Wiki Hii"
+        : f === "month"
+        ? "Mwezi Huu"
+        : "Mwaka Huu"}
+    </button>
+  ))}
+</div>
 
-        <div className="flex items-center w-full sm:w-1/3">
-          <FaSearch className="text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="Tafuta kwa namba ya vocha..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-          />
-        </div>
-      </div>
 
-      {/* Jedwali la Manunuzi */}
+  {/* Date range */}
+  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
+    <input
+      type="date"
+      value={customFrom}
+      onChange={(e) => {
+        setCustomFrom(e.target.value);
+        setFilterType("custom");
+      }}
+      className="border px-3 py-2 rounded w-full sm:w-auto"
+    />
+    <span className="hidden sm:block">hadi</span>
+    <input
+      type="date"
+      value={customTo}
+      onChange={(e) => {
+        setCustomTo(e.target.value);
+        setFilterType("custom");
+      }}
+      className="border px-3 py-2 rounded w-full sm:w-auto"
+    />
+  </div>
+
+  {/* Search */}
+  <div className="flex items-center w-full">
+    <FaSearch className="text-gray-400 mr-2" />
+    <input
+      type="text"
+      placeholder="Tafuta kwa namba ya vocha..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-full border rounded-xl px-3 py-2 focus:ring-2 focus:ring-[#2563EB]"
+    />
+  </div>
+
+</div>
+
+      {/* Table */}
       {loading ? (
         <p className="text-gray-600">Inapakia manunuzi...</p>
       ) : purchases.length === 0 ? (
@@ -476,7 +487,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
       ) : (
         <div className="overflow-x-auto bg-white rounded-[12px] shadow">
           <table className="min-w-full text-sm">
-            <thead className="bg-[#2563EB] text-white text-xs uppercase tracking-wider">
+            <thead className="bg-[#2563EB] text-white text-xs uppercase">
               <tr>
                 {user?.role === "admin" && (
                   <th className="px-2 py-2 text-center">
@@ -488,9 +499,9 @@ const SummaryCard = ({ title, value, valueColor }) => (
                   </th>
                 )}
                 <th className="px-2 py-2">Vocha #</th>
-                <th className="px-2 py-2">Msuppliers</th>
+                <th className="px-2 py-2">Msambazaji</th>
                 <th className="px-2 py-2">Aliyeingiza</th>
-                <th className="px-2 py-2">Jumla ya Kiasi</th>
+                <th className="px-2 py-2">Jumla</th>
                 <th className="px-2 py-2">Tarehe</th>
                 <th className="px-2 py-2 text-center">Vitendo</th>
               </tr>
@@ -508,7 +519,6 @@ const SummaryCard = ({ title, value, valueColor }) => (
                       />
                     </td>
                   )}
-
                   <td className="px-2 py-2">{p.invoice_number}</td>
                   <td className="px-2 py-2">{p.suppliers?.name || "-"}</td>
                   <td className="px-2 py-2">{p.created_by_name || "-"}</td>
@@ -516,20 +526,20 @@ const SummaryCard = ({ title, value, valueColor }) => (
                     {(p.total_amount ?? p.total_price ?? 0).toLocaleString()}
                   </td>
                   <td className="px-2 py-2">
-                    {p.created_at ? new Date(p.created_at).toLocaleString() : p.date || "-"}
+                    {p.created_at
+                      ? new Date(p.created_at).toLocaleString()
+                      : p.date || "-"}
                   </td>
-
-                  <td className="px-2 py-2 text-center flex flex-col sm:flex-row justify-center gap-2">
+                  <td className="px-2 py-2 flex gap-2 justify-center">
                     <Link
                       to={`${p.id}`}
-                      className="text-blue-600 hover:underline flex items-center gap-1"
+                      className="text-blue-600 flex items-center gap-1"
                     >
                       <FaEye /> Angalia
                     </Link>
-
                     <Link
                       to={`returns?id=${p.id}`}
-                      className="text-red-600 hover:underline flex items-center gap-1"
+                      className="text-red-600 flex items-center gap-1"
                     >
                       <FaUndo /> Rudisha
                     </Link>
@@ -548,4 +558,4 @@ const SummaryCard = ({ title, value, valueColor }) => (
 };
 
 export default PurchasesIndex;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

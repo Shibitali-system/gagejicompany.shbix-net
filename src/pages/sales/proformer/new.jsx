@@ -2,8 +2,11 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../../../supabaseClient";
 import { sendNotification } from "../../utils/sendNotification";
+import { useNotification } from '../../../hooks/useNotification'; // adjust path kama ni tofauti
 import { FaPlus, FaTimes, FaSearch, FaUserPlus, FaUserSlash, FaArrowLeft } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { DateTime } from "luxon"; // optional library kwa timezone
+
 
 const NewProformer = () => {
   const navigate = useNavigate();
@@ -23,8 +26,10 @@ const NewProformer = () => {
   const [sellerInfo, setSellerInfo] = useState(null);
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [newCustomerData, setNewCustomerData] = useState({ name: "", email: "", phone: "", address: "", type: "hospital" });
-  const [proformerDateTime, setProformerDateTime] = useState(new Date().toISOString().slice(0, 16));
-
+  const [proformerDateTime, setProformerDateTime] = useState(
+  DateTime.now().setZone("Africa/Nairobi").toFormat("yyyy-MM-dd'T'HH:mm")
+);
+  const notify = useNotification();
   // --- Fetch seller info ---
   useEffect(() => {
     const fetchSellerInfo = async () => {
@@ -242,15 +247,28 @@ const NewProformer = () => {
   // --- Submit Proformer with notifications ---
 const handleSubmit = async (e) => {
   e.preventDefault();
-  if (!selectedCustomer) return toast.error("Please select or create a customer");
-  if (selectedProducts.length === 0) return toast.error("Please select at least one product");
-  if (!sellerInfo) return toast.error("Seller info not loaded");
+
+  if (!selectedCustomer)
+    return toast.error("Please select or create a customer");
+
+  if (selectedProducts.length === 0)
+    return toast.error("Please select at least one product");
+
+  if (!sellerInfo)
+    return toast.error("Seller info not loaded");
 
   for (const p of selectedProducts)
-    if (p.quantity > p.stock) return toast.error(`Stock insufficient for ${p.name}`);
+    if (p.quantity > p.stock)
+      return toast.error(`Stock insufficient for ${p.name}`);
 
   setLoading(true);
+
   try {
+    // 🔐 Get access token for Edge Function
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+    if (!accessToken) throw new Error("User not authenticated");
+
     // 1️⃣ Insert proformer
     const { data: proformerData, error: proformerError } = await supabase
       .from("proformer")
@@ -263,9 +281,10 @@ const handleSubmit = async (e) => {
           office_name: sellerInfo.office_name,
           total_amount: grandTotal,
           discount_type: discountType,
-          discount_value: discountType === "total" ? totalDiscount : productDiscountTotal,
+          discount_value:
+            discountType === "total" ? totalDiscount : productDiscountTotal,
           comment,
-          created_at: new Date(proformerDateTime).toISOString(),
+          created_at: proformerDateTime,
         },
       ])
       .select()
@@ -285,34 +304,46 @@ const handleSubmit = async (e) => {
     const { error: itemsError } = await supabase
       .from("proformer_items")
       .insert(itemsData);
+
     if (itemsError) throw itemsError;
 
-    // 3️⃣ Send notifications
-    const productList = selectedProducts.map(p => `${p.quantity} x ${p.name}`).join(", ");
+    // 3️⃣ Send push notification via Edge Function
+    const productList = selectedProducts
+      .map((p) => `${p.quantity} x ${p.name}`)
+      .join(", ");
 
-    await sendNotification({
-      auth_user_id: sellerInfo.id,
-      office_id: sellerInfo.office_id,
-      title: "New Proformer Recorded",
-      message: `${sellerInfo.name} recorded a new proformer for ${selectedCustomer.name}: ${productList}`,
-      link: "/pharmacy/dashboard/proformers", // link to proformers page
-      type: "both", // in-app + push
-    });
-
-    // 4️⃣ Browser notification
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        new Notification("New Proformer Recorded", {
-          body: `${sellerInfo.name} recorded a new proformer for ${selectedCustomer.name}`,
-        });
-      } else if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
+    try {
+      await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/quick-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`, // JWT ya user
+          },
+          body: JSON.stringify({
+            auth_user_id: sellerInfo.id,
+            office_id: sellerInfo.office_id,
+            title: "New Proformer Recorded",
+            message: `${sellerInfo.name} recorded a new proformer for ${selectedCustomer.name}: ${productList}`,
+            url: "/pharmacy/dashboard/proformers",
+          }),
+        }
+      );
+    } catch (pushErr) {
+      console.warn("🔕 Push notification failed:", pushErr);
     }
 
-    toast.success("Proformer recorded successfully 🎉");
+    // 4️⃣ Local / PWA notification
+    notify("New Proformer Recorded", {
+      body: `${sellerInfo.name} recorded a new proformer for ${selectedCustomer.name}`,
+      icon: "/pwa-192.png",
+      badge: "/badge-72.png",
+    });
 
-    // Reset form
+    toast.success("✅ Proformer recorded successfully!");
+
+    // 5️⃣ Reset form & UI state
     setSelectedCustomer(null);
     setCustomerSearch("");
     setSelectedProducts([]);
@@ -324,12 +355,13 @@ const handleSubmit = async (e) => {
     setProformerDateTime(new Date().toISOString().slice(0, 16));
 
   } catch (err) {
-    toast.error("Failed to record proformer: " + err.message);
+    toast.error("❌ Failed to record proformer: " + err.message);
     console.error(err);
   } finally {
     setLoading(false);
   }
 };
+
 
 // ---------------------- Summary Card Component ----------------------
 const SummaryCard = ({ title, value, valueColor }) => (

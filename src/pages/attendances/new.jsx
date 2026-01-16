@@ -314,7 +314,7 @@ const NewAttendance = () => {
             </button>
 
             <Link
-              to="/attendances"
+              to="../attendances"
               className="bg-gray-300 px-5 py-2 rounded-xl hover:bg-gray-400 flex items-center gap-2"
             >
               <FaTimes />

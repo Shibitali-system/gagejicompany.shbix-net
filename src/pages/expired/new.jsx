@@ -168,78 +168,97 @@ const EnterExpiredProducts = () => {
   const handleExpiryDateChange = (id, date) => setSelectedProducts(selectedProducts.map(p=>p.id===id ? {...p, expired_date: date} : p));
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedProducts.length) return toast.error("Select at least one product");
-    if (!sellerInfo) return toast.error("Seller info not loaded");
+  e.preventDefault();
 
-    setLoading(true);
+  if (!selectedProducts.length)
+    return toast.error("Select at least one product");
+  if (!sellerInfo)
+    return toast.error("Seller info not loaded");
 
-    try {
-      const expiredData = selectedProducts.map(p => ({
-        product_id: p.id,
-        quantity: p.quantity,
-        expired_date: p.expired_date || new Date().toISOString().slice(0, 10),
-        office_id: sellerInfo.office_id,
-        office_name: sellerInfo.office_name,
-        entered_by: sellerInfo.id
-      }));
+  setLoading(true);
 
-      // 1️⃣ Insert expired products
-      const { error: insertError } = await supabase
-        .from("expired_products")
-        .insert(expiredData);
+  try {
+    // 🔐 Get access token for Edge Function
+    const { data: sessionData } = await supabase.auth.getSession();
+    const accessToken = sessionData?.session?.access_token;
+    if (!accessToken) throw new Error("User not authenticated");
 
-      if (insertError) throw insertError;
+    const expiredData = selectedProducts.map((p) => ({
+      product_id: p.id,
+      quantity: p.quantity,
+      expired_date: p.expired_date || new Date().toISOString().slice(0, 10),
+      office_id: sellerInfo.office_id,
+      office_name: sellerInfo.office_name,
+      entered_by: sellerInfo.id,
+    }));
 
-      // 2️⃣ Update stock
-      for (let p of selectedProducts) {
-        const newStock = (p.stock || 0) - (p.quantity || 0);
-        const { error: updateError } = await supabase
-          .from("products")
-          .update({ stock: newStock < 0 ? 0 : newStock })
-          .eq("id", p.id);
-        if (updateError) console.error(`Failed to update stock for ${p.name}:`, updateError);
-      }
+    // 1️⃣ Insert expired products
+    const { error: insertError } = await supabase
+      .from("expired_products")
+      .insert(expiredData);
+    if (insertError) throw insertError;
 
-      // 🌟 3️⃣ SEND NOTIFICATION (IN-APP + PUSH)
-      await sendNotification({
-        auth_user_id: sellerInfo.id,
-        office_id: sellerInfo.office_id,
-        title: "Expired Products Recorded",
-        message: `${selectedProducts.length} expired products were recorded by ${sellerInfo.name}.`,
-        link: "/pharmacy/dashboard/expired",
-        type: "both" // in-app + push
-      });
-
-      // Browser notification (optional)
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("Expired Products Recorded", {
-          body: `${selectedProducts.length} expired products recorded by ${sellerInfo.name}`,
-        });
-      } else if ("Notification" in window && Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-
-      toast.success("Expired products saved ✔ Notifications sent!");
-
-      // Clear selected products
-      setSelectedProducts([]);
-
-      // Update local products UI
-      const updatedProducts = products.map(p => {
-        const selected = selectedProducts.find(sp => sp.id === p.id);
-        if (selected) return { ...p, stock: (p.stock || 0) - selected.quantity };
-        return p;
-      });
-      setProducts(updatedProducts);
-
-    } catch (err) {
-      toast.error("Failed to record expired products: " + err.message);
-      console.error(err);
-    } finally {
-      setLoading(false);
+    // 2️⃣ Update stock
+    for (let p of selectedProducts) {
+      const newStock = (p.stock || 0) - (p.quantity || 0);
+      const { error: updateError } = await supabase
+        .from("products")
+        .update({ stock: newStock < 0 ? 0 : newStock })
+        .eq("id", p.id);
+      if (updateError)
+        console.error(`Failed to update stock for ${p.name}:`, updateError);
     }
-  };
+
+    // 🌟 3️⃣ SEND PUSH NOTIFICATION via Edge Function
+    try {
+      await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/quick-handler",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`, // JWT ya user
+          },
+          body: JSON.stringify({
+            auth_user_id: sellerInfo.id,
+            office_id: sellerInfo.office_id,
+            title: "Expired Products Recorded",
+            message: `${selectedProducts.length} expired products were recorded by ${sellerInfo.name}.`,
+            url: "/dashboard/expired",
+          }),
+        }
+      );
+    } catch (pushErr) {
+      console.warn("🔕 Push notification failed:", pushErr);
+    }
+
+    // 4️⃣ Local / PWA notification
+    notify("Expired Products Recorded", {
+      body: `${selectedProducts.length} expired products recorded by ${sellerInfo.name}`,
+      icon: "/pwa-192.png",
+      badge: "/badge-72.png",
+    });
+
+    toast.success("✅ Expired products saved ✔ Notifications sent!");
+
+    // 5️⃣ Clear selected products
+    setSelectedProducts([]);
+
+    // 6️⃣ Update local products UI
+    const updatedProducts = products.map((p) => {
+      const selected = selectedProducts.find((sp) => sp.id === p.id);
+      if (selected) return { ...p, stock: (p.stock || 0) - selected.quantity };
+      return p;
+    });
+    setProducts(updatedProducts);
+
+  } catch (err) {
+    toast.error("❌ Failed to record expired products: " + err.message);
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
  return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6">

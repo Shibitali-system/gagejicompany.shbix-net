@@ -200,7 +200,7 @@ const Dashboard = () => {
 return (
   <div className="min-h-full p-4 sm:p-6 space-y-6 relative">
 
-    {/* Inline animation style (page hii tu) */}
+    {/* Inline animation style (ukurasa huu tu) */}
     <style>{`
       @keyframes gradient-x {
         0% { background-position: 0% 50%; }
@@ -214,19 +214,19 @@ return (
       }
     `}</style>
 
-    {/* Expired / Pending Modal */}
+    {/* Modal: Muda wa Usajili Umekwisha / Malipo Bado */}
     {showExpiredModal && subscription && (
       <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
         <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 max-w-md w-full text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-[#2563EB]">
             {subscription.usagedays <= 0
-              ? "Your subscription has expired!"
-              : "Payment Pending!"}
+              ? "Usajili wako umeisha!"
+              : "Malipo Bado!"}
           </h2>
           <p className="mb-6 text-gray-700 text-sm sm:text-base">
             {subscription.usagedays <= 0
-              ? "Please renew your subscription to continue using the system."
-              : "Please complete your payment to activate your subscription."}
+              ? "Tafadhali fanya upya usajili wako ili uendelee kutumia mfumo."
+              : "Tafadhali kamilisha malipo ili kuhuisha usajili wako."}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
@@ -235,83 +235,87 @@ return (
               rel="noopener noreferrer"
               className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
-              Contact Admin
+              Wasiliana na Msimamizi
             </a>
             <button
               onClick={handleMakePayment}
               className="bg-[#2563EB] text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
-              Make Payment
+              Fanya Malipo
             </button>
           </div>
         </div>
       </div>
     )}
 
-    {/* Dashboard Header */}
+    {/* Kichwa cha Dashibodi */}
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 relative">
 
       <div className="flex-1">
         <h2 className="text-xl sm:text-2xl text-[#2563EB] flex items-center gap-2 flex-wrap">
           <FaUser className="text-[#2563EB]" />
-          Welcome, <span className="font-semibold">{userInfo?.customer_name || "User"}</span>
+          Karibu, <span className="font-semibold">{userInfo?.customer_name || "Mtumiaji"}</span>
         </h2>
         <h1 className="text-2xl sm:text-3xl font-bold text-[#2563EB] mt-1">
-          Dashboard Overview - {userInfo?.office_name || "Office"}
+          Muhtasari wa Dashibodi – {userInfo?.office_name || "Ofisi"}
         </h1>
       </div>
 
-      {/* Subscription Card */}
+      {/* Kadi ya Usajili */}
       {subscription && (
         <div className="relative w-full sm:w-auto max-w-xs rounded-xl p-4 sm:p-6 flex flex-col items-center bg-gray-100 text-[#2563EB] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]">
 
-         {/* Floating Install App Button */}
-<button
-  onClick={() => navigate("/dashboard/install/installinstructions")}
-  className="
-    fixed bottom-6 right-6 z-50
-    px-6 py-4
-    text-sm sm:text-base font-extrabold
-    rounded-full
-    text-black
-    bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500
-    shadow-[0_0_25px_rgba(250,204,21,0.9)]
-    animate-pulse
-    hover:scale-110
-    transition-all duration-300
-    focus:outline-none
-  "
->
-  ✨ Install App
-</button>
+          {/* Kitufe cha Kuweka App */}
+          <button
+            onClick={() => navigate("/dashboard/install/installinstructions")}
+            className="
+              fixed bottom-6 right-6 z-50
+              px-6 py-4
+              text-sm sm:text-base font-extrabold
+              rounded-full
+              text-black
+              bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500
+              shadow-[0_0_25px_rgba(250,204,21,0.9)]
+              animate-pulse
+              hover:scale-110
+              transition-all duration-300
+              focus:outline-none
+            "
+          >
+            ✨ Install App
+          </button>
 
-
-
-
-          <p className="text-sm font-bold">Subscription Days Remaining</p>
-          <p className="text-2xl sm:text-3xl font-bold">{subscription.usagedays}</p>
-          <p className={`mt-1 text-sm font-semibold ${
-            subscription.status === "completed" ? "text-green-600" : "text-red-600"
-          }`}>
-            Status: {subscription.status}
+          <p className="text-sm font-bold">Siku Zilizobaki za Matumizi</p>
+          <p className="text-2xl sm:text-3xl font-bold">
+            {subscription.usagedays}
+          </p>
+          <p
+            className={`mt-1 text-sm font-semibold ${
+              subscription.status === "completed"
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            Hali: {subscription.status === "completed" ? "Imekamilika" : "Haijakamilika"}
           </p>
         </div>
       )}
     </div>
 
-    {/* Summary Cards Grid */}
+    {/* Kadi za Muhtasari */}
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 text-sm">
-      <SummaryCard title="Total Sales" value={totals.totalSales.toLocaleString()} />
-      <SummaryCard title="Purchase Cost (Sold)" value={totals.totalPurchaseForSales.toLocaleString()} />
-      <SummaryCard title="Total Expenses" value={totals.totalExpenses.toLocaleString()} />
-      <SummaryCard title="Profit" value={totals.profit.toLocaleString()} />
-      <SummaryCard title="Total Purchases" value={totals.totalPurchases.toLocaleString()} />
-      <SummaryCard title="Low Stock Items" value={totals.lowStockCount} />
-      <SummaryCard title="Overdue Billing" value={totals.overdueCount} />
+      <SummaryCard title="Jumla ya Mauzo" value={totals.totalSales.toLocaleString()} />
+      <SummaryCard title="Gharama ya Manunuzi (Yaliyouzwa)" value={totals.totalPurchaseForSales.toLocaleString()} />
+      <SummaryCard title="Jumla ya Matumizi" value={totals.totalExpenses.toLocaleString()} />
+      <SummaryCard title="Faida" value={totals.profit.toLocaleString()} />
+      <SummaryCard title="Jumla ya Manunuzi" value={totals.totalPurchases.toLocaleString()} />
+      <SummaryCard title="Bidhaa Zenye Stoo Ndogo" value={totals.lowStockCount} />
+      <SummaryCard title="Madai Yaliyochelewa" value={totals.overdueCount} />
     </div>
 
   </div>
 );
+
 
 
 };

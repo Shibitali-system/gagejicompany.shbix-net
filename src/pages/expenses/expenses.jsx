@@ -118,7 +118,7 @@ const handleCreateRequest = async () => {
       office_id: userInfo.office_id,
       office_name: userInfo.office_name,
       amount: parseFloat(newRequestData.amount),
-      status: "pending", // default status
+      status: "Pending", // default status
     };
 
     // 1️⃣ Insert into database
@@ -130,26 +130,7 @@ const handleCreateRequest = async () => {
 
     if (error) throw error;
 
-    // 2️⃣ Send in-app + push notification
-    await sendNotification({
-      auth_user_id: userInfo.id,
-      office_id: userInfo.office_id,
-      title: "New Expense Request",
-      message: `${userInfo.name} submitted a new expense request: ${newRequestData.name} (${newRequestData.amount})`,
-      link: "/pharmacy/dashboard/requests", // link to requests page
-      type: "both", // in-app + push
-    });
-
-    // 3️⃣ Browser notification
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        new Notification("New Expense Request", {
-          body: `${userInfo.name} submitted a new expense request: ${newRequestData.name} (${newRequestData.amount})`,
-        });
-      } else if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-    }
+    
 
     toast.success("Expense request submitted successfully");
     setNewRequestData(initialRequestData);

@@ -139,103 +139,120 @@ const ExpiredProductsIndex = () => {
   useEffect(() => {
     if (!user) return;
     fetchExpiredProducts();
-  }, [user, searchTerm, filterType, customFrom, customTo]);
+  }, [user, filterType, customFrom, customTo]);
 
   const fetchExpiredProducts = async () => {
+  try {
     setLoading(true);
     setError(null);
-    try {
-      // Determine date range
-      let fromDate, toDate;
-      const now = new Date();
-      switch (filterType) {
-        case "today":
-          fromDate = new Date(now.setHours(0, 0, 0, 0));
-          toDate = new Date(now.setHours(23, 59, 59, 999));
-          break;
-        case "week":
-        default:
-          const day = now.getDay();
-          const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-          fromDate = new Date(now.setDate(diff));
+
+    // --- DATE FILTERS ---
+    let fromDate = null;
+    let toDate = null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    switch (filterType) {
+      case "today":
+        fromDate = new Date(today);
+        toDate = new Date(today);
+        toDate.setHours(23, 59, 59, 999);
+        break;
+      case "week":
+        // Start of week = Monday
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - today.getDay() + 1);
+        monday.setHours(0, 0, 0, 0);
+        fromDate = monday;
+
+        const sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        sunday.setHours(23, 59, 59, 999);
+        toDate = sunday;
+        break;
+      case "month":
+        fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        toDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        toDate.setHours(23, 59, 59, 999);
+        break;
+      case "year":
+        fromDate = new Date(today.getFullYear(), 0, 1);
+        toDate = new Date(today.getFullYear(), 11, 31);
+        toDate.setHours(23, 59, 59, 999);
+        break;
+      case "custom":
+        if (customFrom && customTo) {
+          fromDate = new Date(customFrom);
           fromDate.setHours(0, 0, 0, 0);
-          toDate = new Date();
-          break;
-        case "month":
-          fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          toDate = new Date();
-          break;
-        case "year":
-          fromDate = new Date(now.getFullYear(), 0, 1);
-          toDate = new Date();
-          break;
-        case "custom":
-          if (customFrom && customTo) {
-            fromDate = new Date(customFrom);
-            toDate = new Date(customTo);
-          }
-          break;
-      }
-
-      // Fetch data in batches of 1000
-      let allData = [];
-      const limit = 1000;
-      let from = 0;
-      let hasMore = true;
-
-      while (hasMore) {
-        let query = supabase
-          .from("expired_products")
-          .select("*")
-          .order("expired_date", { ascending: false })
-          .range(from, from + limit - 1);
-
-        if (searchTerm.trim()) {
-          query = query.or(`product_id.ilike.%${searchTerm}%,office_name.ilike.%${searchTerm}%,entered_by.ilike.%${searchTerm}%`);
+          toDate = new Date(customTo);
+          toDate.setHours(23, 59, 59, 999);
         }
-        if (fromDate && toDate) {
-          query = query.gte("expired_date", fromDate.toISOString()).lte("expired_date", toDate.toISOString());
-        }
-
-        const { data, error } = await query;
-        if (error) throw error;
-
-        allData = allData.concat(data || []);
-        from += limit;
-        hasMore = data && data.length === limit;
-      }
-
-      // Map product names
-      const productIds = [...new Set(allData.map(p => p.product_id))];
-      let productMap = {};
-      if (productIds.length > 0) {
-        const { data: products } = await supabase.from("products").select("id, name").in("id", productIds);
-        productMap = Object.fromEntries(products.map(p => [p.id, p.name]));
-      }
-
-      // Map entered_by names
-      const userIds = [...new Set(allData.map(p => p.entered_by))];
-      let userMap = {};
-      if (userIds.length > 0) {
-        const { data: users } = await supabase.from("systems_users").select("id, customer_name").in("id", userIds);
-        userMap = Object.fromEntries(users.map(u => [u.id, u.customer_name]));
-      }
-
-      const finalData = allData.map(p => ({
-        ...p,
-        product_name: productMap[p.product_id] || p.product_id,
-        entered_by_name: userMap[p.entered_by] || p.entered_by,
-      }));
-
-      setExpiredProducts(finalData);
-
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch expired products: " + err.message);
-    } finally {
-      setLoading(false);
+        break;
+      default:
+        break;
     }
-  };
+
+    // --- FETCH EXPIRED PRODUCTS ---
+    let query = supabase
+      .from("expired_products")
+      .select("*")
+      .eq("office_id", user.office_id); // filter by office_id
+
+    if (fromDate && toDate) {
+      // ⚡ USE created_at for filters
+      query = query.gte("created_at", fromDate.toISOString())
+                   .lte("created_at", toDate.toISOString());
+    }
+
+    const { data: expiredData, error: expiredError } = await query;
+    if (expiredError) throw expiredError;
+    if (!expiredData || expiredData.length === 0) {
+      setExpiredProducts([]);
+      return;
+    }
+
+    // --- BUILD ID LISTS ---
+    const productIds = [...new Set(expiredData.map(e => e.product_id))];
+    const userIds = [...new Set(expiredData.map(e => e.entered_by))];
+
+    // --- FETCH PRODUCTS ---
+    const { data: productsData } = await supabase
+      .from("products")
+      .select("id, name")
+      .in("id", productIds);
+    const productMap = new Map(productsData.map(p => [p.id, p.name]));
+
+    // --- FETCH USERS ---
+    const { data: systemUsers } = await supabase
+      .from("systems_users")
+      .select("id, customer_name")
+      .in("id", userIds);
+    const { data: employees } = await supabase
+      .from("employees")
+      .select("id, name")
+      .in("id", userIds);
+
+    const userMap = new Map();
+    systemUsers?.forEach(u => userMap.set(u.id, u.customer_name));
+    employees?.forEach(e => userMap.set(e.id, e.name));
+
+    // --- FINAL DATA ---
+    const finalData = expiredData.map(p => ({
+      ...p,
+      product_name: productMap.get(p.product_id) || p.product_id,
+      entered_by_name: userMap.get(p.entered_by) || p.entered_by,
+      office_name: p.office_name
+    }));
+
+    setExpiredProducts(finalData);
+
+  } catch (err) {
+    console.error(err);
+    setError("Failed to load data");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Filtered
   const filteredProducts = useMemo(() => {

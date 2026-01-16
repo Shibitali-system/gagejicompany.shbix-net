@@ -3,49 +3,61 @@ import { supabase } from "../../supabaseClient";
 import { Toaster, toast } from "react-hot-toast";
 import { Leaf, CreditCard, Loader2 } from "lucide-react";
 
+// ---------------- Card Components ----------------
 const FormCard = ({ title, children }) => (
-  <div className="
-    bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
-    flex flex-col gap-3 transition-all duration-200
-    hover:bg-[#fdfdfd] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    font-sans w-full
-  ">
-    <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">
-      {title}
-    </p>
+  <div className="bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4 flex flex-col gap-3 transition-all duration-200 hover:bg-[#fdfdfd] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] font-sans w-full">
+    {title && <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>}
     <div className="w-full">{children}</div>
   </div>
 );
 
 const CustomCard = ({ title, children }) => (
-  <div className="
-    bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
-    flex flex-col gap-2 transition-all duration-200
-    hover:bg-[#fdfdfd] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-    font-sans w-full
-  ">
-    {title && (
-      <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-1">
-        {title}
-      </p>
-    )}
+  <div className="bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4 flex flex-col gap-2 transition-all duration-200 hover:bg-[#fdfdfd] shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] font-sans w-full">
+    {title && <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-1">{title}</p>}
     <div className="w-full">{children}</div>
   </div>
 );
 
-const packages = [
+// ---------------- Packages ----------------
+const mainPackages = [
   { label: "Month - 7,000 TZS", value: 7000, days: 30 },
-  { label: "3 Months - 20,000 TZS", value: 20000, days: 90 },
-  { label: "6 Months - 40,000 TZS", value: 40000, days: 180 },
-  { label: "Year - 80,000 TZS", value: 80000, days: 360 },
+  { label: "3 Months - 19,000 TZS", value: 19000, days: 90 },
+  { label: "6 Months - 36,000 TZS", value: 36000, days: 180 },
+  { label: "Year - 70,000 TZS", value: 70000, days: 360 },
 ];
 
-export default function SubscriptionPayment() {
-  const [selectedPackage, setSelectedPackage] = useState(packages[0]);
-  const [sellerInfo, setSellerInfo] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+const branchPackages = [
+  { label: "Month - 4,000 TZS", value: 4000, days: 30 },
+  { label: "3 Months - 11,000 TZS", value: 11000, days: 90 },
+  { label: "6 Months - 20,000 TZS", value: 20000, days: 180 },
+  { label: "Year - 38,000 TZS", value: 38000, days: 360 },
+];
 
-  // --------------------- Fetch seller info ---------------------
+// ---------------- Validation Functions ----------------
+const validateEmail = (email) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email.length >= 6 && email.length <= 50;
+const validatePhone = (phone) => /^[0-9]{8,15}$/.test(phone); // digits only
+const validateName = (name) => /^[A-Za-z0-9 ]{1,50}$/.test(name);
+const validateAddress = (addr) => /^[A-Za-z0-9 ,;.#$\\/()_-]{4,50}$/.test(addr);
+const validateCityStateCountry = (text) => /^[A-Za-z0-9 ]{2,50}$/.test(text);
+const validatePinCode = (pin) => /^[A-Za-z0-9]{4,8}$/.test(pin);
+const validateAmount = (amt) => /^\d+(\.\d{2})?$/.test(amt); // 2 decimals
+const validateOrderId = (id) => /^[A-Za-z0-9]{1,20}$/.test(id);
+
+// ---------------- Main Component ----------------
+export default function SubscriptionPayment() {
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [sellerInfo, setSellerInfo] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+  const [userPhone, setUserPhone] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState(null);
+
+  // Determine if this seller is a branch
+  const isBranch = sellerInfo?.office_id?.includes("-BRANCH-");
+  const availablePackages = isBranch ? branchPackages : mainPackages;
+
+  // ---------------- Fetch Seller Info ----------------
   useEffect(() => {
     const fetchSellerInfo = async () => {
       try {
@@ -53,13 +65,17 @@ export default function SubscriptionPayment() {
         const userId = authData?.user?.id;
         if (!userId) return;
 
-        let { data: systemUser } = await supabase
+        setUserEmail(authData?.user?.email || null);
+
+        // Check if user is system user
+        const { data: systemUser } = await supabase
           .from("systems_users")
           .select("*")
           .eq("auth_user_id", userId)
           .maybeSingle();
 
         if (systemUser) {
+          setUserPhone(systemUser.customer_phone || null);
           return setSellerInfo({
             id: systemUser.id,
             name: systemUser.customer_name,
@@ -68,7 +84,8 @@ export default function SubscriptionPayment() {
           });
         }
 
-        let { data: employeeUser } = await supabase
+        // Check if user is employee
+        const { data: employeeUser } = await supabase
           .from("employees")
           .select("*")
           .eq("auth_user_id", userId)
@@ -81,6 +98,7 @@ export default function SubscriptionPayment() {
             .eq("office_id", employeeUser.office_id)
             .maybeSingle();
 
+          setUserPhone(employeeUser.phone || null);
           return setSellerInfo({
             id: employeeUser.id,
             name: employeeUser.name,
@@ -93,162 +111,205 @@ export default function SubscriptionPayment() {
         console.error(err);
       }
     };
-
     fetchSellerInfo();
   }, []);
 
-// inside SubscriptionPayment component
-const handleAirPayPayment = async () => {
-  if (!sellerInfo) {
-    toast.error("Seller info not found. Please login again.");
-    return;
-  }
+  // ---------------- Set Initial Package ----------------
+  useEffect(() => {
+    if (!sellerInfo) return;
+    const isBranchUser = sellerInfo.office_id.includes("-BRANCH-");
+    setSelectedPackage(isBranchUser ? branchPackages[0] : mainPackages[0]);
+  }, [sellerInfo]);
 
-  setIsProcessing(true);
+  // ---------------- Normalize Phone ----------------
+  const normalizePhoneForAirPay = (phone) => {
+    if (!phone) return "";
+    let p = phone.toString().trim();
+    if (p.startsWith("+")) p = p.slice(1);
+    if (p.startsWith("255")) p = p.slice(3);
+    if (p.startsWith("0")) p = p.slice(1);
+    return p;
+  };
 
-  try {
-    // create subscription record first (you already do this)
-    const now = new Date().toISOString();
-    const { data: subscriptionRecord, error: insertError } = await supabase
-      .from("subscriptions")
-      .insert([
-        {
-          office_id: sellerInfo.office_id,
-          office_name: sellerInfo.office_name,
-          created_by: sellerInfo.name,
-          package_label: selectedPackage.label,
-          amount: selectedPackage.value,
-          package_days: selectedPackage.days,
-          status: "pending",
-          created_at: now,
-        },
-      ])
-      .select()
-      .single();
-
-    if (insertError) throw insertError;
-
-    // Call your server to create AirPay order and return HTML page
-    const resp = await fetch("http://localhost:4000/api/airpay/create-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        orderid: `SUB-${subscriptionRecord.id}`, // or subscriptionRecord.id
-        amount: selectedPackage.value,
-        buyer_firstname: sellerInfo.name,
-        buyer_lastname: "", // optional
-        buyer_email: "test@example.com", // replace with real email if available
-        buyer_phone: "000000000",
-        currency_code: "834",
-        iso_currency: "tzs",
-      }),
-    });
-
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error || "Failed to create AirPay order");
+  // ---------------- Handle Payment ----------------
+  const handleAirPayPayment = async () => {
+    if (!sellerInfo) {
+      toast.error("Seller info not found. Please login again.");
+      return;
     }
 
-    // The server returns an HTML string that auto-posts to AirPay.
-    const html = await resp.text();
+    const firstName = sellerInfo.name.split(" ")[0] || "First";
+    const lastName = sellerInfo.name.split(" ")[1] || "Last";
+    const phoneForAirPay = normalizePhoneForAirPay(userPhone);
 
-    // Open a new window and write the HTML into it (this triggers the auto-submit redirect)
-    const win = window.open("", "_blank");
-    if (!win) throw new Error("Popup blocked. Please allow popups for this site.");
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
+    // Validate
+    if (
+      !validateEmail(userEmail) ||
+      !validatePhone(phoneForAirPay) ||
+      !validateName(firstName) ||
+      !validateName(lastName)
+    ) {
+      toast.error("Invalid user info. Check email, phone (start with 255) or name.");
+      return;
+    }
 
-    // Optionally: you can poll your backend to check transaction status, or handle callback on your server.
+    setIsProcessing(true);
 
-  } catch (err) {
-    toast.error("Payment failed: " + (err.message || err.toString()));
-    console.error(err);
-  } finally {
-    setIsProcessing(false);
-  }
-};
+    try {
+      const now = new Date().toISOString();
 
+      // Insert pending subscription
+      const { data: subscriptionRecord, error: insertError } = await supabase
+        .from("subscriptions")
+        .insert([
+          {
+            office_id: sellerInfo.office_id,
+            office_name: sellerInfo.office_name,
+            created_by: sellerInfo.name,
+            package_label: selectedPackage.label,
+            amount: selectedPackage.value,
+            package_days: selectedPackage.days,
+            status: "pending",
+            created_at: now,
+          },
+        ])
+        .select()
+        .single();
 
+      if (insertError) throw insertError;
 
+      // Prepare AirPay URL
+      const params = new URLSearchParams({
+        buyerEmail: userEmail,
+        buyerPhone: phoneForAirPay,
+        buyerFirstName: firstName,
+        buyerLastName: lastName,
+        buyerAddress: "N/A",
+        buyerCity: "Dar es Salaam",
+        buyerState: "Dar es Salaam",
+        buyerCountry: "Tanzania",
+        buyerPinCode: "123456",
+        orderid: `SUB-${subscriptionRecord.id}`,
+        amount: selectedPackage.value.toFixed(2),
+        customvar: "Live AirPay Payment",
+        txnsubtype: 1000,
+        wallet: 1,
+        currency: 834,
+        isocurrency: "TZS",
+      });
 
- return (
-  <main className="min-h-screen bg-gradient-to-br from-green-50 to-green-200 flex items-center justify-center py-14 px-4">
-    <Toaster position="top-center" />
+      const airpayWindow = window.open(
+        `https://airpay-gateway.onrender.com/txn?${params.toString()}`,
+        "_blank"
+      );
 
-    <section className="w-full max-w-xl bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-green-100 animate-fadeIn space-y-6">
+      if (!airpayWindow) throw new Error("Popup blocked! Please allow popups.");
 
-      {/* Kichwa */}
-      <CustomCard>
-        <div className="text-center">
-          <Leaf className="mx-auto h-12 w-12 text-[#2563EB]" />
-          <h1 className="text-4xl font-extrabold text-[#2563EB] mt-3">
-            Malipo ya Usajili
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Chagua kifurushi na maliza malipo yako kwa usalama. Kidokezo: Chagua kifurushi kinachokufaa zaidi.
+      toast.success("AirPay checkout opened! Complete payment in the new window.");
+    } catch (err) {
+      toast.error("Failed to initiate AirPay payment: " + (err.message || err.toString()));
+      console.error(err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // ---------------- Render ----------------
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-green-50 to-green-200 flex items-center justify-center py-14 px-4">
+      <Toaster position="top-center" />
+
+      <section className="w-full max-w-xl bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-green-100 animate-fadeIn space-y-6">
+
+        {/* Header Card */}
+        <CustomCard>
+          <div className="text-center">
+            <Leaf className="mx-auto h-12 w-12 text-[#2563EB]" />
+            <h1 className="text-4xl font-extrabold text-[#2563EB] mt-3">Subscription Payment</h1>
+            <p className="text-gray-600 mt-2">
+              Select a package and complete your payment securely.
+            </p>
+          </div>
+        </CustomCard>
+
+        {/* Package Selection */}
+        <FormCard title="Choose Package">
+          <p className="text-gray-500 text-sm mb-2">
+            Tip: You can upgrade or downgrade your package anytime.
           </p>
-        </div>
-      </CustomCard>
+          <select
+            className="border border-[#2563EB] rounded-lg p-3 w-full mb-4 bg-white shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
+            value={selectedPackage?.value || ""}
+            onChange={(e) =>
+              setSelectedPackage(
+                availablePackages.find((p) => p.value === +e.target.value)
+              )
+            }
+          >
+            {availablePackages.map((pkg) => (
+              <option key={pkg.value} value={pkg.value}>
+                {pkg.label}
+              </option>
+            ))}
+          </select>
+        </FormCard>
 
-      {/* Uchaguzi wa Kifurushi */}
-      <FormCard title="Chagua Kifurushi">
-        <p className="text-gray-500 text-sm mb-2">
-          Kidokezo: Unaweza kuongeza au kupunguza kifurushi wakati wowote.
-        </p>
-        <select
-          className="border border-[#2563EB] rounded-lg p-3 w-full mb-4 bg-white shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none"
-          value={selectedPackage.value}
-          onChange={(e) =>
-            setSelectedPackage(packages.find((p) => p.value === +e.target.value))
-          }
-        >
-          {packages.map((pkg) => (
-            <option key={pkg.value} value={pkg.value}>
-              {pkg.label}
-            </option>
-          ))}
-        </select>
-      </FormCard>
+        {/* Amount Display */}
+        {selectedPackage && (
+          <FormCard title="Amount to Pay">
+            <div className="p-4 bg-white border border-[#2563EB] rounded-xl text-[#2563EB] font-bold text-center shadow-sm text-2xl">
+              {selectedPackage.value.toFixed(2)} TZS
+            </div>
+          </FormCard>
+        )}
 
-      {/* Sanduku la Kiasi */}
-      <FormCard title="Kiasi cha Kulipwa">
-        <p className="text-gray-500 text-sm mb-2">
-          Kidokezo: Hakikisha una fedha za kutosha kabla ya kuendelea na malipo.
-        </p>
-        <div className="p-4 bg-white border border-[#2563EB] rounded-xl text-[#2563EB] font-bold text-center shadow-sm text-2xl">
-          {selectedPackage.value} TZS
-        </div>
-      </FormCard>
+        {/* Payment Options */}
+        <FormCard title="Pay With">
+          <div className="flex flex-col gap-4">
+            {[
+              { name: "Airtel Money", logo: "/airtel-logo.png", color: "#E60000", onClick: handleAirPayPayment },
+              { name: "Mixx by Yas", logo: "/mixx-logo.png", color: "#1E40AF", onClick: handleAirPayPayment },
+            ].map((provider, index) => (
+              <label
+                key={index}
+                className="flex items-center gap-4 p-2 border rounded-xl cursor-pointer hover:shadow-md transition-shadow duration-200"
+                style={{
+                  borderColor: selectedPayment === provider.name ? provider.color : "#E5E7EB",
+                }}
+                onClick={() => {
+                  setSelectedPayment(provider.name); // set selected payment
+                  provider.onClick(); // trigger payment
+                }}
+              >
+                {/* Radio */}
+                <input
+                  type="radio"
+                  name="payment"
+                  value={provider.name}
+                  checked={selectedPayment === provider.name}
+                  onChange={() => setSelectedPayment(provider.name)}
+                  className="w-5 h-5 text-blue-600 accent-blue-600"
+                />
 
-      {/* Kitufe cha Malipo */}
-      <FormCard>
-        <button
-          
-          disabled={isProcessing}
-          className="w-full flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-red-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isProcessing ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Inaprocess...
-            </>
-          ) : (
-            <>
-              <CreditCard className="h-5 w-5" />
-              Lipa kwa AirPay
-            </>
-          )}
-        </button>
+                {/* Logo */}
+                <img
+                  src={provider.logo}
+                  alt={provider.name}
+                  className="h-12 w-12 object-contain cursor-pointer"
+                />
 
-        <p className="mt-4 text-center text-gray-500 text-sm">
-          Kidokezo: Usajili wako utaendelea kuwa mpya moja kwa moja baada ya malipo.
-        </p>
-      </FormCard>
+                {/* Provider name */}
+                <span className="text-gray-700 font-semibold">{provider.name}</span>
+              </label>
+            ))}
+          </div>
 
-    </section>
-  </main>
-);
+          <p className="mt-4 text-center text-gray-500 text-sm">
+            Tip: Your subscription will be updated automatically after payment.
+          </p>
+        </FormCard>
 
-
+      </section>
+    </main>
+  );
 }

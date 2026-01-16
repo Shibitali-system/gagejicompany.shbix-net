@@ -5,6 +5,45 @@ import { supabase } from "../../../supabaseClient";
 import { toast, Toaster } from "react-hot-toast";
 import { FaArrowLeft, FaSave, FaTimes } from "react-icons/fa";
 
+// -----------------------------
+  // Card components
+  // -----------------------------
+  const SummaryCard = ({ title, value, valueColor }) => (
+    <div
+      className={`
+        bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
+        flex flex-col items-center justify-center
+        transition-all duration-200
+        hover:bg-[#fdfdfd]
+        transform hover:-translate-y-[2px] active:translate-y-[1px]
+        shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+        font-sans
+        w-full
+      `}
+      style={{ willChange: 'transform' }}
+    >
+      <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
+      <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
+    </div>
+  );
+
+  const CustomCard = ({ title, children }) => (
+    <div className={`
+        bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
+        flex flex-col items-start justify-center
+        transition-all duration-200
+        hover:bg-[#fdfdfd]
+        transform hover:-translate-y-[2px] active:translate-y-[1px]
+        shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+        font-sans
+        w-full
+    `}>
+      {title && <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-2">{title}</p>}
+      {children}
+    </div>
+  );
+
+
 const DEFAULT_DISPLAY_COUNT = 10;
 
 const EditPurchase = () => {
@@ -279,220 +318,203 @@ const EditPurchase = () => {
   if (loading) return <p className="p-6 text-gray-600 animate-pulse">Loading purchase...</p>;
   if (!purchase) return <p className="p-6 text-red-600">Purchase not found.</p>;
 
-  // -----------------------------
-  // Card components
-  // -----------------------------
-  const SummaryCard = ({ title, value, valueColor }) => (
-    <div
-      className={`
-        bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
-        flex flex-col items-center justify-center
-        transition-all duration-200
-        hover:bg-[#fdfdfd]
-        transform hover:-translate-y-[2px] active:translate-y-[1px]
-        shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-        font-sans
-        w-full
-      `}
-      style={{ willChange: 'transform' }}
-    >
-      <p className="text-gray-500 text-[11px] md:text-sm tracking-wide">{title}</p>
-      <p className={`text-xl font-semibold mt-1 ${valueColor || "text-[#ef4444]"}`}>{value}</p>
-    </div>
-  );
-
-  const CustomCard = ({ title, children }) => (
-    <div className={`
-        bg-white border border-[#e5e7eb] rounded-[4px] px-5 py-4
-        flex flex-col items-start justify-center
-        transition-all duration-200
-        hover:bg-[#fdfdfd]
-        transform hover:-translate-y-[2px] active:translate-y-[1px]
-        shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-        font-sans
-        w-full
-    `}>
-      {title && <p className="text-gray-500 text-[11px] md:text-sm tracking-wide mb-2">{title}</p>}
-      {children}
-    </div>
-  );
-
-  // -----------------------------
-  // Render
-  // -----------------------------
+  
   return (
-    <div className="min-h-screen p-4 sm:p-6 bg-gray-50 font-sans">
-      <Toaster position="top-right" />
+  <div className="min-h-screen p-3 sm:p-6 bg-gray-50 font-sans">
+    <Toaster position="top-right" />
 
-      <div className="max-w-4xl mx-auto flex flex-col gap-4">
+    <div className="max-w-4xl mx-auto flex flex-col gap-4">
 
-        {/* HEADER CARD */}
-        <CustomCard>
-          <div className="flex items-center justify-between w-full">
-            <Link
-              to={`../purchases/${id}`}
-              className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline"
-            >
-              <FaArrowLeft /> Back
-            </Link>
-            <h1 className="text-2xl font-bold text-[#2563EB]">Edit Purchase</h1>
+      {/* HEADER CARD */}
+      <CustomCard>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Link
+            to={`../purchases/${id}`}
+            className="flex items-center gap-2 text-[#2563EB] font-semibold hover:underline"
+          >
+            <FaArrowLeft /> Rudi
+          </Link>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#2563EB]">
+            Hariri Manunuzi
+          </h1>
+        </div>
+      </CustomCard>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
+        {/* SUPPLIER & INVOICE */}
+        <CustomCard title="Muuzaji na Ankara">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold mb-1">Muuzaji *</label>
+              <select
+                value={formData.supplier_id}
+                onChange={(e) =>
+                  setFormData({ ...formData, supplier_id: e.target.value })
+                }
+                className="w-full border px-3 py-2 rounded"
+              >
+                <option value="">-- Chagua muuzaji --</option>
+                {suppliers.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold mb-1">Namba ya Ankara *</label>
+              <input
+                type="text"
+                value={formData.invoice_number}
+                onChange={(e) =>
+                  setFormData({ ...formData, invoice_number: e.target.value })
+                }
+                className="w-full border px-3 py-2 rounded"
+              />
+            </div>
           </div>
         </CustomCard>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* PRODUCTS */}
+        <CustomCard title="Chagua Bidhaa">
+          <input
+            type="text"
+            placeholder="Tafuta bidhaa..."
+            value={productSearch}
+            onChange={(e) => setProductSearch(e.target.value)}
+            className="border px-3 py-2 rounded w-full sm:w-64 mb-3"
+          />
 
-          {/* SUPPLIER & INVOICE CARD */}
-          <CustomCard title="Supplier & Invoice">
-            <div className="flex flex-col gap-4 w-full">
-              <div>
-                <label className="block font-semibold mb-1">Supplier *</label>
-                <select
-                  value={formData.supplier_id}
-                  onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
-                  className="w-full border border-gray-300 px-3 py-2 rounded"
-                >
-                  <option value="">-- Select supplier --</option>
-                  {suppliers.map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block font-semibold mb-1">Invoice Number *</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {displayedProducts.map((p) => (
+              <label
+                key={p.id}
+                className="flex gap-3 border rounded px-3 py-2 hover:bg-gray-50"
+              >
                 <input
-                  type="text"
-                  value={formData.invoice_number}
-                  onChange={(e) => setFormData({ ...formData, invoice_number: e.target.value })}
-                  className="w-full border border-gray-300 px-3 py-2 rounded"
+                  type="checkbox"
+                  checked={isProductSelected(p.id)}
+                  onChange={() => toggleSelectProduct(p)}
+                  className="mt-1"
                 />
-              </div>
-            </div>
-          </CustomCard>
-
-          {/* PRODUCTS CARD */}
-          <CustomCard title="Select Products">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={productSearch}
-              onChange={(e) => setProductSearch(e.target.value)}
-              className="border px-2 py-1 rounded w-60 mb-2"
-            />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {displayedProducts.map((p) => (
-                <label
-                  key={p.id}
-                  className="flex items-center gap-3 border rounded px-3 py-2 hover:bg-gray-50"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isProductSelected(p.id)}
-                    onChange={() => toggleSelectProduct(p)}
-                    className="w-4 h-4"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">{p.name}</div>
-                    <div className="text-xs text-gray-500">
-                      Price: {(p.price || p.purchase_price || 0).toLocaleString()} — Stock: {p.stock ?? 0}
-                    </div>
+                <div className="flex-1">
+                  <div className="font-medium">{p.name}</div>
+                  <div className="text-xs text-gray-500">
+                    Bei: {(p.price || p.purchase_price || 0).toLocaleString()} —
+                    Stoo: {p.stock ?? 0}
                   </div>
-                  <div className="text-sm text-gray-600">{p.package_type || ""}</div>
-                </label>
-              ))}
-            </div>
-          </CustomCard>
+                </div>
+                <div className="text-xs text-gray-600">
+                  {p.package_type || ""}
+                </div>
+              </label>
+            ))}
+          </div>
+        </CustomCard>
 
-          {/* SELECTED PRODUCTS TABLE CARD */}
-          {selectedProducts.length > 0 && (
-            <CustomCard title="Selected Products">
-              <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-200">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-4 py-2 border text-left">Product</th>
-                      <th className="px-4 py-2 border">Quantity</th>
-                      <th className="px-4 py-2 border">Unit Price</th>
-                      <th className="px-4 py-2 border">Total</th>
-                      <th className="px-4 py-2 border">Remove</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedProducts.map((s) => (
-                      <tr key={s.id}>
-                        <td className="px-4 py-2 border">{s.name}</td>
-                        <td className="px-4 py-2 border text-center">
-                          <input
-                            type="number"
-                            min="1"
-                            value={s.quantity}
-                            onChange={(e) => updateQuantity(s.id, e.target.value)}
-                            className="w-20 border px-2 py-1 rounded"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border text-center">
-                          <input
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            value={s.unit_price}
-                            onChange={(e) => updateUnitPrice(s.id, e.target.value)}
-                            className="w-28 border px-2 py-1 rounded"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border text-right">
-                          {(s.quantity * s.unit_price).toLocaleString()}
-                        </td>
-                        <td className="px-4 py-2 border text-center">
-                          <button
-                            type="button"
-                            onClick={() => removeSelected(s.id)}
-                            className="text-[#2563EB] hover:underline"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr className="bg-gray-100 font-semibold">
-                      <td className="px-4 py-2 border text-right" colSpan={3}>
-                        Grand Total
+        {/* SELECTED PRODUCTS */}
+        {selectedProducts.length > 0 && (
+          <CustomCard title="Bidhaa Zilizochaguliwa">
+            <div className="overflow-x-auto">
+              <table className="min-w-full border text-sm">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="border px-2 py-2 text-left">Bidhaa</th>
+                    <th className="border px-2 py-2">Kiasi</th>
+                    <th className="border px-2 py-2">Bei ya Kipimo</th>
+                    <th className="border px-2 py-2">Jumla</th>
+                    <th className="border px-2 py-2">Ondoa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedProducts.map((s) => (
+                    <tr key={s.id}>
+                      <td className="border px-2 py-2">{s.name}</td>
+
+                      <td className="border px-2 py-2 text-center">
+                        <input
+                          type="number"
+                          min="1"
+                          value={s.quantity}
+                          onChange={(e) =>
+                            updateQuantity(s.id, e.target.value)
+                          }
+                          className="w-20 border rounded px-2 py-1"
+                        />
                       </td>
-                      <td className="px-4 py-2 border text-right">{totalAmount.toLocaleString()}</td>
-                      <td className="px-4 py-2 border"></td>
+
+                      <td className="border px-2 py-2 text-center">
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={s.unit_price}
+                          onChange={(e) =>
+                            updateUnitPrice(s.id, e.target.value)
+                          }
+                          className="w-24 border rounded px-2 py-1"
+                        />
+                      </td>
+
+                      <td className="border px-2 py-2 text-right">
+                        {(s.quantity * s.unit_price).toLocaleString()}
+                      </td>
+
+                      <td className="border px-2 py-2 text-center">
+                        <button
+                          type="button"
+                          onClick={() => removeSelected(s.id)}
+                          className="text-red-600 hover:underline"
+                        >
+                          Ondoa
+                        </button>
+                      </td>
                     </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </CustomCard>
-          )}
+                  ))}
+                </tbody>
 
-          {/* ACTIONS CARD */}
-          <CustomCard>
-            <div className="flex gap-2 mt-2 flex-wrap">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="bg-[#2563EB] text-white px-6 py-2 rounded-[4px] flex items-center gap-2 hover:bg-red-600 transition-all"
-              >
-                <FaSave /> {submitting ? "Saving..." : "Save Changes"}
-              </button>
-
-              <Link
-                to={`../purchases/${id}`}
-                className="bg-gray-200 px-6 py-2 rounded-[4px] flex items-center gap-2 hover:bg-gray-300 transition-all"
-              >
-                <FaTimes /> Cancel
-              </Link>
+                <tfoot>
+                  <tr className="bg-gray-100 font-semibold">
+                    <td colSpan={3} className="border px-2 py-2 text-right">
+                      Jumla Kuu
+                    </td>
+                    <td className="border px-2 py-2 text-right">
+                      {totalAmount.toLocaleString()}
+                    </td>
+                    <td className="border px-2 py-2"></td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </CustomCard>
+        )}
 
-        </form>
-      </div>
+        {/* ACTIONS */}
+        <CustomCard>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="bg-[#2563EB] text-white px-6 py-2 rounded flex items-center justify-center gap-2 hover:bg-blue-700"
+            >
+              <FaSave />
+              {submitting ? "Inahifadhi..." : "Hifadhi Mabadiliko"}
+            </button>
+
+            <Link
+              to={`../purchases/${id}`}
+              className="bg-gray-200 px-6 py-2 rounded flex items-center justify-center gap-2 hover:bg-gray-300"
+            >
+              <FaTimes /> Ghairi
+            </Link>
+          </div>
+        </CustomCard>
+
+      </form>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default EditPurchase;

@@ -118,13 +118,59 @@ const NewCustomer = () => {
         office_name: sellerInfo.office_name,
       };
 
-      const { error } = await supabase
-        .from("customers")
-        .insert([insertData])
-        .select()
-        .maybeSingle();
+      const { data: createdCustomer, error } = await supabase
+  .from("customers")
+  .insert([insertData])
+  .select()
+  .maybeSingle();
 
-      if (error) throw error;
+if (error) throw error;
+
+// 🔹 SEND WELCOME SMS
+if (createdCustomer?.phone) {
+  let cleanPhone = createdCustomer.phone.replace(/\D/g, "");
+
+  if (cleanPhone.startsWith("0")) {
+    cleanPhone = "255" + cleanPhone.substring(1);
+  }
+
+  if (cleanPhone.startsWith("7") || cleanPhone.startsWith("6")) {
+    cleanPhone = "255" + cleanPhone;
+  }
+
+  const smsText = `Karibu ${createdCustomer.name}!
+Tunafurahi kukuhudumia ${sellerInfo.office_name}.
+Uhakika wa huduma bora, ya haraka na yenye viwango vya juu.
+Asante kwa kutuchagua.`;
+
+  try {
+    const smsRes = await fetch(
+      "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/sms-system",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          office_id: sellerInfo.office_id,
+          to: cleanPhone,
+          text: smsText,
+        }),
+      }
+    );
+
+    const smsData = await smsRes.json();
+
+    if (!smsRes.ok) {
+      console.warn("SMS not sent:", smsData);
+      toast.error("Customer created but SMS not sent (balance may be low)");
+    }
+  } catch (smsErr) {
+    console.error("SMS error:", smsErr);
+    toast.error("Customer created but SMS failed");
+  }
+}
 
       toast.success("Customer created successfully");
       setNewCustomerData(initialCustomerData);

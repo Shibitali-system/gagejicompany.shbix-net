@@ -129,26 +129,7 @@ const handleCreateExpense = async () => {
 
     if (error) throw error;
 
-    // 2️⃣ Send in-app + push notification
-    await sendNotification({
-      auth_user_id: sellerInfo.id,
-      office_id: sellerInfo.office_id,
-      title: "New Expense Recorded",
-      message: `${sellerInfo.name} added a new expense: ${newExpenseData.name} (${newExpenseData.amount})`,
-      link: "/pharmacy/dashboard/expenses", // link to expenses page
-      type: "both", // in-app + push
-    });
-
-    // 3️⃣ Browser notification
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        new Notification("New Expense Recorded", {
-          body: `${sellerInfo.name} added a new expense: ${newExpenseData.name} (${newExpenseData.amount})`,
-        });
-      } else if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-    }
+    
 
     toast.success("Expense created successfully");
     setNewExpenseData(initialExpenseData);

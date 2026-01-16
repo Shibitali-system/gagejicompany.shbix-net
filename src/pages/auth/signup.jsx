@@ -58,37 +58,43 @@ const Signup = () => {
   }, []);
 
   const generateUniqueRegistration = async () => {
-    const year = new Date().getFullYear();
-    let unique = false;
-    let regNo = "";
+  const year = new Date().getFullYear();
+  let unique = false;
+  let regNo = "";
 
-    while (!unique) {
-      const { data: lastUser } = await supabase
-        .from("systems_users")
-        .select("customer_registration_no")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single();
+  while (!unique) {
+    const { data: lastUser } = await supabase
+      .from("systems_users")
+      .select("customer_registration_no")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
 
-      let lastSequential = 0;
-      if (lastUser?.customer_registration_no) {
-        const parts = lastUser.customer_registration_no.split("-");
-        lastSequential = parseInt(parts[2], 10);
-      }
+    let lastSequential = 0;
 
-      const nextSequential = (lastSequential + 1).toString().padStart(8, "0");
-      regNo = `SHIB-${year}-${nextSequential}`;
-
-      const { data } = await supabase
-        .from("systems_users")
-        .select("customer_registration_no")
-        .eq("customer_registration_no", regNo)
-        .single();
-
-      if (!data) unique = true;
+    if (lastUser?.customer_registration_no) {
+      // mfano: SHIB-2025-00000001-MAIN
+      const parts = lastUser.customer_registration_no.split("-");
+      // parts = ["SHIB","2025","00000001","MAIN"]
+      lastSequential = parseInt(parts[2], 10);
     }
-    return regNo;
-  };
+
+    const nextSequential = (lastSequential + 1).toString().padStart(8, "0");
+
+    // 👉 hapa tunaongeza -MAIN
+    regNo = `SHIB-${year}-${nextSequential}-MAIN`;
+
+    const { data } = await supabase
+      .from("systems_users")
+      .select("customer_registration_no")
+      .eq("customer_registration_no", regNo)
+      .single();
+
+    if (!data) unique = true;
+  }
+
+  return regNo;
+};
 
   const handleSignup = async (e) => {
   e.preventDefault();
@@ -143,6 +149,34 @@ const Signup = () => {
     };
     const { error: userError } = await supabase.from("systems_users").insert([userData]);
     if (userError) throw userError;
+
+// 2️⃣.1 Insert default SMS balance (10 SMS)
+const { error: smsBalanceError } = await supabase
+  .from("sms_balances")
+  .insert([{
+    office_id: registrationNo,
+    balance: 10,              
+    updated_at: new Date().toISOString(),
+  }]);
+if (smsBalanceError) throw smsBalanceError;
+
+// 2️⃣.5 Insert default receipt header settings
+const receiptSettingsData = {
+  office_id: registrationNo,
+  office_name: officeName,
+  phone: phone,
+  email: email,
+  address: `${region}, ${country}`,
+  updated_by: fullName,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+const { error: receiptError } = await supabase
+  .from("receipt_settings")
+  .insert([receiptSettingsData]);
+
+if (receiptError) throw receiptError;
 
     // 3️⃣ Insert into subscriptions (trial)
     const { error: subError } = await supabase.from("subscriptions").insert([{
@@ -234,7 +268,7 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
         {/* Logo */}
         <img
           src="https://tbyynfxbcabjjbluxyol.supabase.co/storage/v1/object/public/avatars/pwa-512%20(6).png"
-          alt="Logo ya POS"
+          alt="Logo ya Hardware System"
           className="
             w-20 h-20
             sm:w-24 sm:h-24
@@ -248,10 +282,10 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
         {/* Maandishi */}
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold">
-            Usajili wa Mfumo wa POS
+            Usajili wa Hardware System
           </h1>
           <p className="mt-1 text-sm sm:text-base text-white/90">
-            Tengeneza akaunti yako ya POS kudhibiti mauzo, hesabu za bidhaa, na shughuli za biashara
+            Tengeneza akaunti yako ya Hardware System kusimamia mauzo ya vifaa vya ujenzi, stock, na shughuli za duka lako
           </p>
         </div>
 
@@ -263,13 +297,13 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
       {/* Picha ya Mandhari (hiari) */}
       <img
         src="/pos1.jpg"
-        alt="Mandhari ya POS"
+        alt="Mandhari ya Hardware"
         className="absolute inset-0 w-full h-full object-cover opacity-20 z-0"
       />
 
       <div className="relative z-10 w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-xl backdrop-blur-sm">
         <h2 className="text-2xl font-bold mb-6 text-center text-[#153D82]">
-          Sajili Akaunti ya POS
+          Sajili Akaunti ya Hardware
         </h2>
 
         <form onSubmit={handleSignup} className="space-y-4">
@@ -288,12 +322,12 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
 
           {/* Jina la Duka */}
           <div>
-            <label className="block mb-1 font-medium">Jina la Duka</label>
+            <label className="block mb-1 font-medium">Jina la Hardware</label>
             <input
               type="text"
               value={officeName}
               onChange={(e) => setOfficeName(e.target.value)}
-              placeholder="Duka Langu"
+              placeholder="Hardware Yangu"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#153D82]"
               required
             />
@@ -408,7 +442,7 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
             disabled={loading}
             className="w-full bg-[#FFD700] text-[#153D82] font-semibold py-2 rounded-xl hover:bg-yellow-500 transition disabled:opacity-50"
           >
-            {loading ? "Inasajiliwa..." : "Sajili"}
+            {loading ? "Inasajiliwa..." : "Sajili Hardware"}
           </button>
         </form>
 
@@ -428,11 +462,14 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: 
     {/* Miguu */}
     <footer className="bg-gradient-to-r from-[#153D82] to-[#1E4AA2] text-white py-6 px-6">
       <div className="max-w-7xl mx-auto text-center text-sm">
-        &copy; {new Date().getFullYear()} Mfumo wa POS. Haki zote zimehifadhiwa.
+        &copy; {new Date().getFullYear()} Hardware System. Haki zote zimehifadhiwa.
       </div>
     </footer>
   </div>
 );
+
+
+
 
 
 

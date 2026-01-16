@@ -7,29 +7,30 @@ import * as XLSX from "xlsx";
 import { toast, Toaster } from "react-hot-toast";
 import { FaPlus, FaFileExcel, FaArrowLeft, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 
-// Makundi ya bidhaa kwa biashara za jumla
+// Makundi ya bidhaa kwa duka la Hardware
 const categoryOptions = [
-  "Vinywaji",
-  "Vitafunwa na Vyakula",
-  "Vifaa vya Kielektroniki",
-  "Nguo na Mavazi",
-  "Viatu",
-  "Bidhaa za Urembo na Huduma Binafsi",
-  "Vifaa vya Nyumbani na Jikoni",
-  "Samani",
-  "Vifaa vya Kuandikia na Ofisini",
-  "Vinyago na Michezo",
-  "Michezo na Mazoezi ya Mwili",
-  "Vifaa vya Magari",
-  "Vitabu na Magazeti",
-  "Bidhaa za Wanyama wa Kufugwa",
-  "Bustani na Shughuli za Nje",
-  "Zana na Vifaa vya Ufundi",
-  "Vito na Mapambo",
-  "Afya na Ustawi",
-  "Vifaa vya Usafi",
-  "Nyinginezo"
+  "Saruji na Mchanga",
+  "Nondo na Vyuma",
+  "Mabati na Vifaa vya Kuezekea",
+  "Misumari, Bolts na Screws",
+  "Mbao na Plywood",
+  "Rangi na Vifaa vya Kupaka",
+  "Mabomba na Vifaa vya Maji (Plumbing)",
+  "Vifaa vya Umeme (Electrical)",
+  "Vifaa vya Ujenzi",
+  "Milango na Madirisha",
+  "Vifaa vya Bafu na Choo",
+  "Vifaa vya Jikoni (Hardware)",
+  "Vifaa vya Kupima (Measuring Tools)",
+  "Zana za Mkono (Hand Tools)",
+  "Zana za Umeme (Power Tools)",
+  "Vifaa vya Usalama (Safety Gear)",
+  "Locks, Hinges na Fittings",
+  "Gundi, Silicone na Sealants",
+  "Tiles na Vifaa vya Sakafu",
+  "Nyinginezo (Hardware)"
 ];
+
 
 
 

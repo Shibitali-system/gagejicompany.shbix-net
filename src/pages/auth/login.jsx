@@ -98,7 +98,7 @@ const Login = () => {
     }
   };
 
-  return (
+ return (
   <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-gray-100 font-sans">
     <Toaster position="top-right" />
 
@@ -125,10 +125,10 @@ const Login = () => {
 
         <div className="absolute flex flex-col items-center justify-center text-center px-4 space-y-2">
           <h1 className="text-white text-3xl md:text-4xl font-extrabold drop-shadow-lg">
-            Mfumo wa POS
+            Hardware System
           </h1>
           <p className="text-white text-sm md:text-base drop-shadow-md max-w-xs">
-            Simamia mauzo yako, hesabu za bidhaa, na wateja kwa urahisi na ufanisi kwa kutumia mfumo wetu wa POS wa kisasa.
+            Simamia mauzo ya vifaa vya ujenzi, stock, na wateja kwa urahisi na ufanisi kwa kutumia Hardware System ya kisasa.
           </p>
         </div>
       </div>
@@ -141,11 +141,13 @@ const Login = () => {
         {/* Header Card */}
         <FormCard>
           <h1 className="text-3xl font-extrabold text-center text-[#3360C3]">
-            Ingia Kwenye Mfumo wa POS
+            Ingia Kwenye Hardware System
           </h1>
-          <h2 className="text-xl font-bold text-center text-[#3360C3] mt-2">Karibu Tena</h2>
+          <h2 className="text-xl font-bold text-center text-[#3360C3] mt-2">
+            Karibu Tena
+          </h2>
           <p className="text-center text-gray-600 text-sm mt-2">
-            Ingia ili kuendelea kusimamia mauzo yako, hesabu za bidhaa, na shughuli za biashara.
+            Ingia ili kuendelea kusimamia mauzo ya vifaa vya ujenzi, stock, na shughuli za hardware yako.
           </p>
         </FormCard>
 
@@ -205,7 +207,7 @@ const Login = () => {
 
           <div className="mt-4 flex justify-between text-sm text-[#3360C3]">
             <Link to="/forgot-password" className="hover:underline">Umesahau nenosiri?</Link>
-            <Link to="/signup" className="hover:underline">Jisajili</Link>
+            <Link to="/signup" className="hover:underline">Sajili Hardware</Link>
           </div>
 
           <button
@@ -219,6 +221,7 @@ const Login = () => {
     </div>
   </div>
 );
+
 
 
 

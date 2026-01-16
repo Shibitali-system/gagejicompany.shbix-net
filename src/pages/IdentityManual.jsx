@@ -210,40 +210,40 @@ const StaffIDCardPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Toaster position="top-right" />
+    <div className="min-h-screen flex flex-col lg:flex-row bg-gray-50">
+  <Toaster position="top-right" />
 
-      {/* ID List */}
-      <div className="w-64 p-4 bg-white h-screen overflow-auto border-r">
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={searchTerm}
-          onChange={e => { setSearchTerm(e.target.value); if(!e.target.value) handleSelect(null); }}
-          className="w-full mb-3 p-2 border rounded"
-        />
-        {filteredList.length === 0 ? <div className="text-gray-500 text-sm">No matching records</div> :
-          <ul>
-            {filteredList.map(item => (
-              <li key={item.id} className="mb-1">
-                <button onClick={() => handleSelect(item.id)} className={`w-full text-left p-2 border rounded ${selectedId===item.id?'bg-blue-200':'hover:bg-gray-100'}`}>
-                  <div className="font-medium">{item.staff_name || "Unnamed"}</div>
-                  <div className="text-xs text-gray-500">{item.staff_id}</div>
-                </button>
-              </li>
-            ))}
-          </ul>
-        }
-      </div>
+  {/* ID List */}
+  <div className="w-full lg:w-64 p-4 bg-white overflow-auto border-b lg:border-b-0 lg:border-r">
+    <input
+      type="text"
+      placeholder="Search by name"
+      value={searchTerm}
+      onChange={e => { setSearchTerm(e.target.value); if(!e.target.value) handleSelect(null); }}
+      className="w-full mb-3 p-2 border rounded"
+    />
+    {filteredList.length === 0 ? <div className="text-gray-500 text-sm">No matching records</div> :
+      <ul>
+        {filteredList.map(item => (
+          <li key={item.id} className="mb-1">
+            <button onClick={() => handleSelect(item.id)} className={`w-full text-left p-2 border rounded ${selectedId===item.id?'bg-blue-200':'hover:bg-gray-100'}`}>
+              <div className="font-medium">{item.staff_name || "Unnamed"}</div>
+              <div className="text-xs text-gray-500">{item.staff_id}</div>
+            </button>
+          </li>
+        ))}
+      </ul>
+    }
+  </div>
 
-      {/* Card Preview */}
-      <div className="flex flex-col flex-1 items-center justify-center gap-4 p-4 overflow-auto">
-        <IDCard data={data} colors={colors} showBack={false} />
-        <IDCard data={data} colors={colors} showBack={true} />
-      </div>
+  {/* Card Preview */}
+  <div className="flex flex-col items-center justify-center gap-4 p-4 overflow-auto w-full lg:flex-1">
+    <IDCard data={data} colors={colors} showBack={false} />
+    <IDCard data={data} colors={colors} showBack={true} />
+  </div>
 
       {/* Sidebar */}
-      <div className="w-72 p-4 bg-gray-100 space-y-4 h-screen overflow-auto flex flex-col">
+      <div className="w-full lg:w-72 p-4 bg-gray-100 space-y-4 overflow-auto flex flex-col">
         {["organization_name","staff_name","staff_id","department","position","validity","authorizer","contact_info"].map(key => (
           <div key={key}>
             <label className="block mb-1 text-sm font-medium">{key.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())}</label>

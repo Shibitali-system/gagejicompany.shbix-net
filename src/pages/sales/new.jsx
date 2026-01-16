@@ -5,6 +5,7 @@ import { useNotification } from '../../hooks/useNotification'; // adjust path ka
 import { sendNotification } from "../utils/sendNotification";
 import { FaPlus, FaTimes, FaSearch, FaUserPlus, FaUserSlash, FaArrowLeft } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { DateTime } from "luxon"; // optional library kwa timezone
 
 // ---------------------- Summary Card Component ----------------------
 const SummaryCard = ({ title, value, valueColor }) => (
@@ -44,7 +45,9 @@ const NewSale = () => {
   const [sellerInfo, setSellerInfo] = useState(null); 
   const [showCustomerForm, setShowCustomerForm] = useState(false);
   const [newCustomerData, setNewCustomerData] = useState({ name: "", email: "", phone: "", address: "", type: "Biashara" });
-  const [saleDateTime, setSaleDateTime] = useState(new Date().toISOString().slice(0,16));
+  const [saleDateTime, setSaleDateTime] = useState(
+  DateTime.now().setZone("Africa/Nairobi").toFormat("yyyy-MM-dd'T'HH:mm")
+);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [paymentStatus, setPaymentStatus] = useState("Paid");
   const [loanAmount, setLoanAmount] = useState(0);
@@ -329,7 +332,7 @@ const handleSubmit = async (e) => {
         paid_amount: paid,
         loan_amount: remainingLoan,
         loan_payment_date: finalLoanPaymentDate,
-        created_at: new Date(saleDateTime).toISOString(),
+        created_at: saleDateTime,
       }])
       .select()
       .maybeSingle();
@@ -391,6 +394,97 @@ const handleSubmit = async (e) => {
 
     toast.success("✅ Sale recorded successfully!");
 
+// --- 6️⃣ Fetch office owner first ---
+    const { data: officeOwner } = await supabase
+      .from("systems_users")
+      .select("id, customer_phone, customer_name, office_name")
+      .eq("office_id", sellerInfo.office_id)
+      .maybeSingle();
+
+    // --- 6a. SMS to customer ---
+    if (selectedCustomer?.phone) {
+      let cleanCustomerPhone = selectedCustomer.phone.replace(/\D/g, "");
+      if (cleanCustomerPhone.startsWith("0") || cleanCustomerPhone.startsWith("7") || cleanCustomerPhone.startsWith("6")) {
+        cleanCustomerPhone = "255" + cleanCustomerPhone.substring(cleanCustomerPhone.startsWith("0") ? 1 : 0);
+      }
+
+      const itemsText = selectedProducts
+        .map(p => `${p.name} x${p.quantity} = ${((p.price * p.quantity) - ((p.discount||0)/100)*(p.price*p.quantity)).toLocaleString()} TZS`)
+        .join("; ");
+
+      const smsTextCustomer = `Karibu ${selectedCustomer.name}!\n` +
+        `Umefanya malipo ofisi ya ${sellerInfo.office_name}.\n` +
+        `Total: ${grandTotal.toLocaleString()} TZS\n` +
+        `Products: ${itemsText}\n` +
+        `Mawasiliano yetu ni ${officeOwner?.customer_phone || "N/A"}. Asanteh!`;
+
+      const smsResCustomer = await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/sms-system",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            office_id: sellerInfo.office_id,
+            to: cleanCustomerPhone,
+            text: smsTextCustomer,
+            reference: `SALE-${saleData.id}`,
+          }),
+        }
+      );
+
+      const smsDataCustomer = await smsResCustomer.json();
+      if (smsResCustomer.ok) {
+        console.log("✅ SMS sent to customer", smsDataCustomer);
+      } else {
+        console.warn("⚠️ Customer SMS failed", smsDataCustomer);
+      }
+    }
+
+    // --- 6b. SMS to office owner ---
+    if (officeOwner?.customer_phone) {
+      let cleanOwnerPhone = officeOwner.customer_phone.replace(/\D/g, "");
+      if (cleanOwnerPhone.startsWith("0") || cleanOwnerPhone.startsWith("7") || cleanOwnerPhone.startsWith("6")) {
+        cleanOwnerPhone = "255" + cleanOwnerPhone.substring(cleanOwnerPhone.startsWith("0") ? 1 : 0);
+      }
+
+      const itemsText = selectedProducts
+        .map(p => `${p.name} x${p.quantity} = ${((p.price * p.quantity) - ((p.discount||0)/100)*(p.price*p.quantity)).toLocaleString()} TZS`)
+        .join("; ");
+
+      const smsTextOwner = `Notification: ${selectedCustomer.name} amefanya malipo.\n` +
+        `Ofisi: ${sellerInfo.office_name}\n` +
+        `Total: ${grandTotal.toLocaleString()} TZS\n` +
+        `Products: ${itemsText}`;
+
+      const smsResOwner = await fetch(
+        "https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/sms-system",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            office_id: sellerInfo.office_id,
+            to: cleanOwnerPhone,
+            text: smsTextOwner,
+            reference: `SALE-${saleData.id}-OWNER`,
+          }),
+        }
+      );
+
+      const smsDataOwner = await smsResOwner.json();
+      if (smsResOwner.ok) {
+        console.log("✅ SMS sent to office owner", smsDataOwner);
+        toast.success("✅ Office owner notified via SMS");
+      } else {
+        console.warn("⚠️ Owner SMS failed", smsDataOwner);
+      }
+    }
+
     // 6️⃣ Reset form & UI
     setSelectedCustomer(null);
     setCustomerSearch("");
@@ -404,7 +498,7 @@ const handleSubmit = async (e) => {
       email: "",
       phone: "",
       address: "",
-      type: "Biashara",
+      type: "pharmacy",
     });
     setSaleDateTime(new Date().toISOString().slice(0, 16));
     setPaymentStatus("Paid");
@@ -419,8 +513,6 @@ const handleSubmit = async (e) => {
     setLoading(false);
   }
 };
-
-
 
   return (
   <div className="min-h-screen bg-gray-50 p-4 sm:p-6 font-sans">

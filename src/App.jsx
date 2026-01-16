@@ -112,17 +112,21 @@ import AttendancesList from './pages/attendances/index';
 import AttendancesNew from './pages/attendances/new';
 import AttendancesDetails from './pages/attendances/[id]';
 
-
+import IdentityManual from './pages/IdentityManual';
 import InstallInstructions from './pages/install/InstallInstructions';
 import InstallComputer from './pages/install/InstallComputer';
 
 // Other pages
 import Reports from './pages/reports';       
 import Deleted from './pages/Deleted';
+import Branch from './pages/branch'; 
 import Notifications from './pages/notifications';
 import Subscription from './pages/subscription';
 import Profile from './pages/profile';
 import Settings from './pages/settings';
+import Debts from './pages/debts';
+import OfficeInfo from "./pages/office-info";
+import Sms from "./pages/sms";
 import Help from './pages/help';
 
 // Simple Auth Guard
@@ -255,16 +259,21 @@ const PharmacyRoutes = () => (
         <Route path="attendances/:id" element={<AttendancesDetails />} />
 
 
-  
+   <Route path="IdentityManual" element={<IdentityManual />} />
    <Route path="install/InstallInstructions" element={<InstallInstructions />} />
    <Route path="install/InstallComputer" element={<InstallComputer />} />          
 
         {/* Other pages */}
         <Route path="reports" element={<Reports />} />
         <Route path="deleted" element={<Deleted />} />
+
         <Route path="notifications" element={<Notifications />} />   
         <Route path="subscription" element={<Subscription />} />
+        <Route path="branch" element={<Branch />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="sms" element={<Sms />} />
+        <Route path="debts" element={<Debts />} />
+        <Route path="office-info" element={<OfficeInfo />} />  
         <Route path="settings" element={<Settings />} />
         <Route path="help" element={<Help />} />
     </Route>

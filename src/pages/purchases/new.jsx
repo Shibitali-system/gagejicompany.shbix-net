@@ -304,28 +304,7 @@ const handleSubmit = async (e) => {
 
     if (itemsError) throw itemsError;
 
-    // 3️⃣ Send notifications
-    const purchaseItemsList = selectedProducts.map(p => `${p.quantity} x ${p.name}`).join(", ");
-
-    await sendNotification({
-      auth_user_id: userInfo.id,
-      office_id: userInfo.office_id,
-      title: "New Purchase Created",
-      message: `${userInfo.name} created a new purchase (${formData.invoice_number}): ${purchaseItemsList}`,
-      link: "/pharmacy/dashboard/purchases", // link to purchases page
-      type: "both", // in-app + push
-    });
-
-    // 4️⃣ Browser notification
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        new Notification("New Purchase Created", {
-          body: `${userInfo.name} created a new purchase (${formData.invoice_number})`,
-        });
-      } else if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-      }
-    }
+   
 
     toast.success("Purchase created successfully!");
     // reset form
@@ -382,7 +361,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
         <div className="bg-white border border-[#e5e7eb] rounded-md shadow p-4 flex flex-col gap-1">
           <h1 className="text-xl sm:text-2xl font-bold text-[#2563EB]">Ongeza Manunuzi Mpya</h1>
           <p className="text-gray-700 text-sm">
-            Jaza supplier, namba ya vocha, na chagua bidhaa. Rekebisha idadi na bei kabla ya kuhifadhi.
+            Jaza supplier, namba ya vocha (Invoice), na chagua bidhaa. Rekebisha idadi na bei kabla ya kuhifadhi.
           </p>
           <Link to="../purchases" className="flex items-center gap-2 text-[#2563EB] hover:underline font-medium mt-1 text-sm">
             <FaArrowLeft /> Rudi kwenye Manunuzi
@@ -408,7 +387,7 @@ const SummaryCard = ({ title, value, valueColor }) => (
           </div>
 
           <div>
-            <label className="block font-medium mb-1 text-sm">Namba ya Vocha *</label>
+            <label className="block font-medium mb-1 text-sm">Namba ya Invoice *</label>
             <input
               type="text"
               value={formData.invoice_number}

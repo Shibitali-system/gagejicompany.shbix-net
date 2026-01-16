@@ -16,6 +16,13 @@ import {
 } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
 import * as XLSX from "xlsx";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 
 import {
   AlertDialog,
@@ -263,134 +270,144 @@ useEffect(() => {
 }, []);
 
 
+// 🔥 Fetch Sales
+useEffect(() => {
+  if (!user?.office_id) return;
+  fetchSales();
+}, [user, searchTerm, filterType, customFrom, customTo]);
 
-  // 🔥 Fetch Sales
-  useEffect(() => {
-    if (!user?.office_id) return;
-    fetchSales();
-  }, [user, searchTerm, filterType, customFrom, customTo]);
+const fetchSales = async () => {
+  if (!user?.office_id) return;
 
-  const fetchSales = async () => {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    try {
-      const now = new Date();
-      let fromDate, toDate;
+  try {
+    let fromDate, toDate;
 
-      switch (filterType) {
-        case "today":
-          fromDate = new Date(now.setHours(0, 0, 0, 0));
-          toDate = new Date(now.setHours(23, 59, 59, 999));
-          break;
-        case "week":
-          const day = now.getDay();
-          const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-          fromDate = new Date(now.setDate(diff));
-          fromDate.setHours(0, 0, 0, 0);
-          toDate = new Date();
-          break;
-        case "month":
-          fromDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          fromDate.setHours(0, 0, 0, 0);
-          toDate = new Date();
-          break;
-        case "year":
-          fromDate = new Date(now.getFullYear(), 0, 1);
-          fromDate.setHours(0, 0, 0, 0);
-          toDate = new Date();
-          break;
-        case "custom":
-          if (customFrom && customTo) {
-            fromDate = new Date(customFrom);
-            fromDate.setHours(0, 0, 0, 0);
-            toDate = new Date(customTo);
-            toDate.setHours(23, 59, 59, 999);
-          }
-          break;
-      }
+    // 🔹 Set date range based on filter, using Tanzania timezone
+    switch (filterType) {
+      case "today":
+        fromDate = dayjs().tz("Africa/Dar_es_Salaam").startOf("day").toISOString();
+        toDate = dayjs().tz("Africa/Dar_es_Salaam").endOf("day").toISOString();
+        break;
 
-      // Base query
-      let salesQuery = supabase
-        .from("sales")
-        .select("*, customer:customer_id(name), sale_items(*)")
-        .order("created_at", { ascending: false });
+      case "week":
+        fromDate = dayjs().tz("Africa/Dar_es_Salaam").startOf("week").toISOString(); // Sunday
+        toDate = dayjs().tz("Africa/Dar_es_Salaam").endOf("day").toISOString();
+        break;
 
-      // 🔐 Access control
-      if (user.role === "admin") {
-        salesQuery = salesQuery.eq("office_id", user.office_id);
-      } else if (user.role === "employee") {
-        if (user.permissions.includes("view_all_sales")) {
-          salesQuery = salesQuery.eq("office_id", user.office_id);
-        } else {
-          salesQuery = salesQuery.eq("seller_id", user.id).eq("office_id", user.office_id);
+      case "month":
+        fromDate = dayjs().tz("Africa/Dar_es_Salaam").startOf("month").toISOString();
+        toDate = dayjs().tz("Africa/Dar_es_Salaam").endOf("day").toISOString();
+        break;
+
+      case "year":
+        fromDate = dayjs().tz("Africa/Dar_es_Salaam").startOf("year").toISOString();
+        toDate = dayjs().tz("Africa/Dar_es_Salaam").endOf("day").toISOString();
+        break;
+
+      case "custom":
+        if (customFrom && customTo) {
+          fromDate = dayjs(customFrom).tz("Africa/Dar_es_Salaam").startOf("day").toISOString();
+          toDate = dayjs(customTo).tz("Africa/Dar_es_Salaam").endOf("day").toISOString();
         }
-      }
-
-      // Date filter
-      if (fromDate && toDate) {
-        salesQuery = salesQuery
-          .gte("created_at", fromDate.toISOString())
-          .lte("created_at", toDate.toISOString());
-      }
-
-      // Search filter
-      if (searchTerm.trim()) {
-        salesQuery = salesQuery.or(`id.ilike.%${searchTerm}%,comment.ilike.%${searchTerm}%`);
-      }
-
-      const { data: salesData, error: salesError } = await salesQuery;
-      if (salesError) throw salesError;
-
-      if (!salesData || salesData.length === 0) {
-        setSales([]);
-        return;
-      }
-
-      // Batch fetch sellers
-      const systemSellerIds = [...new Set(salesData.filter(s => s.seller_type === "system").map(s => s.seller_id))];
-      const employeeSellerIds = [...new Set(salesData.filter(s => s.seller_type === "employee").map(s => s.seller_id))];
-
-      const { data: systemSellers } = await supabase
-        .from("systems_users")
-        .select("id, customer_name")
-        .in("id", systemSellerIds);
-
-      const { data: employeeSellers } = await supabase
-        .from("employees")
-        .select("id, name")
-        .in("id", employeeSellerIds);
-
-      const systemMap = Object.fromEntries(systemSellers?.map(s => [s.id, s.customer_name]) || []);
-      const employeeMap = Object.fromEntries(employeeSellers?.map(e => [e.id, e.name]) || []);
-
-      // Batch fetch products
-      const allProductIds = [...new Set(salesData.flatMap(s => s.sale_items?.map(i => i.product_id) || []))];
-      const { data: products } = await supabase
-        .from("products")
-        .select("id, name, price")
-        .in("id", allProductIds);
-
-      const productMap = Object.fromEntries(products.map(p => [p.id, p]));
-
-      // Final sales array
-      const finalSales = salesData.map(s => ({
-        ...s,
-        seller_name: s.seller_type === "system" ? systemMap[s.seller_id] || "-" :
-                     s.seller_type === "employee" ? employeeMap[s.seller_id] || "-" : "-",
-        customer_name: s.customer?.name || "-",
-        sale_items: s.sale_items?.map(i => ({ ...i, product: productMap[i.product_id] || null })) || [],
-      }));
-
-      setSales(finalSales);
-
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch sales: " + err.message);
-    } finally {
-      setLoading(false);
+        break;
     }
-  };
+
+    // 🔹 Base query
+    let salesQuery = supabase
+      .from("sales")
+      .select("*, customer:customer_id(name), sale_items(*)")
+      .order("created_at", { ascending: false });
+
+    // 🔐 Access control
+    if (user.role === "admin") {
+      salesQuery = salesQuery.eq("office_id", user.office_id);
+    } else if (user.role === "employee") {
+      if (user.permissions.includes("view_all_sales")) {
+        salesQuery = salesQuery.eq("office_id", user.office_id);
+      } else {
+        salesQuery = salesQuery.eq("seller_id", user.id).eq("office_id", user.office_id);
+      }
+    }
+
+    // 🔹 Date filter
+    if (fromDate && toDate) {
+      salesQuery = salesQuery
+        .gte("created_at", fromDate)
+        .lte("created_at", toDate);
+    }
+
+    // 🔹 Search filter (ID or comment)
+    if (searchTerm.trim()) {
+      if (!isNaN(searchTerm)) {
+        // Search by numeric ID
+        salesQuery = salesQuery.or(`id.eq.${Number(searchTerm)},comment.ilike.%${searchTerm}%`);
+      } else {
+        // Search by comment only
+        salesQuery = salesQuery.or(`comment.ilike.%${searchTerm}%`);
+      }
+    }
+
+    const { data: salesData, error: salesError } = await salesQuery;
+    if (salesError) throw salesError;
+
+    if (!salesData || salesData.length === 0) {
+      setSales([]);
+      return;
+    }
+
+    // 🔹 Batch fetch sellers
+    const systemSellerIds = [...new Set(salesData.filter(s => s.seller_type === "system").map(s => s.seller_id))];
+    const employeeSellerIds = [...new Set(salesData.filter(s => s.seller_type === "employee").map(s => s.seller_id))];
+
+    const { data: systemSellers } = await supabase
+      .from("systems_users")
+      .select("id, customer_name")
+      .in("id", systemSellerIds);
+
+    const { data: employeeSellers } = await supabase
+      .from("employees")
+      .select("id, name")
+      .in("id", employeeSellerIds);
+
+    const systemMap = Object.fromEntries(systemSellers?.map(s => [s.id, s.customer_name]) || []);
+    const employeeMap = Object.fromEntries(employeeSellers?.map(e => [e.id, e.name]) || []);
+
+    // 🔹 Batch fetch products
+    const allProductIds = [...new Set(salesData.flatMap(s => s.sale_items?.map(i => i.product_id) || []))];
+    const { data: products } = await supabase
+      .from("products")
+      .select("id, name, price")
+      .in("id", allProductIds);
+
+    const productMap = Object.fromEntries(products.map(p => [p.id, p]));
+
+    // 🔹 Final mapped sales
+    const finalSales = salesData.map(s => ({
+      ...s,
+      seller_name: s.seller_type === "system" ? (systemMap[s.seller_id] || "-") :
+                   s.seller_type === "employee" ? (employeeMap[s.seller_id] || "-") : "-",
+      customer_name: s.customer?.name || "-",
+      sale_items: s.sale_items?.map(i => ({
+        ...i,
+        product: productMap[i.product_id] || { name: "UNKNOWN PRODUCT", price: 0 }
+      })) || [],
+    }));
+
+    console.log("Fetched Sales:", finalSales);
+    setSales(finalSales);
+
+  } catch (err) {
+    console.error("Failed to fetch sales:", err);
+    setError("Failed to fetch sales: " + err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   // Filtered sales for search
   const filteredSales = useMemo(() => {
@@ -429,64 +446,162 @@ const SummaryCard = ({ title, value, valueColor }) => (
   </div>
 );
 
-const exportToPDF = async () => {
-  const officeName = user?.office_name || "UNKNOWN OFFICE";
-
-  const doc = new jsPDF({ orientation: "landscape" });
-
-  // Header
-  doc.setFontSize(16);
-  doc.setTextColor("#2563EB");
-  doc.setFont("helvetica", "bold");
-  doc.text(officeName, doc.internal.pageSize.getWidth()/2, 15, { align: "center" });
-
-  doc.setFontSize(12);
-  doc.setTextColor("#000");
-  doc.setFont("helvetica", "normal");
-  doc.text(`Sales Report (${filterType.charAt(0).toUpperCase() + filterType.slice(1)})`, doc.internal.pageSize.getWidth()/2, 22, { align: "center" });
-
-  const tableColumn = ["Sale ID","Customer","Total (TZS)","Seller","Payment Status","Date","Products (Name xQty Price Disc)"];
-
-  const tableRows = filteredSales.map(sale => [
-    sale.id,
-    sale.customer_name,
-    (sale.total_amount || 0).toLocaleString(),
-    sale.seller_name,
-    sale.payment_status || "Paid",
-    new Date(sale.created_at).toLocaleString(),
-    sale.sale_items?.map(i => `${i.product?.name} x${i.quantity} | TZS ${i.price.toLocaleString()} | Disc: ${i.discount || 0}%`).join("\n")
-  ]);
-
-  // Calculate Grand Total
-  const grandTotal = filteredSales.reduce((sum, sale) => sum + (sale.total_amount || 0), 0);
-
-  doc.autoTable({
-    startY: 30,
-    head: [tableColumn],
-    body: tableRows,
-    styles: { fontSize: 10, cellPadding: 3, overflow: 'linebreak' },
-    headStyles: { fillColor: [37,99,235], textColor: 255, fontStyle: 'bold' },
-    alternateRowStyles: { fillColor: [245,245,245] },
-    columnStyles: { 6: { cellWidth: 120 } },
-    didDrawPage: (data) => {
-      // Optional: page footer per page
-    },
-    foot: [
-      ["", "", grandTotal.toLocaleString(), "", "", "", ""]
-    ],
-    footStyles: { fillColor: [37,99,235], textColor: 255, fontStyle: 'bold' }
-  });
-
-  // Footer / Page number
-  const pageCount = doc.getNumberOfPages();
-  for(let i=1;i<=pageCount;i++){
-    doc.setPage(i);
-    doc.setFontSize(9);
-    doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.getWidth() - 10, doc.internal.pageSize.getHeight() - 10, { align: 'right' });
+const exportToPDF = () => {
+  if (!filteredSales || filteredSales.length === 0) {
+    toast.error("Hakuna data ya ku-export!");
+    return;
   }
 
-  doc.save(`Sales_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+  const doc = new jsPDF("l", "mm", "a4");
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  // ------------------------ PAGE 1: SUMMARY DASHBOARD ------------------------
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, pageWidth, 22, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.text(`${user.office_name || "Office"} - Sales Summary`, 14, 14);
+
+  doc.setFontSize(10);
+  doc.text(`Generated: ${dayjs().format("DD MMM YYYY HH:mm")}`, pageWidth - 75, 14);
+
+  const drawCard = (x, y, w, h, title, value, bgColor) => {
+    doc.setFillColor(...bgColor);
+    doc.roundedRect(x, y, w, h, 3, 3, "F");
+    doc.setTextColor(55, 65, 81);
+    doc.setFontSize(10);
+    doc.text(title, x + 4, y + 8);
+    doc.setTextColor(17, 24, 39);
+    doc.setFontSize(16);
+    doc.text(value.toString(), x + 4, y + 18);
+  };
+
+  // ---------------- COMPUTE SUMMARY ----------------
+  const totalTransactions = filteredSales.length;
+
+  // Jumla ya mauzo (sum of total_amount)
+  const totalSalesAmount = filteredSales.reduce((sum, s) => sum + (s.total_amount || 0), 0);
+
+  // Jumla ya faida (profit = sum of (sale_items price after discount - cost) if cost exists)
+  const totalProfit = filteredSales.reduce((sum, s) => {
+    const profit = s.sale_items?.reduce((acc, item) => {
+      const priceAfterDiscount = item.price - (item.price * (item.discount || 0) / 100);
+      const itemCost = item.cost || 0; // assumes product has cost field
+      return acc + (priceAfterDiscount - itemCost) * item.quantity;
+    }, 0) || 0;
+    return sum + profit;
+  }, 0);
+
+  // Bidhaa zenye stoo chache (stock <=5)
+  const lowStockCount = filteredSales.reduce((sum, s) => {
+    return sum + (s.sale_items?.filter(i => i.product?.stock <= 5).length || 0);
+  }, 0);
+
+  // ---------------- DRAW CARDS ----------------
+  let cardY = 35;
+  const cardW = (pageWidth - 50) / 3;
+  const cardH = 22;
+
+  drawCard(15, cardY, cardW, cardH, "Jumla ya Muamala", totalTransactions, [219, 234, 254]);
+  drawCard(20 + cardW, cardY, cardW, cardH, "Jumla ya Mauzo", `TZS ${totalSalesAmount.toLocaleString()}`, [220, 252, 231]);
+  drawCard(25 + cardW*2, cardY, cardW, cardH, "Jumla ya Faida", `TZS ${totalProfit.toLocaleString()}`, [254, 249, 195]);
+
+  cardY += 30;
+  drawCard(15, cardY, cardW, cardH, "Bidhaa Zenye Stoo Chache", lowStockCount, [254, 203, 203]);
+
+  // Footer Page 1
+  doc.setFontSize(9);
+  doc.setTextColor(107, 114, 128);
+  doc.text("Generated by Wakala Management System", pageWidth/2, pageHeight - 10, { align: "center" });
+
+  // ------------------------ PAGE 2+: DETAILED SALES ------------------------
+  doc.addPage();
+
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, pageWidth, 18, "F");
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(16);
+  doc.text(`${user.office_name || "Office"} - Sales Report`, 14, 12);
+  doc.setFontSize(9);
+  doc.text(`Generated: ${dayjs().format("DD MMM YYYY HH:mm")}`, pageWidth - 70, 12);
+
+  let startY = 25;
+
+  // Group sales by customer
+  const grouped = filteredSales.reduce((acc, sale) => {
+    const key = sale.customer_name || "UNKNOWN";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(sale);
+    return acc;
+  }, {});
+
+  const groupColors = [
+    [243, 244, 246],
+    [219, 234, 254],
+    [220, 252, 231],
+    [254, 249, 195],
+    [254, 226, 226],
+    [237, 233, 254]
+  ];
+
+  Object.entries(grouped).forEach(([customer, sales], gIndex) => {
+    const bgColor = groupColors[gIndex % groupColors.length];
+
+    doc.setFillColor(...bgColor);
+    doc.rect(10, startY - 6, pageWidth - 20, 10, "F");
+    doc.setTextColor(0,0,0);
+    doc.setFontSize(11);
+    doc.text(`Customer: ${customer}`, 14, startY);
+    startY += 6;
+
+    const tableColumns = ["#", "Sale ID", "Total (TZS)", "Seller", "Payment Status", "Date", "Products"];
+    const tableRows = sales.map((s, i) => [
+      i + 1,
+      s.id,
+      (s.total_amount || 0).toLocaleString(),
+      s.seller_name,
+      s.payment_status || "Paid",
+      dayjs(s.created_at).format("DD MMM YYYY HH:mm"),
+      s.sale_items?.map(i => `${i.product?.name} x${i.quantity} | TZS ${i.price.toLocaleString()} | Disc: ${i.discount || 0}%`).join("\n")
+    ]);
+
+    // SUBTOTAL row
+    const totalSales = sales.reduce((sum, s) => sum + (s.total_amount || 0), 0);
+    tableRows.push(["", "SUBTOTAL", totalSales.toLocaleString(), "", "", "", ""]);
+
+    doc.autoTable({
+      startY,
+      head: [tableColumns],
+      body: tableRows,
+      theme: "grid",
+      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [249, 250, 251] },
+      didParseCell: (data) => {
+        if (data.row.index === tableRows.length-1) data.cell.styles.fillColor = [220, 252, 231];
+        if (data.column.index === 2 && data.section === "body") data.cell.styles.textColor = [37, 99, 235];
+        if (data.column.index === 4 && data.section === "body") {
+          const status = data.cell.raw.toLowerCase();
+          if (status.includes("paid")) data.cell.styles.textColor = [22, 163, 74];
+          else if (status.includes("pending")) data.cell.styles.textColor = [202, 138, 4];
+          else data.cell.styles.textColor = [220, 38, 38];
+        }
+      },
+      margin: { left: 10, right: 10 }
+    });
+
+    startY = doc.lastAutoTable.finalY + 12;
+    if (startY > pageHeight - 20) { doc.addPage(); startY = 20; }
+  });
+
+  doc.save(`sales_${dayjs().format("YYYYMMDD_HHmm")}.pdf`);
 };
+
+
+
+
 
 
   // Excel export
@@ -601,12 +716,6 @@ const exportToPDF = async () => {
             <FaFileExcel /> Unda Proformer
           </Link>
 
-          <Link
-            to="loans"
-            className="bg-white text-[#2563EB] border border-[#e5e7eb] rounded-[4px] px-4 py-2 flex items-center gap-2 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)] hover:bg-[#fdfdfd] hover:shadow-md transition-all duration-200 font-sans text-sm"
-          >
-            <FaMoneyBillWave /> Ukaguzi wa Mikopo / Deni
-          </Link>
         </div>
       </div>
 
@@ -626,70 +735,85 @@ const exportToPDF = async () => {
       )}
 
       {/* Kadi ya Vichujio & Utafutaji */}
-      <div className="bg-white border border-[#e5e7eb] rounded-[12px] px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
-                      transition-all duration-200 hover:bg-[#fdfdfd] transform hover:-translate-y-[2px] active:translate-y-[1px]">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+<div className="bg-white border border-[#e5e7eb] rounded-[12px] px-4 sm:px-5 py-4 shadow-[0_1px_0px_0_rgba(0,0,0,0.2)]
+                transition-all duration-200 hover:bg-[#fdfdfd]">
 
-          {/* Vichujio */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              className={`px-3 py-1 rounded-xl border ${filterType === "today" ? "bg-[#2563EB] text-white" : "bg-white"}`}
-              onClick={() => setFilterType("today")}
-            >
-              Leo
-            </button>
-            <button
-              className={`px-3 py-1 rounded-xl border ${filterType === "week" ? "bg-[#2563EB] text-white" : "bg-white"}`}
-              onClick={() => setFilterType("week")}
-            >
-              Wiki Hii
-            </button>
-            <button
-              className={`px-3 py-1 rounded-xl border ${filterType === "month" ? "bg-[#2563EB] text-white" : "bg-white"}`}
-              onClick={() => setFilterType("month")}
-            >
-              Mwezi Huu
-            </button>
-            <button
-              className={`px-3 py-1 rounded-xl border ${filterType === "year" ? "bg-[#2563EB] text-white" : "bg-white"}`}
-              onClick={() => setFilterType("year")}
-            >
-              Mwaka Huu
-            </button>
+  <div className="flex flex-col gap-4">
 
-            <div className="flex items-center gap-2 border rounded-xl px-3 py-1 bg-white">
-              <input
-                type="date"
-                value={customFrom}
-                onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }}
-                className="outline-none text-sm"
-              />
-              <span className="text-gray-400">hadi</span>
-              <input
-                type="date"
-                value={customTo}
-                onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }}
-                className="outline-none text-sm"
-              />
-            </div>
-          </div>
+    {/* Vichujio */}
+    <div className="flex flex-wrap gap-2 overflow-x-auto">
+      <button
+        className={`px-3 py-1 text-sm rounded-xl border whitespace-nowrap
+          ${filterType === "today" ? "bg-[#2563EB] text-white" : "bg-white"}`}
+        onClick={() => setFilterType("today")}
+      >
+        Leo
+      </button>
 
-          {/* Vitendo */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={exportToExcel}
-              className="bg-[#2563EB] text-white px-3 py-1 rounded-xl flex items-center gap-2 shadow-sm whitespace-nowrap hover:bg-[#e03636]"
-            >
-              <FaFileExcel /> Hamisha Excel
-            </button>
-            <button
-              onClick={exportToPDF}
-              className="bg-[#2563EB] text-white px-3 py-1 rounded-xl flex items-center gap-2 shadow-sm whitespace-nowrap hover:bg-[#e03636]"
-            >
-              <FaFilePdf /> Hamisha PDF
-            </button>
-          </div>
-        </div>
+      <button
+        className={`px-3 py-1 text-sm rounded-xl border whitespace-nowrap
+          ${filterType === "week" ? "bg-[#2563EB] text-white" : "bg-white"}`}
+        onClick={() => setFilterType("week")}
+      >
+        Wiki Hii
+      </button>
+
+      <button
+        className={`px-3 py-1 text-sm rounded-xl border whitespace-nowrap
+          ${filterType === "month" ? "bg-[#2563EB] text-white" : "bg-white"}`}
+        onClick={() => setFilterType("month")}
+      >
+        Mwezi Huu
+      </button>
+
+      <button
+        className={`px-3 py-1 text-sm rounded-xl border whitespace-nowrap
+          ${filterType === "year" ? "bg-[#2563EB] text-white" : "bg-white"}`}
+        onClick={() => setFilterType("year")}
+      >
+        Mwaka Huu
+      </button>
+
+      {/* Custom Date */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 border rounded-xl px-3 py-2 bg-white w-full sm:w-auto">
+        <input
+          type="date"
+          value={customFrom}
+          onChange={e => { setCustomFrom(e.target.value); setFilterType("custom"); }}
+          className="outline-none text-sm w-full sm:w-auto"
+        />
+        <span className="text-gray-400 hidden sm:block">hadi</span>
+        <input
+          type="date"
+          value={customTo}
+          onChange={e => { setCustomTo(e.target.value); setFilterType("custom"); }}
+          className="outline-none text-sm w-full sm:w-auto"
+        />
+      </div>
+    </div>
+
+    {/* Vitendo */}
+    <div className="flex flex-col sm:flex-row gap-2">
+      <button
+        onClick={exportToExcel}
+        className="bg-[#2563EB] text-white px-4 py-2 rounded-xl flex justify-center items-center gap-2 shadow-sm
+                   hover:bg-[#1e40af] w-full sm:w-auto"
+      >
+        <FaFileExcel /> Hamisha Excel
+      </button>
+
+      <button
+        onClick={exportToPDF}
+        className="bg-[#2563EB] text-white px-4 py-2 rounded-xl flex justify-center items-center gap-2 shadow-sm
+                   hover:bg-[#1e40af] w-full sm:w-auto"
+      >
+        <FaFilePdf /> Hamisha PDF
+      </button>
+    </div>
+
+  </div>
+
+
 
         {/* Safu ya Utafutaji */}
         <div className="mt-4">

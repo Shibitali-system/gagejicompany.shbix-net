@@ -4,7 +4,7 @@ import { supabase } from "../../supabaseClient";
 import { 
   FaHome, FaBox, FaShoppingCart, FaFileInvoice, FaUsers, FaUser, FaFileAlt, FaPlus, FaBoxOpen, FaList,
   FaFileInvoiceDollar, FaTools, FaHandshake, FaCalendarCheck, FaSignOutAlt, FaBook, FaTrashAlt,
-  FaRegClock, FaBell, FaIdCard, FaBars, FaUserCircle, FaCogs, FaClipboardList, FaQuestionCircle, FaMobileAlt 
+  FaRegClock, FaBell, FaIdCard, FaBars, FaUserCircle, FaBuilding, FaCogs, FaInfoCircle, FaSms, FaClipboardList, FaQuestionCircle, FaMobileAlt 
 } from 'react-icons/fa';
 
 const FormCard = ({ title, children }) => (
@@ -33,22 +33,19 @@ const CustomCard = ({ title, children }) => (
   </div>
 );
 
-const SidebarLink = ({ to, icon, children, isActive, collapsed, onClick }) => (
+/* ===================== SIDEBAR LINK ===================== */
+const SidebarLink = ({ to, icon, label, isActive, collapsed, onClick }) => (
   <Link
     to={to}
     onClick={onClick}
-    className={`
-      group relative flex items-center gap-3 px-4 py-3 rounded-xl
-      text-sm font-medium transition-all duration-300
+    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm transition
       ${collapsed ? "justify-center" : ""}
-      ${isActive ? "bg-white/20 shadow-lg" : "hover:bg-white/10"}
+      ${isActive ? "bg-gray-200 font-medium" : "hover:bg-gray-100"}
+      text-gray-700
     `}
   >
-    {isActive && <span className="absolute left-0 top-2 bottom-2 w-1 rounded-full bg-white" />}
     <span className="text-lg">{icon}</span>
-    <span className={`transition-all duration-300 ${collapsed ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-      {children}
-    </span>
+    {!collapsed && <span className="truncate">{label}</span>}
   </Link>
 );
 
@@ -175,11 +172,16 @@ const PharmacyLayout = ({ children }) => {
 
 const sidebarLinks = [
   { to: "/dashboard", label: "Dashibodi", icon: <FaHome />, key: "dashboard" },
+  { to: "/dashboard/branch", label: "Tawi la Ofisi", icon: <FaBuilding />, key: "branch" },
+  { to: "/dashboard/office-info", label: "Taarifa za Ofisi", icon: <FaInfoCircle />, key: "office-info" },
+  { to: "/dashboard/sms", label: "Bando la SMS", icon: <FaSms />, key: "sms" },
   { to: "/dashboard/products", label: "Bidhaa", icon: <FaBox />, key: "products" },
-  { to: "/dashboard/sales", label: "Mauzo", icon: <FaShoppingCart />, key: "sales" },
-  { to: "/dashboard/purchases", label: "Manunuzi", icon: <FaFileInvoiceDollar />, key: "purchases" },
-  { to: "/dashboard/suppliers", label: "Wasambazaji", icon: <FaHandshake />, key: "suppliers" },
   { to: "/dashboard/customers", label: "Wateja", icon: <FaUser />, key: "customers" },
+  { to: "/dashboard/employees", label: "Wafanyakazi", icon: <FaClipboardList />, key: "employees", adminOnly: true },
+  { to: "/dashboard/sales", label: "Mauzo", icon: <FaShoppingCart />, key: "sales" },
+  { to: "/dashboard/suppliers", label: "Wasambazaji", icon: <FaHandshake />, key: "suppliers" },
+  { to: "/dashboard/purchases", label: "Manunuzi", icon: <FaFileInvoiceDollar />, key: "purchases" },
+  { to: "/dashboard/debts", label: "Madeni", icon: <FaFileInvoiceDollar />, key: "debts" },
   { to: "/dashboard/employees", label: "Wafanyakazi", icon: <FaClipboardList />, key: "employees", adminOnly: true },
   { to: "/dashboard/reports", label: "Ripoti", icon: <FaFileAlt />, key: "reports" },
   { to: "/dashboard/expenses", label: "Matumizi", icon: <FaFileInvoice />, key: "expenses" },
@@ -192,7 +194,7 @@ const sidebarLinks = [
   { to: "/dashboard/notifications", label: "Notifications", icon: <FaBell />, key: "notifications" },
   { to: "/dashboard/identitymanual", label: "Vitambulisho", icon: <FaIdCard />, key: "identitymanual" },
   { to: "/dashboard/settings", label: "Settings", icon: <FaCogs />, key: "settings", adminOnly: true },
-  { to: "/dashboard/subscription", label: "Subscriptions", icon: <FaClipboardList />, key: "subscriptions", adminOnly: true },
+  { to: "/dashboard/subscription", label: "Lipia Mfumo", icon: <FaClipboardList />, key: "subscriptions", adminOnly: true },
   { to: "/dashboard/help", label: "Msaada", icon: <FaQuestionCircle />, key: "help" },
   { to: "/dashboard/install/installinstructions", label: "Install App", icon: <FaMobileAlt />, key: "installinstructions" },
   { to: "/dashboard/profile", label: "Profile", icon: <FaUser />, key: "profile" },
@@ -210,106 +212,100 @@ const sidebarLinks = [
   const displayRole = user?.role === "admin" ? "Admin / Owner" : "Employee";
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans">
-      {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex flex-col h-screen bg-gradient-to-b from-[#2563EB] to-[#3360C3] text-white transition-all duration-300 ${sidebarOpen ? "w-64" : "w-20"}`}>
-        <div className="h-16 flex items-center justify-center bg-white/10 backdrop-blur-md text-center px-2">
-          {sidebarOpen 
-            ? <span className="transition-all duration-300 opacity-100">{user?.officeName}</span>
-            : <span className="text-lg font-bold">{user?.officeName?.substring(0,2)?.toUpperCase()}</span>
-          }
+    <div className="flex h-screen bg-gray-50">
+
+      {/* DESKTOP SIDEBAR */}
+      <aside className={`hidden md:flex flex-col bg-white border-r transition-all ${sidebarOpen ? "w-64" : "w-20"}`}>
+        <div className="h-16 flex items-center justify-center border-b font-semibold truncate">
+          {sidebarOpen ? user?.officeName : user?.officeName?.slice(0,2)}
         </div>
-        <nav className="flex-1 px-2 py-6 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+
+        <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto min-w-0">
           {allowedLinks.map(link => (
             <SidebarLink
               key={link.to}
-              to={link.to}
-              icon={link.icon}
-              isActive={location.pathname.startsWith(link.to)}
+              {...link}
               collapsed={!sidebarOpen}
-            >
-              {link.label}
-            </SidebarLink>
+              isActive={location.pathname.startsWith(link.to)}
+            />
           ))}
         </nav>
-        <div className="py-3 text-center text-xs text-white/60">© 2025 {user?.officeName || ""}</div>
       </aside>
 
-      {/* Mobile Sidebar */}
-      <div className={`fixed inset-0 z-50 md:hidden transition-transform duration-300 ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="absolute inset-0 bg-black/20" onClick={() => setMobileSidebarOpen(false)}></div>
-        <aside className="relative h-full w-64 bg-gradient-to-b from-[#2563EB] to-[#3360C3] text-white flex flex-col shadow-xl">
-          <div className="h-16 flex items-center justify-center bg-white/10 backdrop-blur-md">{user?.officeName || "Loading..."}</div>
-          <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-            {allowedLinks.map(link => (
-              <SidebarLink
-                key={link.to}
-                to={link.to}
-                icon={link.icon}
-                isActive={location.pathname.startsWith(link.to)}
-                collapsed={false}
-                onClick={() => setMobileSidebarOpen(false)}
-              >
-                {link.label}
-              </SidebarLink>
-            ))}
-          </nav>
-          <div className="py-3 text-center text-xs text-white/60">© 2025 {user?.officeName || ""}</div>
-        </aside>
-      </div>
+      {/* MOBILE SIDEBAR */}
+      {mobileSidebarOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/30 z-40 md:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+          <aside className="fixed inset-y-0 left-0 w-64 bg-white z-50 md:hidden flex flex-col min-w-0">
+            <div className="h-16 flex items-center justify-center border-b font-semibold flex-shrink-0 truncate">
+              {user?.officeName || "Office"}
+            </div>
+            <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto min-w-0">
+              {allowedLinks.map(link => (
+                <SidebarLink
+                  key={link.to}
+                  {...link}
+                  isActive={location.pathname.startsWith(link.to)}
+                  onClick={() => setMobileSidebarOpen(false)}
+                />
+              ))}
+            </nav>
+          </aside>
+        </>
+      )}
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-       {/* Header */}
-<header className="sticky top-0 z-50 bg-gradient-to-r from-green-100 to-green-50 shadow-lg rounded-b-xl flex justify-between items-center px-4 md:px-6 py-2 transition-all duration-300">
-  <div className="flex items-center gap-2 md:gap-3">
-    <button
-      className="text-[#2563EB] text-xl md:text-2xl hover:scale-110 transition-transform p-1 rounded-md hover:bg-[#2563EB]/10"
-      onClick={window.innerWidth >= 768 ? toggleSidebar : toggleMobileSidebar}
-    >
-      <FaBars className={`${sidebarOpen ? "rotate-0" : "rotate-90"} transition-transform`} />
-    </button>
-    <span className="font-bold text-[#2563EB] text-base md:text-lg tracking-wide">{user?.officeName || "My Office"}</span>
-  </div>
+      {/* MAIN */}
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        {/* Header */}
+        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 flex justify-between items-center px-4 py-2 md:py-3 min-w-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={window.innerWidth >= 768 ? () => setSidebarOpen(!sidebarOpen) : () => setMobileSidebarOpen(true)}
+              className="p-2 rounded-md hover:bg-gray-100"
+            >
+              <FaBars />
+            </button>
+            <div className="flex flex-col min-w-0">
+              <span className="font-bold text-base truncate">{user?.name || "User"}</span>
+              <span className="text-xs text-gray-500 truncate">
+                {user?.role === "admin" ? "Admin / Owner" : "Employee"} - {user?.officeName || "Office"}
+              </span>
+            </div>
+          </div>
 
-  <div className="flex items-center gap-2 md:gap-4">
-    <div className="relative">
-      <FaBell className="text-[#2563EB] text-xl md:text-2xl cursor-pointer hover:scale-105 transition" />
-      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-    </div>
-    <div className="hidden sm:flex flex-col items-start bg-[#2563EB]/5 px-2 py-1.5 rounded-xl backdrop-blur-sm">
-      <span className="font-semibold text-[#2563EB] text-xs md:text-sm">{user?.name || "Loading..."}</span>
-      <div className="flex items-center gap-1 mt-0.5">
-        <span className="text-[#2563EB]/70 text-[9px] md:text-xs">{user?.role === "admin" ? "Admin / Owner" : "Employee"}</span>
-        <span className={`px-1.5 py-0.5 rounded-full text-white text-[9px] md:text-xs font-semibold ${user?.role === "admin" ? "bg-[#2563EB]" : "bg-[#1D4ED8]"}`}>{displayRole}</span>
-      </div>
-    </div>
-    <Link to="/dashboard/profile" className="flex items-center gap-1 md:gap-2 px-3 py-1.5 rounded-full bg-[#2563EB] text-white font-semibold shadow hover:scale-105 hover:brightness-105 transition text-sm md:text-base">
-      <FaUserCircle className="text-lg md:text-xl" /><span className="hidden sm:inline">Profile</span>
-    </Link>
-    <button
-      onClick={async () => { await supabase.auth.signOut(); navigate('/login'); }}
-      className="flex items-center gap-1 md:gap-2 px-3 py-1.5 rounded-full bg-[#2563EB]/10 text-[#2563EB] font-semibold shadow hover:scale-105 hover:bg-[#2563EB]/20 transition text-sm md:text-base"
-    >
-      <FaSignOutAlt className="text-lg md:text-xl" /><span className="hidden sm:inline">Logout</span>
-    </button>
-  </div>
-</header>
+          <div className="flex items-center gap-3 text-gray-600 min-w-0">
+            <FaBell className="cursor-pointer" />
+            <Link to="/dashboard/profile">
+              <FaUserCircle className="text-xl hover:text-gray-800" />
+            </Link>
+            <button
+              onClick={async () => { await supabase.auth.signOut(); navigate("/login"); }}
+            >
+              <FaSignOutAlt className="hover:text-gray-800" />
+            </button>
+          </div>
+        </header>
 
-
-
-
-        <main className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Main Content */}
+        <main className="flex-1 p-4 md:p-6 space-y-4 overflow-y-auto overflow-x-auto min-w-0">
           <CustomCard title="Quick Actions">
-            <div className="flex flex-wrap gap-3">
-              <Link to="/dashboard/sales" className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#e3342f] flex items-center gap-2 shadow text-sm font-medium"><FaPlus /> Mauzo</Link>
-         
-              <Link to="/dashboard/reports" className="bg-[#2563EB] text-white px-4 py-2 rounded-xl hover:bg-[#e3342f] flex items-center gap-2 shadow text-sm font-medium"><FaList /> Reports</Link>
-              <Link to="/dashboard/customers" className="bg-white text-[#2563EB] border border-[#e5e7eb] px-4 py-2 rounded-xl hover:bg-[#ffeaea] flex items-center gap-2 shadow text-sm font-medium"><FaBoxOpen /> Mteja Mpya</Link>
+            <div className="flex gap-3 flex-wrap min-w-0">
+              <Link to="/dashboard/sales" className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-1 min-w-0">
+                <FaPlus /> Mauzo
+              </Link>
+              <Link to="/dashboard/reports" className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-1 min-w-0">
+                <FaList /> Report
+              </Link>
             </div>
           </CustomCard>
-          {children}
-          <Outlet />
+
+          {/* Container to prevent horizontal overflow */}
+          <div className="max-w-full w-full overflow-x-auto min-w-0">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
