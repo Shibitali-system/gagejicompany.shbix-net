@@ -142,7 +142,7 @@ const Signup = () => {
       region,
       referral_code: referral || null,
       created_at: new Date().toISOString(),
-      system_type: "Mfumo wa Biashara",
+      system_type: "Mfumo wa Hardware",
       email,
       role: "admin",
       permissions: fullPermissions,
@@ -202,7 +202,7 @@ if (receiptError) throw receiptError;
         country,
         region,
         referral_code: referral,
-        system_type: "Mfumo wa Biashara",
+        system_type: "Mfumo wa Hardware",
         office_name: officeName
       }]);
       if (salesError) throw salesError;
