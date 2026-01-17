@@ -124,10 +124,11 @@ const faqGroups = [
 
 // Tutorials (Kiswahili)
 const tutorials = [
-  { title: "Kuweka Mauzo Mpya", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-  { title: "Kusimamia Hisa", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
-  { title: "Wafanyakazi & Majukumu", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+  { title: "Kuweka Mauzo Mpya", video: "https://www.youtube.com/embed/YFAIlOZaZ3M" },
+  { title: "Kusimamia Hisa", video: "https://www.youtube.com/embed/YFAIlOZaZ3M" },
+  { title: "Wafanyakazi & Majukumu", video: "https://www.youtube.com/embed/YFAIlOZaZ3M" },
 ];
+
 
 
   const toggleGroup = (groupTitle) => {

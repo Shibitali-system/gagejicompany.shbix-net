@@ -245,7 +245,7 @@ await fetch("https://tbyynfxbcabjjbluxyol.supabase.co/functions/v1/next-sms", {
   body: JSON.stringify({
     to: cleanUserPhone,
     text: `Karibu ${fullName} kwenye "${userData.system_type}"!
-Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi, WhatsApp: https://wa.me/255774737736`,
+Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia video page ya help, au WhatsApp: https://wa.me/255774737736`,
   }),
 });
 

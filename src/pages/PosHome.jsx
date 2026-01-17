@@ -280,6 +280,32 @@ const HardwareHome = () => {
         </div>
       </motion.section>
 
+{/* Video Tutorial Section */}
+<motion.section
+  className="relative z-10 py-20 px-6 sm:px-20 bg-white"
+  initial={{ opacity: 0, y: 50 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+>
+  <div className="max-w-5xl mx-auto text-center">
+    <h2 className="text-3xl font-bold text-blue-900 mb-8">
+      Video Tutorial
+    </h2>
+
+    <div className="relative w-full overflow-hidden rounded-2xl shadow-xl aspect-video">
+      <iframe
+        src="https://www.youtube.com/embed/YFAIlOZaZ3M"
+        title="POS System Tutorial"
+        className="absolute top-0 left-0 w-full h-full"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  </div>
+</motion.section>
+
+
       {/* Testimonials Section */}
       <motion.section
         className="relative z-10 py-20 px-6 sm:px-20 bg-gradient-to-b from-blue-50 via-white to-blue-50"
