@@ -329,7 +329,27 @@ const SummaryCard = ({ title, value, valueColor }) => (
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Purchases");
     XLSX.writeFile(wb, `purchases_export_${new Date().toISOString()}.xlsx`);
-  };
+  };// Summary calculations
+const totalPurchases = purchases.length;
+
+const totalAmount = purchases.reduce(
+  (sum, p) => sum + Number(p.total_amount || p.total_price || 0),
+  0
+);
+
+const uniqueSuppliers = new Set(
+  purchases
+    .map((p) => p.supplier_id)
+    .filter(Boolean)
+).size;
+
+const uniqueInvoices = new Set(
+  purchases
+    .map((p) => p.invoice_number)
+    .filter(Boolean)
+).size;
+
+
 
   if (loadingUser) return <p className="p-6 text-gray-600">Loading user data...</p>;
 
@@ -465,6 +485,8 @@ const SummaryCard = ({ title, value, valueColor }) => (
     />
   </div>
 
+
+
   {/* Search */}
   <div className="flex items-center w-full">
     <FaSearch className="text-gray-400 mr-2" />
@@ -477,6 +499,33 @@ const SummaryCard = ({ title, value, valueColor }) => (
     />
   </div>
 
+</div>
+
+
+{/* Summary Cards */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <SummaryCard
+    title="Jumla ya Manunuzi"
+    value={totalPurchases.toLocaleString()}
+  />
+
+  <SummaryCard
+    title="Jumla ya Kiasi"
+    value={`TZS ${totalAmount.toLocaleString()}`}
+    valueColor="text-green-600"
+  />
+
+  <SummaryCard
+    title="Wauzaji"
+    value={uniqueSuppliers.toLocaleString()}
+    valueColor="text-purple-600"
+  />
+
+  <SummaryCard
+    title="Vocha"
+    value={uniqueInvoices.toLocaleString()}
+    valueColor="text-orange-600"
+  />
 </div>
 
       {/* Table */}
