@@ -7,55 +7,56 @@ import * as XLSX from "xlsx";
 import { toast, Toaster } from "react-hot-toast";
 import { FaPlus, FaFileExcel, FaArrowLeft, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 
-// Makundi ya bidhaa kwa duka la Hardware
+// Makundi ya bidhaa kwa kiwanda cha soda (Gageji Company Limited)
 const categoryOptions = [
-  "Saruji na Mchanga",
-  "Nondo na Vyuma",
-  "Mabati na Vifaa vya Kuezekea",
-  "Misumari, Bolts na Screws",
-  "Mbao na Plywood",
-  "Rangi na Vifaa vya Kupaka",
-  "Mabomba na Vifaa vya Maji (Plumbing)",
-  "Vifaa vya Umeme (Electrical)",
-  "Vifaa vya Ujenzi",
-  "Milango na Madirisha",
-  "Vifaa vya Bafu na Choo",
-  "Vifaa vya Jikoni (Hardware)",
-  "Vifaa vya Kupima (Measuring Tools)",
-  "Zana za Mkono (Hand Tools)",
-  "Zana za Umeme (Power Tools)",
-  "Vifaa vya Usalama (Safety Gear)",
-  "Locks, Hinges na Fittings",
-  "Gundi, Silicone na Sealants",
-  "Tiles na Vifaa vya Sakafu",
-  "Nyinginezo (Hardware)"
+  "Soda (Carbonated Soft Drinks)",
+  "Juisi (Juices)",
+  "Water (Maji ya Chupa)",
+  "Energy Drinks",
+  "Flavored Drinks",
+  "Sparkling Water",
+  "Sports Drinks",
+  "Bottled Water (Premium)",
+  "Glass Bottle Drinks",
+  "Plastic Bottle Drinks (PET)",
+  "Canned Drinks",
+  "Syrups & Concentrates",
+  "Ice Drinks / Chilled Beverages",
+  "Family Packs",
+  "Party Packs",
+  "Crates Returnable Bottles",
+  "Wholesale Supplies",
+  "Retail Packs",
+  "Promotional Products",
+  "Nyinginezo (Vinywaji)"
 ];
 
 
-
-
-// Package types for general products
+// Package types for soda / beverage products
 const packageOptions = [
-  "Box",
-  "Packet",
-  "Piece",
-  "Set",
-  "Bundle",
   "Bottle",
   "Can",
-  "Bag",
-  "Jar",
-  "Tube",
+  "Crate",
+  "Crate of 24 Bottles",
+  "Crate of 12 Bottles",
   "Carton",
-  "Roll",
+  "Box",
+  "Packet",
   "Pack",
-  "Pcs",
-  "Kg",
-  "Litre",
-  "Dozen",
-  "Packet of 6",
+  "6-Pack",
+  "12-Pack",
+  "24-Pack",
   "Tray",
-  "Bundle of 10",
+  "Shrink Pack",
+  "Sleeve Pack",
+  "PET Bottle",
+  "Glass Bottle",
+  "Aluminium Can",
+  "Pallet",
+  "Case",
+  "Bulk Tank",
+  "Drum",
+  "Bag-in-Box",
   "Others"
 ];
 

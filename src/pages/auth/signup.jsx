@@ -142,7 +142,7 @@ const Signup = () => {
       region,
       referral_code: referral || null,
       created_at: new Date().toISOString(),
-      system_type: "Mfumo wa Hardware",
+      system_type: "Mfumo wa Kiwanda",
       email,
       role: "admin",
       permissions: fullPermissions,
@@ -202,7 +202,7 @@ if (receiptError) throw receiptError;
         country,
         region,
         referral_code: referral,
-        system_type: "Mfumo wa Hardware",
+        system_type: "Mfumo wa Kiwanda",
         office_name: officeName
       }]);
       if (salesError) throw salesError;
@@ -282,10 +282,10 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia vid
         {/* Maandishi */}
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold">
-            Usajili wa Hardware System
+            Usajili wa Industry System
           </h1>
           <p className="mt-1 text-sm sm:text-base text-white/90">
-            Tengeneza akaunti yako ya Hardware System kusimamia mauzo ya vifaa vya ujenzi, stock, na shughuli za duka lako
+            Tengeneza akaunti yako ya Industry System kusimamia mauzo ya vifaa vya ujenzi, stock, na shughuli za duka lako
           </p>
         </div>
 
@@ -303,7 +303,7 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia vid
 
       <div className="relative z-10 w-full max-w-md bg-white/90 p-8 rounded-2xl shadow-xl backdrop-blur-sm">
         <h2 className="text-2xl font-bold mb-6 text-center text-[#153D82]">
-          Sajili Akaunti ya Hardware
+          Sajili Akaunti ya Industry
         </h2>
 
         <form onSubmit={handleSignup} className="space-y-4">
@@ -322,12 +322,12 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia vid
 
           {/* Jina la Duka */}
           <div>
-            <label className="block mb-1 font-medium">Jina la Hardware</label>
+            <label className="block mb-1 font-medium">Jina la Industry</label>
             <input
               type="text"
               value={officeName}
               onChange={(e) => setOfficeName(e.target.value)}
-              placeholder="Hardware Yangu"
+              placeholder="Industry Yangu"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-[#153D82]"
               required
             />
@@ -442,7 +442,7 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia vid
             disabled={loading}
             className="w-full bg-[#FFD700] text-[#153D82] font-semibold py-2 rounded-xl hover:bg-yellow-500 transition disabled:opacity-50"
           >
-            {loading ? "Inasajiliwa..." : "Sajili Hardware"}
+            {loading ? "Inasajiliwa..." : "Sajili Industry"}
           </button>
         </form>
 
@@ -462,7 +462,7 @@ Furahia kusimamia biashara yako kidigitali sasa. Kwa maelekezo zaidi angalia vid
     {/* Miguu */}
     <footer className="bg-gradient-to-r from-[#153D82] to-[#1E4AA2] text-white py-6 px-6">
       <div className="max-w-7xl mx-auto text-center text-sm">
-        &copy; {new Date().getFullYear()} Hardware System. Haki zote zimehifadhiwa.
+        &copy; {new Date().getFullYear()} Industry System. Haki zote zimehifadhiwa.
       </div>
     </footer>
   </div>

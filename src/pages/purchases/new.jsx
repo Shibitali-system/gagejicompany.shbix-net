@@ -35,6 +35,13 @@ const NewPurchase = () => {
   // general error
   const [error, setError] = useState(null);
 
+const [manualItem, setManualItem] = useState({
+  name: "",
+  category: "",
+  quantity: 1,
+  unit_price: 0,
+});
+
   // --- Fetch logged-in user (systems_users OR employees) ---
   useEffect(() => {
     const fetchUser = async () => {
@@ -232,6 +239,35 @@ const NewPurchase = () => {
     });
   };
 
+const addManualItem = () => {
+  if (!manualItem.name.trim()) {
+    toast.error("Weka jina la item");
+    return;
+  }
+
+  setSelectedProducts((prev) => [
+    ...prev,
+    {
+      id: `manual-${Date.now()}`,
+      product_id: null,
+      item_source: "manual",
+      name: manualItem.name,
+      category: manualItem.category,
+      quantity: Number(manualItem.quantity),
+      unit_price: Number(manualItem.unit_price),
+    },
+  ]);
+
+  setManualItem({
+    name: "",
+    category: "",
+    quantity: 1,
+    unit_price: 0,
+  });
+
+  toast.success("Item imeongezwa");
+};
+
   const updateQuantity = (prodId, qty) => {
     setSelectedProducts((prev) => prev.map((p) => (p.id === prodId ? { ...p, quantity: Number(qty) } : p)));
   };
@@ -290,13 +326,30 @@ const handleSubmit = async (e) => {
     if (purchaseError) throw purchaseError;
     if (!purchaseData?.id) throw new Error("Purchase insert failed");
 
-    // 2️⃣ Insert purchase_items
     const itemsPayload = selectedProducts.map((p) => ({
-      purchase_id: purchaseData.id,
-      product_id: p.id,
-      quantity: p.quantity,
-      unit_price: p.unit_price,
-    }));
+  purchase_id: purchaseData.id,
+
+  product_id:
+    p.item_source === "manual"
+      ? null
+      : p.id,
+
+  item_source:
+    p.item_source || "product",
+
+  manual_item_name:
+    p.item_source === "manual"
+      ? p.name
+      : null,
+
+  manual_item_category:
+    p.item_source === "manual"
+      ? p.category
+      : null,
+
+  quantity: p.quantity,
+  unit_price: p.unit_price,
+}));
 
     const { error: itemsError } = await supabase
       .from("purchase_items")
@@ -446,6 +499,103 @@ const SummaryCard = ({ title, value, valueColor }) => (
           </div>
           <p className="text-xs text-gray-500 mt-1">Kidokezo: Tumia search kupata bidhaa haraka.</p>
         </div>
+
+<div className="bg-white border border-[#e5e7eb] rounded-md shadow p-4">
+  <h3 className="font-semibold mb-3">
+    Ongeza Manunuzi hapa ambayo hayapo kwenye Orodha ya bidhaa hapo juu
+  </h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+    {/* Jina la Item */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-gray-700">
+        Jina la Item *
+      </label>
+      <input
+        type="text"
+        placeholder="Mfano: Citric Acid"
+        value={manualItem.name}
+        onChange={(e) =>
+          setManualItem({
+            ...manualItem,
+            name: e.target.value,
+          })
+        }
+        className="border rounded px-2 py-2 text-sm"
+      />
+    </div>
+
+    {/* Category */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-gray-700">
+        Kundi (Category)
+      </label>
+      <input
+        type="text"
+        placeholder="Mfano: Chemicals"
+        value={manualItem.category}
+        onChange={(e) =>
+          setManualItem({
+            ...manualItem,
+            category: e.target.value,
+          })
+        }
+        className="border rounded px-2 py-2 text-sm"
+      />
+    </div>
+
+    {/* Quantity */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-gray-700">
+        Idadi *
+      </label>
+      <input
+        type="number"
+        min="1"
+        placeholder="0"
+        value={manualItem.quantity}
+        onChange={(e) =>
+          setManualItem({
+            ...manualItem,
+            quantity: e.target.value,
+          })
+        }
+        className="border rounded px-2 py-2 text-sm"
+      />
+    </div>
+
+    {/* Unit Price */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-gray-700">
+        Bei ya Kimoja *
+      </label>
+      <input
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="0.00"
+        value={manualItem.unit_price}
+        onChange={(e) =>
+          setManualItem({
+            ...manualItem,
+            unit_price: e.target.value,
+          })
+        }
+        className="border rounded px-2 py-2 text-sm"
+      />
+    </div>
+
+  </div>
+
+  <button
+    type="button"
+    onClick={addManualItem}
+    className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+  >
+    Ongeza Item
+  </button>
+</div>
 
         {/* ---------------- Kadi 4: Jedwali la Bidhaa Zilizochaguliwa ---------------- */}
         {selectedProducts.length > 0 && (

@@ -21,6 +21,14 @@ const PurchaseDetails = ({ user }) => {
     0
   );
 
+const getItemName = (item) => {
+  if (item.item_source === "manual") {
+    return item.manual_item_name || "-";
+  }
+
+  return item.products?.name || "-";
+};
+
   // -------------------------------------------
   // Fetch details
   // -------------------------------------------
@@ -131,11 +139,11 @@ const PurchaseDetails = ({ user }) => {
     // ITEMS TABLE
     // ---------------------------
     const tableData = items.map((item) => [
-      item.products?.name || "-",
-      item.quantity,
-      item.unit_price.toLocaleString(),
-      (item.quantity * item.unit_price).toLocaleString(),
-    ]);
+  getItemName(item),
+  item.quantity,
+  item.unit_price.toLocaleString(),
+  (item.quantity * item.unit_price).toLocaleString(),
+]);
 
     doc.autoTable({
       startY: startY + 90,
@@ -321,7 +329,7 @@ const CustomCard = ({ title, children }) => (
             <tbody>
               {items.map((item) => (
                 <tr key={item.id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-2">{item.products?.name || "-"}</td>
+                  <td className="px-4 py-2">{getItemName(item)}</td>
                   <td className="px-4 py-2">{item.quantity}</td>
                   <td className="px-4 py-2">{item.unit_price.toLocaleString()}</td>
                   <td className="px-4 py-2">

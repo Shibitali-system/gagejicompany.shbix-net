@@ -24,7 +24,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   // Image carousel
-  const images = ["/pos1.jpg", "/pos2.jpg"];
+  const images = ["/pos2.png", "/pos2.png"];
   const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
@@ -125,10 +125,11 @@ const Login = () => {
 
         <div className="absolute flex flex-col items-center justify-center text-center px-4 space-y-2">
           <h1 className="text-white text-3xl md:text-4xl font-extrabold drop-shadow-lg">
-            Hardware System
+            GAGEJI COMPANY LIMITED
           </h1>
           <p className="text-white text-sm md:text-base drop-shadow-md max-w-xs">
-            Simamia mauzo ya vifaa vya ujenzi, stock, na wateja kwa urahisi na ufanisi kwa kutumia Hardware System ya kisasa.
+            Kiwanda cha kisasa cha kutengeneza soda na vinywaji baridi, kikilenga ubora,
+            ladha bora na usambazaji wa haraka Tanzania nzima.
           </p>
         </div>
       </div>
@@ -141,13 +142,13 @@ const Login = () => {
         {/* Header Card */}
         <FormCard>
           <h1 className="text-3xl font-extrabold text-center text-[#3360C3]">
-            Ingia Kwenye Hardware System
+            Ingia Kwenye Mfumo wa Gageji
           </h1>
           <h2 className="text-xl font-bold text-center text-[#3360C3] mt-2">
             Karibu Tena
           </h2>
           <p className="text-center text-gray-600 text-sm mt-2">
-            Ingia ili kuendelea kusimamia mauzo ya vifaa vya ujenzi, stock, na shughuli za hardware yako.
+            Ingia ili kuendelea kusimamia uzalishaji, mauzo na usambazaji wa vinywaji vya Gageji Company Limited.
           </p>
         </FormCard>
 
@@ -207,7 +208,7 @@ const Login = () => {
 
           <div className="mt-4 flex justify-between text-sm text-[#3360C3]">
             <Link to="/forgot-password" className="hover:underline">Umesahau nenosiri?</Link>
-            <Link to="/signup" className="hover:underline">Sajili Hardware</Link>
+            <Link to="/signup" className="hover:underline">Fungua Akaunti ya Industry</Link>
           </div>
 
           <button
@@ -221,7 +222,6 @@ const Login = () => {
     </div>
   </div>
 );
-
 
 
 

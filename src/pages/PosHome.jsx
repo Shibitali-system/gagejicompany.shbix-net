@@ -1,378 +1,223 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import {
-  FaCashRegister,
-  FaBoxes,
-  FaUsers,
-  FaChartLine,
-  FaSignInAlt,
-  FaUserPlus,
-  FaShieldAlt,
-  FaClock,
-  FaCloud,
-  FaStore,
-  FaBarcode,
-  FaBalanceScale,
-  FaRegFileAlt,
-  FaTools,
-  FaHammer,
-} from "react-icons/fa";
-import { MdLanguage } from "react-icons/md";
-import { motion } from "framer-motion";
-import Slider from "react-slick";
+  FiSun,
+  FiMoon,
+  FiShoppingCart,
+  FiUser,
+  FiLogIn
+} from "react-icons/fi";
 
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-const HardwareHome = () => {
-  const [language, setLanguage] = useState(
-    () => localStorage.getItem("language") || "sw"
-  );
-  const navigate = useNavigate();
+export default function GagejiCompanyLimited() {
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
-    localStorage.setItem("language", language);
-  }, [language]);
+    const saved = localStorage.getItem("theme");
+    if (saved) {
+      setTheme(saved);
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(prefersDark ? "dark" : "light");
+    }
+  }, []);
 
-  const texts = {
-    sw: {
-      brand: "HARDWARE SYSTEM",
-      title: "Mfumo wa Usimamizi wa Duka la Hardware",
-      welcome: "Karibu kwenye mfumo wa kisasa wa hardware!",
-      slogan:
-        "Simamia mauzo ya saruji, nondo, misumari, mabomba, rangi na vifaa vyote vya ujenzi kwa urahisi na haraka.",
-      register: "Jisajili",
-      login: "Ingia",
-      aboutTitle: "Kuhusu Mfumo",
-      aboutDesc:
-        "Hardware System ni mfumo wa kusimamia duka la hardware kwa ufanisi — bidhaa, stock, mauzo, wateja na ripoti zote sehemu moja.",
-      benefitsTitle: "Faida za Mfumo",
-      benefits: [
-        {
-          icon: <FaShieldAlt />,
-          title: "Usalama wa Taarifa",
-          desc: "Taarifa za mauzo, stock na wateja zinahifadhiwa kwa usalama mkubwa.",
-        },
-        {
-          icon: <FaClock />,
-          title: "Ufanisi wa Kazi",
-          desc: "Fanya mauzo haraka bila makosa ya hesabu au stock.",
-        },
-        {
-          icon: <FaCloud />,
-          title: "Upatikanaji Mtandaoni",
-          desc: "Fikia taarifa zako popote kupitia intaneti.",
-        },
-      ],
-      testimonialsTitle: "Maoni ya Wateja",
-      contactTitle: "Wasiliana Nasi",
-    },
-    en: {
-      brand: "HARDWARE SYSTEM",
-      title: "Hardware Store Management System",
-      welcome: "Welcome to the modern hardware management platform!",
-      slogan:
-        "Manage cement, steel, nails, pipes, paints and all building materials easily and fast.",
-      register: "Register",
-      login: "Login",
-      aboutTitle: "About the System",
-      aboutDesc:
-        "Hardware System helps you manage your hardware store efficiently — products, stock, sales, customers and reports in one place.",
-      benefitsTitle: "System Benefits",
-      benefits: [
-        {
-          icon: <FaShieldAlt />,
-          title: "Data Security",
-          desc: "Your sales, stock and customer data are fully protected.",
-        },
-        {
-          icon: <FaClock />,
-          title: "High Efficiency",
-          desc: "Sell faster and manage stock accurately.",
-        },
-        {
-          icon: <FaCloud />,
-          title: "Online Access",
-          desc: "Access your hardware data anywhere, anytime.",
-        },
-      ],
-      testimonialsTitle: "User Testimonials",
-      contactTitle: "Contact Us",
-    },
-  };
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
-  const t = texts[language];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("opacity-100", "translate-y-0");
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
 
-  const heroImages = ["/pos1.jpg", "/pos2.jpg"];
+    document.querySelectorAll(".animate-on-scroll").forEach(el => observer.observe(el));
+  }, []);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 800,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-    fade: true,
-  };
-
-  const testimonials = [
+  const products = [
     {
-      name: "Mlimani Hardware",
-      feedback:
-        "Mfumo huu umetusaidia kufuatilia stock ya saruji na nondo bila makosa. Kazi imekuwa rahisi sana!",
+      title: "Gageji Cola",
+      desc: "Kinywaji cha cola chenye ladha kali na ubora wa juu.",
+      img: "/pos2.png"
     },
     {
-      name: "City Builders",
-      feedback:
-        "Sasa tunaona mauzo ya kila siku na faida kwa urahisi. Mfumo ni mzuri sana kwa hardware.",
-    },
-  ];
-
-  const features = [
-    {
-      title: "Usimamizi wa Mauzo",
-      icon: <FaCashRegister />,
-      description: "Rekodi na simamia mauzo yote ya vifaa vya hardware kwa urahisi.",
+      title: "Gageji Orange Soda",
+      desc: "Soda ya machungwa yenye ladha ya asili na yenye kuburudisha.",
+      img: "/pos1.png"
     },
     {
-      title: "Stock & Bidhaa",
-      icon: <FaBoxes />,
-      description: "Fuatilia stock ya nondo, saruji, misumari, mabomba na vifaa vingine.",
+      title: "Gageji Lemon Lime",
+      desc: "Kinywaji cha limao na limau, kinachotoa msisimko wa baridi.",
+      img: "/pos1.png"
     },
     {
-      title: "Wateja & Wauzaji",
-      icon: <FaUsers />,
-      description: "Hifadhi taarifa za wateja na suppliers wako.",
+      title: "Gageji Energy Drink",
+      desc: "Energy drink inayokupa nguvu na umakini kwa siku nzima.",
+      img: "/pos2.png"
     },
     {
-      title: "Ripoti & Takwimu",
-      icon: <FaChartLine />,
-      description: "Pata ripoti za mauzo, faida na matumizi kwa muda halisi.",
+      title: "Gageji Sparkling Water",
+      desc: "Maji ya madini yenye gesi kwa afya na hydration.",
+      img: "/pos2.png"
     },
     {
-      title: "Vipimo & Mizani",
-      icon: <FaBalanceScale />,
-      description: "Dhibiti bidhaa za kilo, mita, na vipimo vingine vya ujenzi.",
-    },
-    {
-      title: "Zana & Vifaa",
-      icon: <FaTools />,
-      description: "Simamia zana kama nyundo, mashine, na vifaa vingine vya kazi.",
-    },
+      title: "Gageji Bottling Services",
+      desc: "Huduma za kujaza na kufunga vinywaji kwa viwango vya viwanda.",
+      img: "/pos1.png"
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 font-sans relative overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative w-full h-screen overflow-hidden">
-        <Slider {...sliderSettings}>
-          {heroImages.map((imgUrl, idx) => (
-            <div key={idx} className="w-full h-screen relative">
-              <div
-                className="absolute inset-0 bg-cover bg-center scale-105 brightness-90"
-                style={{ backgroundImage: `url('${imgUrl}')` }}
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40" />
-              <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="max-w-3xl"
-                >
-                  <h1 className="text-5xl sm:text-6xl font-extrabold text-white mb-4 drop-shadow-lg">
-                    {t.title}
-                  </h1>
-                  <p className="text-xl sm:text-2xl text-gray-200 mb-4">
-                    {t.welcome}
-                  </p>
-                  <p className="text-lg sm:text-xl text-gray-300 mb-8">
-                    {t.slogan}
-                  </p>
-                  <div className="flex justify-center gap-4 flex-wrap">
-                    <button
-                      onClick={() => navigate("/signup")}
-                      className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300"
-                    >
-                      <FaUserPlus className="text-xl" /> {t.register}
-                    </button>
-                    <button
-                      onClick={() => navigate("/login")}
-                      className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition duration-300"
-                    >
-                      <FaSignInAlt className="text-xl" /> {t.login}
-                    </button>
-                  </div>
-                </motion.div>
+    <div className="min-h-screen transition-colors duration-500 bg-slate-50 text-slate-800 dark:bg-gradient-to-br dark:from-slate-950 dark:via-indigo-950 dark:to-slate-900 dark:text-slate-100">
+
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 backdrop-blur bg-white/70 dark:bg-white/5 border-b border-black/10 dark:border-white/10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+
+          <h1 className="text-2xl font-extrabold tracking-wide">
+            GAGEJI <span className="text-cyan-500">COMPANY</span> LIMITED
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <a
+              href="/login"
+              className="px-5 py-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold flex items-center gap-2"
+            >
+              <FiLogIn /> Login
+            </a>
+
+            <a
+              href="/signup"
+              className="px-5 py-2 rounded-full border flex items-center gap-2"
+            >
+              <FiUser /> Sign Up
+            </a>
+
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2 rounded-full border"
+            >
+              {theme === "dark" ? <FiSun /> : <FiMoon />}
+            </button>
+          </div>
+
+        </div>
+      </nav>
+
+      {/* HERO */}
+<section className="relative h-[75vh] md:h-[80vh] flex items-center justify-center px-6">
+
+  {/* Background */}
+  <div
+    className="absolute inset-0 bg-cover bg-center brightness-110"
+    style={{ backgroundImage: "url('/pos1.png')" }}
+  />
+  <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-black/40" />
+
+  {/* TOP RIGHT BUTTON */}
+  <div className="absolute top-6 right-6 z-20">
+    <a
+      href="#products"
+      className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold shadow-lg hover:scale-105 transition duration-300"
+    >
+      <FiShoppingCart />
+      Products
+    </a>
+  </div>
+
+</section>
+
+      {/* ABOUT */}
+      <section className="max-w-6xl mx-auto px-6 py-20 text-center opacity-0 translate-y-12 animate-on-scroll transition-all duration-700 ease-out">
+        <h3 className="text-3xl font-bold mb-6">About Us</h3>
+        <p className="max-w-3xl mx-auto opacity-80">
+          Gageji Company Limited ni kiwanda cha kisasa cha vinywaji kinachozalisha soda,
+          energy drinks na maji ya madini. Tunazingatia ubora wa juu, usafi wa uzalishaji
+          na kuwahudumia wateja kwa viwango vya kimataifa.
+        </p>
+      </section>
+
+      {/* PRODUCTS */}
+      <section id="products" className="max-w-6xl mx-auto px-6 py-20">
+        <h3 className="text-3xl font-bold text-center mb-16 opacity-0 translate-y-12 animate-on-scroll transition-all duration-700 ease-out">
+          Our Beverages
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          {products.map((p, i) => (
+            <div
+              key={i}
+              className="rounded-2xl overflow-hidden border bg-white/70 dark:bg-white/5 border-black/10 dark:border-white/10 shadow-lg hover:shadow-2xl transition-all duration-700 ease-out opacity-0 translate-y-12 animate-on-scroll"
+            >
+              <div className="h-64 w-full overflow-hidden">
+                <img
+                  src={p.img}
+                  alt={p.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="p-6">
+                <h4 className="text-xl font-semibold mb-3">{p.title}</h4>
+                <p className="opacity-80">{p.desc}</p>
               </div>
             </div>
           ))}
-        </Slider>
-
-        {/* Top Bar */}
-        <div className="absolute top-4 left-6 right-6 z-20 flex justify-between items-center backdrop-blur-md bg-white/10 px-4 py-2 rounded-full shadow-md">
-          <div className="text-white text-2xl font-bold tracking-wide drop-shadow">
-            {t.brand}
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={() => setLanguage("sw")}
-              className={`flex items-center gap-1 px-3 py-1 text-sm rounded-full transition ${
-                language === "sw"
-                  ? "bg-blue-600 text-white shadow"
-                  : "bg-white/70 text-gray-800 hover:bg-white"
-              }`}
-            >
-              <MdLanguage /> Swahili
-            </button>
-            <button
-              onClick={() => setLanguage("en")}
-              className={`flex items-center gap-1 px-3 py-1 text-sm rounded-full transition ${
-                language === "en"
-                  ? "bg-blue-600 text-white shadow"
-                  : "bg-white/70 text-gray-800 hover:bg-white"
-              }`}
-            >
-              <MdLanguage /> English
-            </button>
-          </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <motion.section
-        className="relative z-10 py-20 px-6 sm:px-20 bg-white/80 backdrop-blur-md mx-4 sm:mx-20 rounded-3xl shadow-xl -mt-24"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-blue-900 mb-4">{t.aboutTitle}</h2>
-          <p className="text-gray-700 text-lg">{t.aboutDesc}</p>
-        </div>
-      </motion.section>
+      {/* FOOTER */}
+      <footer className="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 pt-16 pb-8 px-6 opacity-0 translate-y-12 animate-on-scroll transition-all duration-700 ease-out">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
 
-      {/* Benefits Section */}
-      <motion.section
-        className="relative z-10 py-20 px-6 sm:px-20 bg-gradient-to-b from-blue-50 to-white"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <div className="max-w-6xl mx-auto text-center">
-          <h3 className="text-3xl font-bold text-blue-800 mb-10">{t.benefitsTitle}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {t.benefits.map((benefit, index) => (
-              <motion.div
-                key={index}
-                className="bg-white/90 rounded-2xl shadow-xl p-6 flex flex-col items-center text-center transition hover:shadow-blue-100"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <div className="text-blue-600 text-4xl mb-4">{benefit.icon}</div>
-                <h4 className="text-xl font-semibold mb-2">{benefit.title}</h4>
-                <p className="text-gray-600">{benefit.desc}</p>
-              </motion.div>
-            ))}
+          <div>
+            <h4 className="text-xl font-bold mb-4">About Gageji</h4>
+            <p className="opacity-80">
+              Gageji Company Limited inazalisha soda na vinywaji baridi vya ubora wa juu,
+              kwa ajili ya soko la Tanzania na nje ya nchi.
+            </p>
           </div>
-        </div>
-      </motion.section>
 
-{/* Video Tutorial Section */}
-<motion.section
-  className="relative z-10 py-20 px-6 sm:px-20 bg-white"
-  initial={{ opacity: 0, y: 50 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
->
-  <div className="max-w-5xl mx-auto text-center">
-    <h2 className="text-3xl font-bold text-blue-900 mb-8">
-      Video Tutorial
-    </h2>
-
-    <div className="relative w-full overflow-hidden rounded-2xl shadow-xl aspect-video">
-      <iframe
-        src="https://www.youtube.com/embed/YFAIlOZaZ3M"
-        title="POS System Tutorial"
-        className="absolute top-0 left-0 w-full h-full"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-    </div>
-  </div>
-</motion.section>
-
-
-      {/* Testimonials Section */}
-      <motion.section
-        className="relative z-10 py-20 px-6 sm:px-20 bg-gradient-to-b from-blue-50 via-white to-blue-50"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-      >
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-blue-900 mb-12">{t.testimonialsTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {testimonials.map((tst, idx) => (
-              <motion.div
-                key={idx}
-                className="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 text-left transition hover:shadow-xl border border-white/40"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: idx * 0.2 }}
-              >
-                <p className="text-gray-800 mb-4">"{tst.feedback}"</p>
-                <p className="font-semibold text-blue-800">{tst.name}</p>
-              </motion.div>
-            ))}
+          <div>
+            <h4 className="text-xl font-bold mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              <li><a href="#products">Products</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="/login">Login</a></li>
+              <li><a href="/signup">Sign Up</a></li>
+            </ul>
           </div>
-        </div>
-      </motion.section>
 
-      {/* Contact Section */}
-      <motion.section
-        className="relative z-10 py-20 px-6 sm:px-20 bg-white/90 backdrop-blur-md mx-4 sm:mx-20 rounded-3xl shadow-xl"
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-blue-900 mb-8">{t.contactTitle}</h2>
-          <form className="grid gap-6">
-            <input
-              type="text"
-              placeholder="Jina / Name"
-              className="p-3 rounded-xl border border-gray-300 shadow-sm"
-            />
-            <input
-              type="email"
-              placeholder="Barua pepe / Email"
-              className="p-3 rounded-xl border border-gray-300 shadow-sm"
-            />
-            <textarea
-              placeholder="Ujumbe / Message"
-              className="p-3 rounded-xl border border-gray-300 shadow-sm"
-              rows={5}
-            ></textarea>
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-blue-700 transition">
-              Tuma / Send
-            </button>
-          </form>
-        </div>
-      </motion.section>
+          <div>
+            <h4 className="text-xl font-bold mb-4">Contact</h4>
+            <p>📞 +255 7XX XXX XXX</p>
+            <p>📧 info@gagejicompany.co.tz</p>
+            <p>🏭 Tanzania</p>
+          </div>
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center text-sm text-gray-500 py-8 bg-transparent mt-10">
-        <div className="text-gray-600">
-          © {new Date().getFullYear()}{" "}
-          <span className="font-semibold text-blue-700">Hardware System</span>. All rights reserved.
+          <div>
+            <h4 className="text-xl font-bold mb-4">Follow Us</h4>
+            <div className="flex gap-4">
+              <a href="#">Facebook</a>
+              <a href="#">Instagram</a>
+              <a href="#">Twitter</a>
+              <a href="#">LinkedIn</a>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="mt-10 text-center border-t border-black/10 dark:border-white/10 pt-6 opacity-80">
+          <p>© 2026 GAGEJI COMPANY LIMITED. All rights reserved.</p>
         </div>
       </footer>
+
     </div>
   );
-};
-
-export default HardwareHome;
+}
