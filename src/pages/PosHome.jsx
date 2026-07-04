@@ -111,27 +111,31 @@ export default function GagejiCompanyLimited() {
       </nav>
 
       {/* HERO */}
-<section className="relative h-[75vh] md:h-[80vh] flex items-center justify-center px-6">
+      <section className="relative h-[75vh] md:h-[80vh] flex items-center justify-center text-center px-6">
+        <div
+          className="absolute inset-0 bg-cover bg-center brightness-110"
+          style={{ backgroundImage: "url('/pos2.png')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-black/40" />
 
-  {/* Background */}
-  <div
-    className="absolute inset-0 bg-cover bg-center brightness-110"
-    style={{ backgroundImage: "url('/pos1.png')" }}
-  />
-  <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-black/40" />
+        <div className="relative max-w-3xl z-10 opacity-0 translate-y-12 animate-on-scroll transition-all duration-700 ease-out">
+          <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white drop-shadow-xl">
+            Refresh the World. One Bottle at a Time.
+          </h2>
 
-  {/* TOP RIGHT BUTTON */}
-  <div className="absolute top-6 right-6 z-20">
-    <a
-      href="#products"
-      className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold shadow-lg hover:scale-105 transition duration-300"
-    >
-      <FiShoppingCart />
-      Products
-    </a>
-  </div>
+          <p className="text-lg text-white/95 mb-8 drop-shadow-md">
+            GAGEJI COMPANY LIMITED ni kiwanda cha kisasa cha kutengeneza soda na vinywaji baridi,
+            kikilenga ubora, ladha bora na usambazaji wa haraka Tanzania nzima.
+          </p>
 
-</section>
+          <a
+            href="#products"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 text-black font-semibold shadow-2xl hover:scale-110 transition duration-300"
+          >
+            <FiShoppingCart /> View Products
+          </a>
+        </div>
+      </section>
 
       {/* ABOUT */}
       <section className="max-w-6xl mx-auto px-6 py-20 text-center opacity-0 translate-y-12 animate-on-scroll transition-all duration-700 ease-out">
