@@ -35,8 +35,8 @@ export default defineConfig({
 
       // PWA manifest
       manifest: {
-        name: "Hardware App",
-        short_name: "Hardware App",
+        name: "Gageji App",
+        short_name: "Gageji App",
         theme_color: "#10B981",
         background_color: "#ffffff",
         display: "standalone",
